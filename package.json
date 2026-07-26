@@ -1,32 +1,40 @@
 {
-  "name": "solid-v2-guide",
-  "version": "0.1.0",
+  "name": "solidjs-v2-beta-docs",
+  "version": "1.0-2.0.0-beta.26",
   "private": true,
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
   "type": "module",
   "scripts": {
-    "generate": "node scripts/generate-api-catalog.mjs",
+    "generate": "node scripts/catalog/generate.mjs",
     "predev": "npm run generate",
     "dev": "vite",
     "prebuild": "npm run generate",
     "build": "vite build",
+    "format": "node scripts/catalog/format.mjs && prettier --write .",
+    "format:check": "node scripts/catalog/format.mjs --check && prettier --check .",
     "preview": "vite preview",
     "precheck": "npm run generate",
     "check": "tsc --noEmit",
-    "verify:demos": "npm run generate && node scripts/verify-all-demos.mjs"
+    "verify:demos": "npm run generate && node scripts/demo/verify.mjs --all"
   },
   "dependencies": {
-    "@babel/standalone": "^7.28.5",
-    "@solidjs/web": "2.0.0-beta.25",
+    "@solidjs/web": "2.0.0-beta.26",
     "lucide": "1.27.0",
     "prismjs": "^1.30.0",
-    "solid-js": "2.0.0-beta.25"
+    "solid-js": "2.0.0-beta.26"
   },
   "devDependencies": {
+    "@babel/core": "^7.29.7",
+    "@tailwindcss/vite": "^4.3.3",
     "@types/prismjs": "^1.26.6",
-    "babel-preset-solid": "2.0.0-beta.25",
+    "babel-preset-solid": "2.0.0-beta.26",
     "happy-dom": "^20.8.9",
+    "prettier": "^3.9.6",
+    "tailwindcss": "^4.3.3",
     "typescript": "^5.7.2",
-    "vite": "^7.2.4",
+    "vite": "^8.1.5",
     "vite-plugin-solid": "3.0.0-next.16"
   }
 }

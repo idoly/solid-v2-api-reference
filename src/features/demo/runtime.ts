@@ -1,13 +1,13 @@
 import * as Solid from "solid-js";
 import * as Web from "@solidjs/web";
 
-export type DemoLog = {
+export type Log = {
   level: "log" | "info" | "warn" | "error" | "result";
   text: string;
 };
 
-export type DemoExecution = {
-  logs: DemoLog[];
+export type Result = {
+  logs: Log[];
   html: string;
   error?: string;
 };
@@ -18,7 +18,7 @@ const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor as
 
 function formatValue(value: unknown, seen = new WeakSet<object>()): string {
   if (value instanceof Error) return `${value.name}: ${value.message}`;
-  if (value instanceof Node) return value instanceof Element ? value.outerHTML : value.textContent ?? value.nodeName;
+  if (value instanceof Node) return value instanceof Element ? value.outerHTML : (value.textContent ?? value.nodeName);
   if (typeof value === "string") return value;
   if (typeof value === "function") return `[函数 ${value.name || "anonymous"}]`;
   if (typeof value === "symbol") return value.toString();
@@ -26,11 +26,15 @@ function formatValue(value: unknown, seen = new WeakSet<object>()): string {
     if (seen.has(value)) return "[循环引用]";
     seen.add(value);
     try {
-      return JSON.stringify(value, (_key, nested) => {
-        if (typeof nested === "function") return `[函数 ${nested.name || "anonymous"}]`;
-        if (typeof nested === "symbol") return nested.toString();
-        return nested;
-      }, 2);
+      return JSON.stringify(
+        value,
+        (_key, nested) => {
+          if (typeof nested === "function") return `[函数 ${nested.name || "anonymous"}]`;
+          if (typeof nested === "symbol") return nested.toString();
+          return nested;
+        },
+        2,
+      );
     } catch {
       return Object.prototype.toString.call(value);
     }
@@ -39,6 +43,7 @@ function formatValue(value: unknown, seen = new WeakSet<object>()): string {
 }
 
 function sandboxDocument(mount: HTMLElement): Document {
+  // Redirect common document targets into the preview so demos cannot replace the application shell.
   const targets = new Map<string, HTMLElement>();
   const targetFor = (id: string) => {
     if (id === "app" || id === "root") return mount;
@@ -56,7 +61,8 @@ function sandboxDocument(mount: HTMLElement): Document {
     get(target, property) {
       if (property === "body") return mount;
       if (property === "getElementById") return (id: string) => targetFor(id);
-      if (property === "querySelector") return (selector: string) => mount.querySelector(selector) ?? target.querySelector(selector);
+      if (property === "querySelector")
+        return (selector: string) => mount.querySelector(selector) ?? target.querySelector(selector);
       const value = Reflect.get(target, property, target);
       return typeof value === "function" ? value.bind(target) : value;
     },
@@ -69,21 +75,39 @@ const serverDemoIds = new Set([
   "@solidjs/web/renderToStream",
 ]);
 
-export async function compileBrowserDemo(source: string): Promise<string> {
+type Input = {
+  id: string;
+  index: number;
+  source: string;
+  mount: HTMLElement;
+};
+
+export async function execute(request: Input): Promise<Result> {
+  if (isServer(request.id)) {
+    const result = await executeServerDemo(request.id, request.index);
+    if (result.html) request.mount.innerHTML = result.html;
+    return result;
+  }
+
+  const compiled = await compileBrowserDemo(request.source);
+  return executeBrowserDemo(compiled, request.mount);
+}
+
+async function compileBrowserDemo(source: string): Promise<string> {
   const response = await fetch("/__solid_api_compile", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ source }),
   });
-  const result = await response.json() as { code?: string; error?: string };
+  const result = (await response.json()) as { code?: string; error?: string };
   if (!response.ok || !result.code) throw new Error(result.error || "代码编译失败");
   return result.code;
 }
 
-export async function executeServerDemo(id: string, index: number): Promise<DemoExecution> {
+async function executeServerDemo(id: string, index: number): Promise<Result> {
   try {
     const response = await fetch(`/__solid_api_demo?id=${encodeURIComponent(id)}&index=${index}`);
-    const result = await response.json() as DemoExecution;
+    const result = (await response.json()) as Result;
     return result;
   } catch (error) {
     const message = formatValue(error);
@@ -91,14 +115,14 @@ export async function executeServerDemo(id: string, index: number): Promise<Demo
   }
 }
 
-export function requiresServerDemo(id: string) {
+export function isServer(id: string) {
   return serverDemoIds.has(id);
 }
 
-export async function executeBrowserDemo(compiled: string, mount: HTMLElement): Promise<DemoExecution> {
+async function executeBrowserDemo(compiled: string, mount: HTMLElement): Promise<Result> {
   mount.replaceChildren();
-  const logs: DemoLog[] = [];
-  const write = (level: DemoLog["level"], values: unknown[]) => {
+  const logs: Log[] = [];
+  const write = (level: Log["level"], values: unknown[]) => {
     logs.push({ level, text: values.map((value) => formatValue(value)).join(" ") });
   };
   const demoConsole = {
@@ -113,7 +137,7 @@ export async function executeBrowserDemo(compiled: string, mount: HTMLElement): 
 
     const requireModule = (name: string) => {
       if (name === "solid-js") return Solid;
-      if (name === "@solidjs/web" || name === "solid-js/web") return Web;
+      if (name === "@solidjs/web") return Web;
       throw new Error(`案例不允许导入未声明的模块：${name}`);
     };
     const module = { exports: {} as Record<string, unknown> };
