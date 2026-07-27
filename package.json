@@ -15,25 +15,26 @@
     "format": "node scripts/catalog/format.mjs && prettier --write .",
     "format:check": "node scripts/catalog/format.mjs --check && prettier --check .",
     "preview": "vite preview",
+    "start": "node scripts/demo/server.mjs",
     "precheck": "npm run generate",
     "check": "tsc --noEmit",
     "verify:demos": "npm run generate && node scripts/demo/verify.mjs --all"
   },
   "dependencies": {
+    "@babel/core": "^7.29.7",
     "@solidjs/web": "2.0.0-beta.26",
+    "babel-preset-solid": "2.0.0-beta.26",
     "lucide": "1.27.0",
     "prismjs": "^1.30.0",
-    "solid-js": "2.0.0-beta.26"
+    "solid-js": "2.0.0-beta.26",
+    "typescript": "^5.7.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.29.7",
     "@tailwindcss/vite": "^4.3.3",
     "@types/prismjs": "^1.26.6",
-    "babel-preset-solid": "2.0.0-beta.26",
     "happy-dom": "^20.8.9",
     "prettier": "^3.9.6",
     "tailwindcss": "^4.3.3",
-    "typescript": "^5.7.2",
     "vite": "^8.1.5",
     "vite-plugin-solid": "3.0.0-next.16"
   }

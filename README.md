@@ -25,7 +25,8 @@ npm run dev          # Generate the catalog and start Vite
 npm run generate     # Rebuild the catalog from installed Solid packages
 npm run check        # Regenerate and run TypeScript checks
 npm run build        # Regenerate and create a production build
-npm run preview      # Preview the production build
+npm run preview      # Preview the production build through Vite
+npm start            # Serve the build and Demo APIs with the production Node server
 npm run verify:demos # Verify all browser and SSR examples
 npm run format       # Format project source files with Prettier
 npm run format:check # Check formatting without writing files
@@ -48,9 +49,11 @@ scripts/
     locale-en.mjs          English API prose and generation rules
     locale-zh-cn.mjs       Chinese API prose and generation rules
   demo/
-    compile.mjs            Shared TypeScript/JSX compilation
+    compile.mjs            Shared TypeScript/JSX compiler
     load.mjs               Generated demo source loader
-    plugin.ts              Vite compile and SSR endpoints
+    service.mjs            Shared compile and SSR service
+    plugin.ts              Vite development endpoints
+    server.mjs             Production HTTP server
     verify.mjs             Browser and SSR verification
 
 src/

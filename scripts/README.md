@@ -15,7 +15,9 @@ scripts/
   demo/
     compile.mjs            Shared TypeScript and JSX compiler
     load.mjs               Minimal generated demo loader
-    plugin.ts              Vite compile and SSR endpoints
+    service.mjs            Shared compilation and SSR service
+    plugin.ts              Vite development endpoints
+    server.mjs             Production HTTP and static file server
     verify.mjs             Browser and SSR verifier
 ```
 
@@ -58,7 +60,7 @@ npm run format
 
 `catalog/format.mjs` parses the outer MJS file, formats each embedded TSX template with Prettier, and preserves template literal escaping. `npm run format:check` verifies both embedded demos and normal project files.
 
-Browser demos are compiled on demand through `demo/plugin.ts` and run in an isolated DOM mount. SSR demos are read-only and execute through the restricted server endpoint. Demo imports are limited to:
+Browser demos are compiled on demand through the shared `demo/service.mjs` module and run in an isolated DOM mount. `demo/plugin.ts` exposes the service during Vite development; `demo/server.mjs` exposes the same endpoints in production. SSR demos are read-only and execute through the restricted service. Demo imports are limited to:
 
 - `solid-js`
 - `@solidjs/web`
