@@ -14,11 +14,12 @@
     "build": "vite build",
     "format": "node scripts/catalog/format.mjs && prettier --write .",
     "format:check": "node scripts/catalog/format.mjs --check && prettier --check .",
-    "preview": "vite preview",
+    "preview": "npm run build && wrangler dev",
     "start": "node scripts/demo/server.mjs",
     "precheck": "npm run generate",
     "check": "tsc --noEmit",
-    "verify:demos": "npm run generate && node scripts/demo/verify.mjs --all"
+    "verify:demos": "npm run generate && node scripts/demo/verify.mjs --all",
+    "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
     "@babel/core": "^7.29.7",
@@ -36,6 +37,7 @@
     "prettier": "^3.9.6",
     "tailwindcss": "^4.3.3",
     "vite": "^8.1.5",
-    "vite-plugin-solid": "3.0.0-next.16"
+    "vite-plugin-solid": "3.0.0-next.16",
+    "wrangler": "^4.114.0"
   }
 }
