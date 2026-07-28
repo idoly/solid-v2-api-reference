@@ -29,7 +29,7 @@ export function Heading(props: { index: string; title: string }) {
 }
 
 const styles = {
-  page: "mx-auto max-w-[1160px] px-[52px] pb-20 max-shell:px-[34px] max-mobile:px-[19px] max-mobile:pb-[60px]",
+  page: "mx-auto max-w-[1320px] px-9 pb-20 max-shell:px-6 max-mobile:px-[19px] max-mobile:pb-[60px]",
   hero: "border-b border-[#d8ded9] py-[49px] pt-[58px] dark:border-line-dark max-mobile:py-[38px] max-mobile:pt-[42px]",
   heroLine: "flex flex-wrap items-center gap-3.5 max-mobile:gap-2.5",
   title:
@@ -49,7 +49,7 @@ const styles = {
   groupTitle: "m-0 text-sm font-semibold text-[#3f4942] dark:text-[#b5da7e]",
   groupMeta: "font-mono text-[11px] text-[#6f7972] dark:text-[#98a39b]",
   card: "overflow-hidden rounded-md border border-border bg-white shadow-[0_8px_22px_rgba(35,46,39,.055)] dark:border-border-dark dark:bg-panel-dark dark:shadow-none",
-  signatureHeader: "flex min-h-[58px] flex-col items-start justify-center gap-1.5 bg-[#17201c] px-4 py-3.5",
+  signatureHeader: "flex min-h-[58px] flex-col items-start justify-center gap-1.5 bg-[#0e1210] px-4 py-3.5",
   signatureCode: "block max-w-full font-mono text-xs leading-[1.7] break-words whitespace-pre-wrap text-[#dbe5df]",
   table: "border-t border-border dark:border-border-dark",
   tableHeader:
@@ -69,7 +69,7 @@ const styles = {
   typeDescription: "mt-1.5 mb-0 text-[13px] leading-[1.65] text-[#5e6861] dark:text-[#c2ccc4]",
   sourceLink: "inline-flex shrink-0 items-center gap-[5px] text-[11px] text-[#55716a] dark:text-[#8eb7ae]",
   typeCode:
-    "m-0 max-h-80 overflow-auto overflow-x-hidden border-t border-[#29332e] bg-[#17201c] p-4 text-[#dbe5df] dark:border-[#3b463e] dark:bg-[#0e1210]",
+    "m-0 max-h-80 overflow-auto overflow-x-hidden border-t border-[#29332e] bg-[#0e1210] p-4 text-[#dbe5df] dark:border-[#3b463e]",
 } as const;
 
 const inlineDoc =

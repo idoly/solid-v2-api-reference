@@ -1,12 +1,13 @@
 import { createSignal } from "solid-js";
 import type { Text } from "../../data/catalog";
 import { readPreference, writePreference } from "../../lib/preferences";
-import { categories, metadata, messages, type Code, type Key } from "./messages";
+import { defaultLocale, localeCodes, localeOptions, nextLocale, type Code } from "./config";
+import { categories, metadata, messages, type Key } from "./messages";
 
 const key = "solid-v2-locale";
 
 function read(): Code {
-  return readPreference(key, ["zh-CN", "en"] as const) ?? "en";
+  return readPreference(key, localeCodes) ?? defaultLocale;
 }
 
 function sync(locale: Code) {
@@ -28,11 +29,11 @@ export function createLocale() {
   };
 
   return {
-    isEnglish: () => code() === "en",
-    t: (key: Key) => messages[code()][key],
-    text: (value: Text) => value[code()],
-    category: (category: string) => categories[code()][category] ?? category,
-    toggle: () => select(code() === "zh-CN" ? "en" : "zh-CN"),
+    t: (key: Key) => messages[code()]?.[key] ?? messages[defaultLocale][key],
+    text: (value: Text) => value[code()] ?? value[defaultLocale],
+    category: (category: string) => categories[code()]?.[category] ?? categories[defaultLocale][category] ?? category,
+    nextLabel: () => localeOptions[nextLocale(code())].shortLabel,
+    toggle: () => select(nextLocale(code())),
     select,
   };
 }

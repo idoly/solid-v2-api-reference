@@ -16,7 +16,8 @@ function escapeTemplate(value) {
 }
 
 async function visit(node) {
-  if (ts.isNoSubstitutionTemplateLiteral(node)) {
+  if (ts.isNoSubstitutionTemplateLiteral(node) && node.text.trimStart().startsWith("import ")) {
+    // Helper-based demos keep setup/view fragments in separate templates; only complete programs are valid TSX files.
     const formatted = (
       await prettier.format(node.text, {
         ...options,

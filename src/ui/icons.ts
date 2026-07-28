@@ -12,6 +12,7 @@ import {
   Layers3 as layers3,
   Languages as languages,
   Menu as menu,
+  Maximize2 as maximize2,
   Moon as moon,
   Play as play,
   RotateCcw as rotateCcw,
@@ -56,6 +57,7 @@ export const Github = createIcon(github);
 export const Layers3 = createIcon(layers3);
 export const Languages = createIcon(languages);
 export const Menu = createIcon(menu);
+export const Maximize2 = createIcon(maximize2);
 export const Moon = createIcon(moon);
 export const Play = createIcon(play);
 export const RotateCcw = createIcon(rotateCcw);

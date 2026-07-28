@@ -2,7 +2,7 @@
 
 A source-derived, executable Chinese and English API reference for `solid-js@2.0.0-beta.26` and `@solidjs/web@2.0.0-beta.26`.
 
-The catalog is generated from the packages installed in this repository. It exposes the real callable exports, TypeScript signatures, related types, pinned source links, and editable examples. Browser examples run in an isolated DOM sandbox; SSR examples run through a restricted Node executor.
+The catalog is generated from the packages installed in this repository. It exposes the real callable exports, TypeScript signatures, related types, pinned source links, and editable examples. Browser examples run against a scoped preview mount and document adapter; SSR examples run through a restricted Node executor.
 
 ## Requirements
 
@@ -43,13 +43,14 @@ data/
 scripts/
   README.md                 Catalog and demo tooling documentation
   catalog/
-    demos.mjs              Shared demo templates
+    demos.mjs              Per-API demo registry and source builders
     format.mjs             Embedded TSX formatter
     generate.mjs           Catalog scanner and generator
     locale-en.mjs          English API prose and generation rules
     locale-zh-cn.mjs       Chinese API prose and generation rules
   demo/
     compile.mjs            Shared TypeScript/JSX compiler
+    i18n.mjs               Localized service errors and locale fallback
     load.mjs               Generated demo source loader
     service.mjs            Shared compile and SSR service
     plugin.ts              Vite development endpoints
@@ -62,7 +63,7 @@ src/
   features/api/            API page and reference view
   features/demo/           Controller, view, and runtime adapter
   features/home/           Project home page
-  features/i18n/           Locale state and messages
+  features/i18n/           Locale config, UI messages, and runtime messages
   features/navigation/     Controller, search, sidebar, and top bar
   features/theme/          Theme state
   lib/preferences.ts       Safe browser preference adapter
@@ -106,16 +107,97 @@ The generated `data/catalog.json` stores metadata, categories, localized prose, 
 
 Do not manually format `data/catalog.json`; its compact form is intentional.
 
-English and Chinese API prose is resolved by `scripts/catalog/locale-en.mjs` and `scripts/catalog/locale-zh-cn.mjs`. Each strategy contains the complete current API content and a resolver for APIs discovered in later package versions. New English entries prefer upstream JSDoc; missing prose in either language is generated from API metadata and category rules. Shared demo templates remain language-neutral generation inputs in `scripts/catalog/demos.mjs`.
+English and Chinese API prose is resolved by `scripts/catalog/locale-en.mjs` and `scripts/catalog/locale-zh-cn.mjs`. Each strategy contains the complete current API content and a resolver for APIs discovered in later package versions. New English entries prefer upstream JSDoc; missing prose in either language is generated from API metadata and category rules. Every API has its own language-neutral, complete demo program in `scripts/catalog/demos.mjs`.
+
+## Runtime
+
+The application expects the browser UI and Demo APIs to share one origin. `src/features/demo/runtime.ts` calls two internal endpoints:
+
+| Endpoint                                 | Purpose                                                 |
+| ---------------------------------------- | ------------------------------------------------------- |
+| `POST /__solid_api_compile`              | Compile editable browser TSX into executable JavaScript |
+| `GET /__solid_api_demo?id=...&index=...` | Execute a registered read-only SSR demo                 |
+
+The production Node server also exposes `GET /health`, which returns `{ "status": "ok" }`. Runtime requests may include `locale` (`en` or `zh-CN`); unknown locales fall back to English, while Chinese language variants fall back to `zh-CN`.
+
+A compile request uses JSON:
+
+```json
+{
+  "source": "import { render } from '@solidjs/web';",
+  "locale": "en"
+}
+```
+
+Successful compile responses contain `{ "code": "..." }`. Demo execution responses use the same shape in development and production:
+
+```json
+{
+  "logs": [{ "level": "log", "text": "..." }],
+  "html": "<main>...</main>",
+  "error": "optional localized error"
+}
+```
+
+Log levels are `log`, `info`, `warn`, `error`, and `result`.
+
+### Development
+
+```bash
+npm run dev
+```
+
+The Vite plugin in `scripts/demo/plugin.ts` installs both Demo API endpoints. Browser demos compile on demand, while the three SSR demos execute through the shared Node service.
+
+### Production
+
+```bash
+npm run build
+npm start
+```
+
+`npm start` runs `scripts/demo/server.mjs`, which serves `dist`, the SPA fallback, the health endpoint, and both Demo APIs. A typical deployment can be configured with:
+
+```bash
+PORT=9000 STATIC_DIR=dist DEMO_RATE_LIMIT=30 npm start
+```
+
+| Environment variable | Default | Meaning                                            |
+| -------------------- | ------- | -------------------------------------------------- |
+| `PORT`               | `9000`  | HTTP listen port                                   |
+| `STATIC_DIR`         | `dist`  | Production asset directory                         |
+| `DEMO_RATE_LIMIT`    | `30`    | Demo API requests allowed per client IP per minute |
+
+When a reverse proxy is used, route the page and `/__solid_api_*` paths to the same application. Forward the client address through `X-Forwarded-For` if per-client rate limiting is required.
+
+### Static-Only Hosting
+
+A static host may serve `dist` without the Node runtime. The API pages still load, run buttons remain enabled, and demos still attempt their normal automatic execution. If the host returns a 404, HTML fallback, invalid JSON, or a network failure for a Demo API, the console shows a localized message instead of a JSON parsing exception:
+
+```text
+当前部署环境未提供代码运行服务。
+This deployment does not provide the demo runtime service.
+```
+
+Signatures, prose, source links, code viewing, editing, copying, navigation, locale selection, and theme selection continue to work. Executable browser and SSR output requires the Demo APIs.
+
+### Runtime Boundaries
+
+- Browser code runs in the page's JavaScript realm with a scoped preview mount and proxied common document targets. This protects normal preview placement but is not a security boundary for untrusted code.
+- Demo imports are restricted to `solid-js` and `@solidjs/web`.
+- Compile request bodies and demo source are limited to 100 KB.
+- SSR execution is limited to the three registered rendering APIs, uses generated read-only source, and times out after five seconds.
+- The production server applies request and header timeouts of ten seconds.
+- User-facing runtime and service failures are localized with English fallback.
 
 ## Demo Execution
 
-Browser examples are compiled through `scripts/demo/compile.mjs` and executed with a restricted module loader. They may import only:
+Browser examples are compiled through `scripts/demo/compile.mjs` and executed with the restricted module loader and preview adapter. They may import only:
 
 - `solid-js`
 - `@solidjs/web`
 
-SSR examples are read-only and execute only trusted generated code through the Vite middleware.
+SSR examples are read-only and execute only trusted generated code through the same service used by Vite development, Vite preview, and the production Node server.
 
 The verifier runs Solid with `development` and `browser` export conditions where appropriate. It fails on:
 
@@ -134,6 +216,7 @@ Current verified surface:
 - 115 browser API groups
 - 3 SSR API groups
 - 118/118 passing
+- 118 unique complete demo programs
 
 ## Frontend Architecture
 

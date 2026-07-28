@@ -3,6 +3,7 @@ import { stat } from "node:fs/promises";
 import { createServer } from "node:http";
 import path from "node:path";
 import { compile, execute, format } from "./service.mjs";
+import { DemoError, message, normalizeLocale } from "./i18n.mjs";
 
 const root = path.resolve(process.env.STATIC_DIR ?? "dist");
 const port = Number(process.env.PORT ?? 9000);
@@ -54,25 +55,31 @@ async function readJson(request) {
   let size = 0;
   for await (const chunk of request) {
     size += chunk.length;
-    if (size > 100_000) throw new Error("Request exceeds the 100 KB limit");
+    if (size > 100_000) throw new DemoError("requestTooLarge");
     chunks.push(chunk);
   }
-  return JSON.parse(Buffer.concat(chunks).toString("utf8"));
+  try {
+    return JSON.parse(Buffer.concat(chunks).toString("utf8"));
+  } catch {
+    throw new DemoError("invalidJson");
+  }
 }
 
 async function api(request, response, url) {
+  let locale = normalizeLocale(url.searchParams.get("locale") ?? request.headers["accept-language"]);
   if (!allowed(request)) {
     response.setHeader("Retry-After", "60");
-    send(response, 429, { error: "Too many demo requests" });
+    send(response, 429, { error: message(locale, "tooManyRequests") });
     return;
   }
   if (url.pathname === "/__solid_api_compile") {
-    if (request.method !== "POST") return send(response, 405, { error: "Method not allowed" });
+    if (request.method !== "POST") return send(response, 405, { error: message(locale, "methodNotAllowed") });
     try {
-      const { source } = await readJson(request);
+      const { source, locale: payloadLocale } = await readJson(request);
+      locale = normalizeLocale(payloadLocale ?? locale);
       send(response, 200, { code: compile(source) });
     } catch (error) {
-      send(response, 400, { error: format(error) });
+      send(response, 400, { error: format(error, locale) });
     }
     return;
   }
@@ -81,8 +88,8 @@ async function api(request, response, url) {
     const index = Number(url.searchParams.get("index") ?? 0);
     send(response, 200, await execute(id, index));
   } catch (error) {
-    const message = format(error);
-    send(response, 400, { logs: [{ level: "error", text: message }], html: "", error: message });
+    const errorMessage = format(error, locale);
+    send(response, 400, { logs: [{ level: "error", text: errorMessage }], html: "", error: errorMessage });
   }
 }
 

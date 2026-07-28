@@ -1,5 +1,6 @@
 import * as Solid from "solid-js";
 import * as Web from "@solidjs/web";
+import { runtimeError, runtimeLocale, runtimeMessage } from "../i18n/runtime";
 
 export type Log = {
   level: "log" | "info" | "warn" | "error" | "result";
@@ -20,16 +21,16 @@ function formatValue(value: unknown, seen = new WeakSet<object>()): string {
   if (value instanceof Error) return `${value.name}: ${value.message}`;
   if (value instanceof Node) return value instanceof Element ? value.outerHTML : (value.textContent ?? value.nodeName);
   if (typeof value === "string") return value;
-  if (typeof value === "function") return `[函数 ${value.name || "anonymous"}]`;
+  if (typeof value === "function") return runtimeMessage("functionValue", value.name || "anonymous");
   if (typeof value === "symbol") return value.toString();
   if (value && typeof value === "object") {
-    if (seen.has(value)) return "[循环引用]";
+    if (seen.has(value)) return runtimeMessage("circular");
     seen.add(value);
     try {
       return JSON.stringify(
         value,
         (_key, nested) => {
-          if (typeof nested === "function") return `[函数 ${nested.name || "anonymous"}]`;
+          if (typeof nested === "function") return runtimeMessage("functionValue", nested.name || "anonymous");
           if (typeof nested === "symbol") return nested.toString();
           return nested;
         },
@@ -93,24 +94,58 @@ export async function execute(request: Input): Promise<Result> {
   return executeBrowserDemo(compiled, request.mount);
 }
 
+async function requestRuntime<T>(
+  input: RequestInfo | URL,
+  init?: RequestInit,
+): Promise<{ response: Response; data: T }> {
+  let response: Response;
+  try {
+    response = await fetch(input, init);
+  } catch {
+    throw runtimeError("runtimeUnavailable");
+  }
+
+  if ([404, 405, 501].includes(response.status) || response.status >= 500) {
+    throw runtimeError("runtimeUnavailable");
+  }
+  if (!response.headers.get("content-type")?.toLowerCase().includes("application/json")) {
+    throw runtimeError("runtimeUnavailable");
+  }
+
+  try {
+    return { response, data: (await response.json()) as T };
+  } catch {
+    throw runtimeError("runtimeUnavailable");
+  }
+}
+
 async function compileBrowserDemo(source: string): Promise<string> {
-  const response = await fetch("/__solid_api_compile", {
+  const { response, data: result } = await requestRuntime<{ code?: string; error?: string }>("/__solid_api_compile", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ source }),
+    body: JSON.stringify({ source, locale: runtimeLocale() }),
   });
-  const result = (await response.json()) as { code?: string; error?: string };
-  if (!response.ok || !result.code) throw new Error(result.error || "代码编译失败");
+  if (!response.ok || !result.code) throw result.error ? new Error(result.error) : runtimeError("compileFailed");
   return result.code;
+}
+
+function isResult(value: unknown): value is Result {
+  if (!value || typeof value !== "object") return false;
+  const result = value as Partial<Result>;
+  return Array.isArray(result.logs) && typeof result.html === "string";
 }
 
 async function executeServerDemo(id: string, index: number): Promise<Result> {
   try {
-    const response = await fetch(`/__solid_api_demo?id=${encodeURIComponent(id)}&index=${index}`);
-    const result = (await response.json()) as Result;
-    return result;
+    const { data } = await requestRuntime<unknown>(
+      `/__solid_api_demo?id=${encodeURIComponent(id)}&index=${index}&locale=${encodeURIComponent(runtimeLocale())}`,
+    );
+    if (isResult(data)) return data;
+    const error = (data as { error?: unknown } | null)?.error;
+    if (typeof error === "string") throw new Error(error);
+    throw runtimeError("runtimeUnavailable");
   } catch (error) {
-    const message = formatValue(error);
+    const message = error instanceof Error ? error.message : runtimeMessage("runtimeUnavailable");
     return { logs: [{ level: "error", text: message }], html: "", error: message };
   }
 }
@@ -133,12 +168,12 @@ async function executeBrowserDemo(compiled: string, mount: HTMLElement): Promise
   };
 
   try {
-    if (!compiled) throw new Error("该案例没有可执行的编译产物");
+    if (!compiled) throw runtimeError("missingOutput");
 
     const requireModule = (name: string) => {
       if (name === "solid-js") return Solid;
       if (name === "@solidjs/web") return Web;
-      throw new Error(`案例不允许导入未声明的模块：${name}`);
+      throw runtimeError("importDenied", name);
     };
     const module = { exports: {} as Record<string, unknown> };
     const run = new AsyncFunction("require", "module", "exports", "console", "document", "window", compiled);

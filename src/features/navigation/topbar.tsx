@@ -66,7 +66,7 @@ export function TopBar(props: Props) {
           aria-label={props.locale.t("switchLanguage")}
         >
           <Languages size={14} />
-          {props.locale.isEnglish() ? "中" : "EN"}
+          {props.locale.nextLabel()}
         </button>
         <button
           class={iconButton}

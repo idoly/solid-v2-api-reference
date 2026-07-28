@@ -1,6 +1,7 @@
 import { transformSync } from "@babel/core";
 import ts from "typescript";
 import presetSolid from "babel-preset-solid";
+import { DemoError } from "./i18n.mjs";
 
 export function compileDemo(source, options = {}) {
   const filename = options.filename ?? "solid-demo.tsx";
@@ -20,7 +21,7 @@ export function compileDemo(source, options = {}) {
     babelrc: false,
     presets: [[presetSolid, { moduleName: "@solidjs/web", generate }]],
   })?.code;
-  if (!transformed) throw new Error("Babel 没有返回编译产物");
+  if (!transformed) throw new DemoError("babelNoOutput");
   return ts
     .transpileModule(transformed, {
       fileName: filename.replace(/\.tsx$/, ".js"),

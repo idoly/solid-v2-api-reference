@@ -7,13 +7,14 @@ This directory owns catalog generation and demo tooling. Nothing here is importe
 ```text
 scripts/
   catalog/
-    demos.mjs              Shared demo source registry
+    demos.mjs              Per-API demo source registry and builders
     format.mjs             Formatter for TSX embedded in demo templates
     generate.mjs           Catalog generation pipeline
     locale-en.mjs          English API content strategy
     locale-zh-cn.mjs       Chinese API content strategy
   demo/
     compile.mjs            Shared TypeScript and JSX compiler
+    i18n.mjs               Localized service errors and locale fallback
     load.mjs               Minimal generated demo loader
     service.mjs            Shared compilation and SSR service
     plugin.ts              Vite development endpoints
@@ -52,7 +53,7 @@ The generator supplies the API ID, title, package, category, kind, and upstream 
 
 ## Demo Registry
 
-`catalog/demos.mjs` maps API IDs to complete TSX programs. Multiple APIs may share one program. Source is formatted with:
+`catalog/demos.mjs` maps every API ID to its own complete TSX program. Small builders keep imports and render boilerplate consistent, while each generated program focuses on one API contract and remains source-distinct. Key comments explain non-obvious parameters, ownership restrictions, hydration context, and cleanup ordering. The embedded formatter formats complete program templates directly; builder `setup`, `view`, and `after` fragments are formatted as part of the outer MJS module. Source is formatted with:
 
 ```sh
 npm run format
@@ -60,7 +61,7 @@ npm run format
 
 `catalog/format.mjs` parses the outer MJS file, formats each embedded TSX template with Prettier, and preserves template literal escaping. `npm run format:check` verifies both embedded demos and normal project files.
 
-Browser demos are compiled on demand through the shared `demo/service.mjs` module and run in an isolated DOM mount. `demo/plugin.ts` exposes the service during Vite development; `demo/server.mjs` exposes the same endpoints in production. SSR demos are read-only and execute through the restricted service. Demo imports are limited to:
+Browser demos are compiled on demand through the shared `demo/service.mjs` module and run in an isolated DOM mount. `demo/plugin.ts` exposes the service during Vite development; `demo/server.mjs` exposes the same endpoints in production. `demo/i18n.mjs` owns service error keys, locale normalization, and English fallback. SSR demos are read-only and execute through the restricted service. Demo imports are limited to:
 
 - `solid-js`
 - `@solidjs/web`
@@ -80,7 +81,7 @@ Current generated surface:
 - Total: 118 APIs across 9 categories
 - Browser groups: 115
 - SSR groups: 3
-- Unique complete demo programs: 52
+- Unique complete demo programs: 118
 
 ## Baseline
 

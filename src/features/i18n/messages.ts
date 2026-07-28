@@ -1,4 +1,6 @@
-export type Code = "zh-CN" | "en";
+import type { Code } from "./config";
+
+export type { Code } from "./config";
 
 export const metadata = {
   "zh-CN": {
@@ -29,7 +31,7 @@ export const messages = {
     apiCount: "个接口",
     lightTheme: "切换到日间模式",
     darkTheme: "切换到黑夜模式",
-    switchLanguage: "Switch to English",
+    switchLanguage: "切换语言",
     internal: "内部",
     deprecated: "已弃用",
     viewSource: "查看源码",
@@ -53,6 +55,8 @@ export const messages = {
     runCode: "运行代码",
     copiedCode: "已复制代码",
     copyCode: "复制代码",
+    expandEditor: "放大编辑器",
+    closeEditor: "关闭编辑器",
     resetDemo: "恢复原始示例并清空输出",
     editorLabel: "示例代码编辑器",
     browser: "浏览器",
@@ -98,7 +102,7 @@ export const messages = {
     apiCount: "APIs",
     lightTheme: "Switch to light mode",
     darkTheme: "Switch to dark mode",
-    switchLanguage: "切换到中文",
+    switchLanguage: "Switch language",
     internal: "Internal",
     deprecated: "Deprecated",
     viewSource: "View source",
@@ -123,6 +127,8 @@ export const messages = {
     runCode: "Run code",
     copiedCode: "Code copied",
     copyCode: "Copy code",
+    expandEditor: "Expand editor",
+    closeEditor: "Close editor",
     resetDemo: "Restore the original example and clear output",
     editorLabel: "Example code editor",
     browser: "Browser",

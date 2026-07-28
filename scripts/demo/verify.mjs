@@ -66,7 +66,7 @@ async function verifyAll() {
 async function verifyServer(id) {
   const docs = loadDemoCatalog();
   const doc = docs.find((entry) => entry.id === id);
-  if (!doc?.codes.length) throw new Error(`没有找到 ${id} 的服务端 Demo 源码`);
+  if (!doc?.codes.length) throw new Error(`No server demo source found for ${id}`);
 
   const Solid = await import("solid-js");
   const Web = await import("@solidjs/web");
@@ -98,7 +98,7 @@ async function verifyServer(id) {
       const html = logs.find((entry) => /^\s*</.test(entry.text))?.text ?? "";
       const loggedError = logs.find((entry) => entry.level === "error");
       if (loggedError) throw new Error(loggedError.text);
-      if (!html) throw new Error("示例执行成功，但没有产生 SSR HTML");
+      if (!html) throw new Error("Demo completed without producing SSR HTML");
       passed++;
     } catch (error) {
       failures.push({ example: index + 1, error: error instanceof Error ? error.message : String(error) });
@@ -176,20 +176,21 @@ async function verifyBrowser(onlyId) {
         Solid.flush();
         const loggedError = logs.find(([level]) => level === "error");
         if (loggedError) throw new Error(`Demo console.error: ${loggedError.slice(1).map(String).join(" ")}`);
-        if (frameworkDiagnostics.length) throw new Error(`框架控制台诊断：${frameworkDiagnostics.join(" | ")}`);
+        if (frameworkDiagnostics.length)
+          throw new Error(`Framework console diagnostics: ${frameworkDiagnostics.join(" | ")}`);
         const renderedText =
           `${document.getElementById("root")?.textContent ?? ""}${document.getElementById("modal-root")?.textContent ?? ""}`.trim();
-        if (!renderedText) throw new Error("示例执行成功，但没有产生可见页面内容");
+        if (!renderedText) throw new Error("Demo completed without producing visible page content");
         if (
           doc.id === "solid-js/createOptimistic" &&
-          (!renderedText.includes("乐观阶段：2") || !renderedText.includes("完成后：1"))
+          (!renderedText.includes("Optimistic phase: 2") || !renderedText.includes("After settlement: 1"))
         )
-          throw new Error("createOptimistic 没有渲染乐观值 2 和回滚值 1");
+          throw new Error("createOptimistic did not render optimistic value 2 and reverted value 1");
         if (
           doc.id === "solid-js/createEffect" &&
-          (!renderedText.includes("初始 → 0") || !renderedText.includes("0 → 1"))
+          (!renderedText.includes("Initial -> 0") || !renderedText.includes("0 -> 1"))
         )
-          throw new Error("createEffect 没有渲染完整的初始与更新记录");
+          throw new Error("createEffect did not render the complete initial and updated records");
         passed++;
       } catch (error) {
         failures.push({

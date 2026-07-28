@@ -607,14 +607,9 @@ function completeExample(record, source, allRecords) {
   return imports.length ? `${imports.join("\n")}\n\n${source}` : source;
 }
 
-function sanitizeDemoComments(source) {
-  const withoutBlocks = source.replace(/\/\*[\s\S]*?\*\//g, "");
-  return withoutBlocks
-    .split("\n")
-    .map((line) => (line.trimStart().startsWith("//") ? "" : line.replace(/\s+\/\/.*$/, "")))
-    .join("\n")
-    .replace(/\n{3,}/g, "\n\n")
-    .trim();
+function normalizeDemoSource(source, id) {
+  if (/[\u3400-\u9fff]/u.test(source)) throw new Error(`Demo ${id} contains non-English text`);
+  return source.trim();
 }
 
 function isObservableDemo(source, record) {
@@ -667,7 +662,7 @@ for (const record of records) {
       : []
     : record.codes.map((code) => completeExample(record, code, records));
   const sources = rawSources
-    .map((source) => sanitizeDemoComments(source))
+    .map((source) => normalizeDemoSource(source, record.id))
     .filter((source) => isObservableDemo(source, record));
   record.codes = sources.filter((source) => compileExample(source, record.id));
 }
