@@ -6,7 +6,7 @@ import type { Locale } from "../i18n/locale";
 import type { Navigation } from "../navigation/navigation";
 
 const styles = {
-  page: "mx-auto max-w-[1160px] px-[52px] pt-[38px] pb-20 max-shell:px-[34px] max-mobile:px-[19px] max-mobile:pt-[22px] max-mobile:pb-[55px]",
+  page: "mx-auto max-w-[1320px] px-9 pt-[38px] pb-20 max-shell:px-6 max-mobile:px-[19px] max-mobile:pt-[22px] max-mobile:pb-[55px]",
   hero: "grid min-h-[410px] grid-cols-[minmax(0,1.04fr)_minmax(390px,.96fr)] items-center gap-[62px] border-b border-[#d3dbd4] pt-7 pb-12 dark:border-line-dark max-shell:grid-cols-[minmax(0,1fr)_minmax(300px,.86fr)] max-shell:gap-8 max-tablet:grid-cols-1 max-tablet:gap-9 max-mobile:min-h-0 max-mobile:grid-cols-1 max-mobile:gap-9 max-mobile:pt-6 max-mobile:pb-11",
   heroCopy: "min-w-0",
   eyebrow:
