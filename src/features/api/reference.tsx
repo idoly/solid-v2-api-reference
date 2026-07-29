@@ -38,7 +38,7 @@ const styles = {
   section: "border-b border-[#d8ded9] py-[54px] dark:border-line-dark max-mobile:py-[43px]",
   spec: "grid gap-4",
   description:
-    "grid gap-5 rounded-md border border-border border-l-2 border-l-[#93bd43] bg-white px-6 py-[22px] shadow-[0_6px_18px_rgba(38,52,42,.035)] dark:border-[#3b493f] dark:border-l-[#88ad48] dark:bg-panel-dark max-mobile:p-[18px]",
+    "grid gap-5 rounded-md border border-border border-l-2 border-l-[#93bd43] bg-white px-6 py-[22px] shadow-[0_6px_18px_rgba(38,52,42,.035)] dark:border-[#3b493f] dark:border-l-[#88ad48] dark:bg-surface-dark max-mobile:p-[18px]",
   definitionLabel: "mb-2 block font-mono text-[10px] font-medium text-[#6f981d] uppercase dark:text-[#b5da7e]",
   definitionText: "m-0 max-w-[880px] text-[15px] leading-[1.9] text-[#3f4b43] dark:text-[#d2dad4]",
   useCase: "border-t border-[#e1e6e1] pt-4 dark:border-[#303a33]",
@@ -49,7 +49,7 @@ const styles = {
   groupTitle: "m-0 text-sm font-semibold text-[#3f4942] dark:text-[#b5da7e]",
   groupMeta: "font-mono text-[11px] text-[#6f7972] dark:text-[#98a39b]",
   card: "overflow-hidden rounded-md border border-border bg-white shadow-[0_8px_22px_rgba(35,46,39,.055)] dark:border-border-dark dark:bg-panel-dark dark:shadow-none",
-  signatureHeader: "flex min-h-[58px] flex-col items-start justify-center gap-1.5 bg-[#0e1210] px-4 py-3.5",
+  signatureHeader: "flex min-h-[58px] flex-col items-start justify-center gap-1.5 bg-code px-4 py-3.5",
   signatureCode: "block max-w-full font-mono text-xs leading-[1.7] break-words whitespace-pre-wrap text-[#dbe5df]",
   table: "border-t border-border dark:border-border-dark",
   tableHeader:
@@ -69,7 +69,7 @@ const styles = {
   typeDescription: "mt-1.5 mb-0 text-[13px] leading-[1.65] text-[#5e6861] dark:text-[#c2ccc4]",
   sourceLink: "inline-flex shrink-0 items-center gap-[5px] text-[11px] text-[#55716a] dark:text-[#8eb7ae]",
   typeCode:
-    "m-0 max-h-80 overflow-auto overflow-x-hidden border-t border-[#29332e] bg-[#0e1210] p-4 text-[#dbe5df] dark:border-[#3b463e]",
+    "m-0 max-h-80 overflow-auto overflow-x-hidden border-t border-[#29332e] bg-code p-4 text-[#dbe5df] dark:border-[#3b463e]",
 } as const;
 
 const inlineDoc =
