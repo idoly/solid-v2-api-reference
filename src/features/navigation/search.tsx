@@ -15,12 +15,12 @@ const styles = {
   quickMeta: "font-mono text-[9px] text-[#929994]",
   quickGrid: "grid grid-cols-2 gap-1 max-tablet:grid-cols-1",
   quickItem:
-    "flex min-w-0 cursor-pointer items-center justify-between gap-2 rounded px-2.5 py-2 text-left hover:bg-[#f1f6e9] dark:hover:bg-[#293328]",
+    "flex min-w-0 cursor-pointer items-center justify-between gap-2 rounded px-2.5 py-2 text-left hover:bg-[#f1f6e9] dark:hover:bg-surface-hover-dark",
   quickName: "overflow-hidden font-mono text-xs text-ellipsis text-[#315e55] dark:text-[#91c7bb]",
   package: "shrink-0 font-mono text-[9px] text-[#929994]",
   empty: "block p-3.5 text-[13px] text-muted dark:text-[#9ca79f]",
   result:
-    "grid w-full cursor-pointer grid-cols-[1fr_auto] items-center rounded p-[9px] text-left hover:bg-[#f1f6e9] dark:hover:bg-[#293328]",
+    "grid w-full cursor-pointer grid-cols-[1fr_auto] items-center rounded p-[9px] text-left hover:bg-[#f1f6e9] dark:hover:bg-surface-hover-dark",
   resultContent: "flex min-w-0 items-center justify-between gap-[9px]",
   resultName: "overflow-hidden text-[13px] text-ellipsis",
   resultPackage: "text-xs text-[#929994]",

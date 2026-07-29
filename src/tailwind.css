@@ -13,19 +13,20 @@
   --color-ink: #202522;
   --color-muted: #717a74;
   --color-line: #dfe3df;
-  --color-line-dark: #38433b;
+  --color-line-dark: #435248;
   --color-border: #d5ddd6;
-  --color-border-dark: #465249;
+  --color-border-dark: #586a5d;
   --color-accent: #b8ef4a;
   --color-accent-strong: #6f981d;
   --color-coral: #f26446;
   --color-teal: #148f82;
-  --color-code: #111713;
+  --color-code: #0d1410;
   --color-surface: #fdfefd;
   --color-surface-muted: #f1f4f1;
-  --color-canvas-dark: #0c100d;
-  --color-panel-dark: #161c18;
-  --color-surface-dark: #202822;
+  --color-canvas-dark: #080c0a;
+  --color-panel-dark: #18201a;
+  --color-surface-dark: #263229;
+  --color-surface-hover-dark: #324036;
 
   --font-sans: "Noto Sans SC", system-ui, sans-serif;
   --font-display: "Plus Jakarta Sans", "Noto Sans SC", sans-serif;
