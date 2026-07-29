@@ -26,9 +26,9 @@ const styles = {
   resultPackage: "text-xs text-[#929994]",
 } as const;
 
-const quickApis = ["createSignal", "createMemo", "createEffect", "createStore", "Show", "render"].flatMap(
-  (name) => docsByTitle.get(name) ?? [],
-);
+const quickApis = ["createSignal", "createMemo", "createEffect", "createStore", "Show", "render"]
+  .map((name) => docsByTitle.get(name))
+  .filter((doc) => doc !== undefined);
 
 type Props = { nav: Navigation; locale: Locale };
 

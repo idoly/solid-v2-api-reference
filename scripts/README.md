@@ -14,6 +14,8 @@ scripts/
     locale-zh-cn.mjs       Chinese API content strategy
   demo/
     compile.mjs            Shared TypeScript and JSX compiler
+    config.mjs             Source limits, execution timeout, and SSR API registry
+    http.mjs               Framework-neutral runtime request handling
     i18n.mjs               Localized service errors and locale fallback
     load.mjs               Minimal generated demo loader
     service.mjs            Shared compilation and SSR service
@@ -42,6 +44,8 @@ npm run generate
 
 The generated file is consumed through `src/data/catalog.ts`. It contains category order, locale text pools, a demo source pool, API records, and the pinned source commit.
 
+The generator uses a shared `.generated` entry file and writes `data/catalog.json` directly. Do not run `generate`, `check`, `build`, or `verify:demos` concurrently; their lifecycle scripts can otherwise race over those files.
+
 ## Locale Strategy
 
 Each `catalog/locale-*.mjs` module owns one language and exports:
@@ -61,7 +65,7 @@ npm run format
 
 `catalog/format.mjs` parses the outer MJS file, formats each embedded TSX template with Prettier, and preserves template literal escaping. `npm run format:check` verifies both embedded demos and normal project files.
 
-Browser demos are compiled on demand through the shared `demo/service.mjs` module and run in an isolated DOM mount. `demo/plugin.ts` exposes the service during Vite development; `demo/server.mjs` exposes the same endpoints in production. `demo/i18n.mjs` owns service error keys, locale normalization, and English fallback. SSR demos are read-only and execute through the restricted service. Demo imports are limited to:
+Browser demos are compiled on demand through the shared `demo/service.mjs` module and run in an isolated DOM mount. `demo/http.mjs` owns request parsing and API dispatch without depending on Connect or Node response objects. `demo/plugin.ts` and `demo/server.mjs` are thin adapters around that handler; the production server additionally owns rate limiting and static files. `demo/config.mjs` centralizes limits and the SSR allowlist. `demo/i18n.mjs` owns service error keys, locale normalization, and English fallback. SSR demos are read-only and execute through the restricted service. Demo imports are limited to:
 
 - `solid-js`
 - `@solidjs/web`
@@ -72,7 +76,7 @@ Browser demos are compiled on demand through the shared `demo/service.mjs` modul
 npm run verify:demos
 ```
 
-The verifier runs browser API groups in isolated DOM processes and executes SSR groups separately. It fails on compilation errors, runtime exceptions, timeouts, framework diagnostics, `console.error`, missing DOM output, or missing SSR HTML.
+The verifier runs browser API groups in isolated DOM processes and executes SSR groups separately. Event-driven source is exercised through generic input, select, and button interactions. API contracts requiring exact values or ordered asynchronous work use a scenario registry containing both the runner and expected text. SSR groups call the production `service.execute` path instead of maintaining a second executor. Verification fails on compilation errors, runtime exceptions, timeouts, framework diagnostics, `console.error`, missing DOM output, or missing SSR HTML.
 
 Current generated surface:
 

@@ -2,8 +2,8 @@ import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
 import { createServer } from "node:http";
 import path from "node:path";
-import { compile, execute, format } from "./service.mjs";
-import { DemoError, message, normalizeLocale } from "./i18n.mjs";
+import { handleRuntimeRequest, isRuntimePath } from "./http.mjs";
+import { message, normalizeLocale } from "./i18n.mjs";
 
 const root = path.resolve(process.env.STATIC_DIR ?? "dist");
 const port = Number(process.env.PORT ?? 9000);
@@ -50,47 +50,16 @@ function allowed(request) {
   return current.count <= limit;
 }
 
-async function readJson(request) {
-  const chunks = [];
-  let size = 0;
-  for await (const chunk of request) {
-    size += chunk.length;
-    if (size > 100_000) throw new DemoError("requestTooLarge");
-    chunks.push(chunk);
-  }
-  try {
-    return JSON.parse(Buffer.concat(chunks).toString("utf8"));
-  } catch {
-    throw new DemoError("invalidJson");
-  }
-}
-
 async function api(request, response, url) {
-  let locale = normalizeLocale(url.searchParams.get("locale") ?? request.headers["accept-language"]);
   if (!allowed(request)) {
+    const locale = normalizeLocale(url.searchParams.get("locale") ?? request.headers["accept-language"]);
     response.setHeader("Retry-After", "60");
     send(response, 429, { error: message(locale, "tooManyRequests") });
     return;
   }
-  if (url.pathname === "/__solid_api_compile") {
-    if (request.method !== "POST") return send(response, 405, { error: message(locale, "methodNotAllowed") });
-    try {
-      const { source, locale: payloadLocale } = await readJson(request);
-      locale = normalizeLocale(payloadLocale ?? locale);
-      send(response, 200, { code: compile(source) });
-    } catch (error) {
-      send(response, 400, { error: format(error, locale) });
-    }
-    return;
-  }
-  try {
-    const id = url.searchParams.get("id") ?? "";
-    const index = Number(url.searchParams.get("index") ?? 0);
-    send(response, 200, await execute(id, index));
-  } catch (error) {
-    const errorMessage = format(error, locale);
-    send(response, 400, { logs: [{ level: "error", text: errorMessage }], html: "", error: errorMessage });
-  }
+
+  const result = await handleRuntimeRequest(request, url);
+  send(response, result.status, result.body);
 }
 
 async function file(response, pathname, head) {
@@ -123,15 +92,24 @@ async function file(response, pathname, head) {
     "X-Content-Type-Options": "nosniff",
     "Referrer-Policy": "strict-origin-when-cross-origin",
   });
-  if (head) response.end();
-  else createReadStream(target).pipe(response);
+  if (head) {
+    response.end();
+    return;
+  }
+
+  const stream = createReadStream(target);
+  stream.on("error", (error) => {
+    console.error(error);
+    response.destroy();
+  });
+  stream.pipe(response);
 }
 
 const server = createServer(async (request, response) => {
   try {
     const url = new URL(request.url ?? "/", `http://${request.headers.host ?? "localhost"}`);
     if (url.pathname === "/health") return send(response, 200, { status: "ok" });
-    if (url.pathname === "/__solid_api_compile" || url.pathname === "/__solid_api_demo") {
+    if (isRuntimePath(url.pathname)) {
       return await api(request, response, url);
     }
     if (request.method !== "GET" && request.method !== "HEAD") {
@@ -149,4 +127,6 @@ server.requestTimeout = 10_000;
 server.headersTimeout = 10_000;
 server.listen(port, "0.0.0.0", () => console.log(`Server listening on ${port}`));
 
-process.on("SIGTERM", () => server.close(() => process.exit(0)));
+const shutdown = () => server.close(() => process.exit(0));
+process.once("SIGINT", shutdown);
+process.once("SIGTERM", shutdown);

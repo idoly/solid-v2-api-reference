@@ -52,6 +52,8 @@ scripts/
     locale-zh-cn.mjs       Chinese API prose and generation rules
   demo/
     compile.mjs            Shared TypeScript/JSX compiler
+    config.mjs             Runtime limits and registered SSR APIs
+    http.mjs               Framework-neutral Demo API request handler
     i18n.mjs               Localized service errors and locale fallback
     load.mjs               Generated demo source loader
     service.mjs            Shared compile and SSR service
@@ -116,7 +118,7 @@ Browser examples are compiled through `scripts/demo/compile.mjs` and executed wi
 
 SSR examples are read-only and execute only trusted generated code. Source and request bodies are limited to 100 KB; SSR execution is limited to the three registered rendering APIs and times out after five seconds.
 
-The verifier uses Solid's development and browser conditions and fails on compilation errors, invalid reactive usage, framework diagnostics, `console.error`, runtime failures, timeouts, or missing output.
+Browser demos publish console and DOM updates incrementally and discard stale execution results. The verifier compiles and runs every example, exercises interactive controls, applies targeted scenarios where ordering matters, and validates SSR through the production service.
 
 Current verified surface:
 
@@ -128,8 +130,9 @@ Current verified surface:
 
 ## Frontend Architecture
 
-The application is a Solid single-page interface with hash-based API selection. It does not use a router or external state manager.
+The application is a Solid single-page interface with hash-based API selection. It does not use a router or external state manager. A single optional active-document ID represents both home and API routes, avoiding duplicated route state.
 
+- Demo execution stays in the feature controller; inline and fullscreen editors share one implementation.
 - Tailwind CSS v4 provides the CSS-first design system and utility styles.
 - Prism provides TypeScript/TSX highlighting.
 - Lucide provides interface icons.

@@ -52,6 +52,8 @@ scripts/
     locale-zh-cn.mjs       中文 API 内容与生成规则
   demo/
     compile.mjs            共享 TypeScript/JSX 编译器
+    config.mjs             运行限制与已注册 SSR API
+    http.mjs               与 HTTP 框架无关的示例接口处理器
     i18n.mjs               本地化服务错误与语言回退
     load.mjs               生成后的示例源码加载器
     service.mjs            共享编译与 SSR 服务
@@ -116,7 +118,7 @@ npm start
 
 SSR 示例为只读，只执行可信的生成源码。源码和请求正文上限均为 100 KB；SSR 仅允许执行三个已注册的渲染 API，并在五秒后超时。
 
-验证器使用 Solid 的开发与浏览器条件，并在编译错误、无效响应式用法、框架诊断、`console.error`、运行失败、超时或缺少输出时失败。
+浏览器示例会增量发布控制台与 DOM 结果，并丢弃过期执行。验证器会编译并运行全部示例、操作交互控件、对顺序敏感的 API 执行专项场景，并通过生产服务验证 SSR。
 
 当前验证范围：
 
@@ -128,8 +130,9 @@ SSR 示例为只读，只执行可信的生成源码。源码和请求正文上�
 
 ## 前端架构
 
-应用是使用 Hash 选择 API 的 Solid 单页界面，不依赖路由器或外部状态管理器。
+应用是使用 Hash 选择 API 的 Solid 单页界面，不依赖路由器或外部状态管理器。首页和 API 页面由单一的可选当前文档 ID 表达，避免维护重复路由状态。
 
+- 示例执行由功能控制器负责，内嵌与全屏编辑器复用同一实现。
 - Tailwind CSS v4 提供 CSS-first 设计系统和工具类。
 - Prism 提供 TypeScript/TSX 代码高亮。
 - Lucide 提供界面图标。

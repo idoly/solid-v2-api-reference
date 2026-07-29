@@ -9,6 +9,8 @@ Frontend localization is split by responsibility:
 
 All lookups fall back to `defaultLocale`. Browser-visible runtime errors must use `runtimeMessage` or `runtimeError`; do not add translated strings directly to demo execution modules.
 
+Browser runtime messages and Node service errors remain separate because they ship to different environments; `scripts/demo/http.mjs` gives Vite and production service responses the same locale fallback.
+
 ## Adding A Locale
 
 1. Add the locale code and display metadata in `config.ts`.

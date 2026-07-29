@@ -1,28 +1,41 @@
 import { createMemo, createSignal, onSettled } from "solid-js";
-import type { Locale } from "../i18n/locale";
 import { docs, docsById, findDoc } from "../../data/catalog";
+import type { Locale } from "../i18n/locale";
 
 // API IDs keep `@` and `/` readable in the hash while legacy encoded links remain valid.
-const readHash = () => {
+function readHash() {
+  const hash = location.hash.slice(1);
   try {
-    return decodeURIComponent(location.hash.slice(1));
+    return decodeURIComponent(hash);
   } catch {
-    return location.hash.slice(1);
+    return hash;
   }
-};
+}
 
-const setHash = (id: string) => history.replaceState(null, "", `#${id}`);
+function showDocInUrl(id: string) {
+  history.replaceState(null, "", `#${id}`);
+}
+
+function showHomeInUrl() {
+  history.replaceState(null, "", `${location.pathname}${location.search}`);
+}
 
 export function createNavigation(locale: Locale) {
   const fallback = docsById.get("solid-js/createSignal") ?? docs[0];
+  if (!fallback) throw new Error("The API catalog is empty");
+
   const initialId = readHash();
-  if (docsById.has(initialId) && location.hash !== `#${initialId}`) setHash(initialId);
-  const [isHome, setIsHome] = createSignal(!initialId || initialId === "home");
-  const [activeId, setActiveId] = createSignal(docsById.has(initialId) ? initialId : fallback.id);
+  const initialDoc = docsById.get(initialId);
+  if (initialDoc && location.hash !== `#${initialDoc.id}`) showDocInUrl(initialDoc.id);
+  else if (!initialDoc && location.hash) showHomeInUrl();
+
+  // `undefined` is the home route; a document ID is the only other route state.
+  const [activeId, setActiveId] = createSignal<string | undefined>(initialDoc?.id);
   const [query, setQuery] = createSignal("");
   const [menuOpen, setMenuOpen] = createSignal(false);
   const [expanded, setExpanded] = createSignal(new Set([fallback.category]));
-  const activeDoc = createMemo(() => docsById.get(activeId()) ?? fallback);
+  const isHome = () => activeId() === undefined;
+  const activeDoc = createMemo(() => docsById.get(activeId() ?? "") ?? fallback);
   const results = createMemo(() => {
     const value = query().trim().toLowerCase();
     if (!value) return [];
@@ -44,16 +57,15 @@ export function createNavigation(locale: Locale) {
     const doc = findDoc(idOrTitle);
     if (!doc) return;
     setActiveId(doc.id);
-    setIsHome(false);
     closePanels();
-    setHash(doc.id);
+    showDocInUrl(doc.id);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const goHome = () => {
-    setIsHome(true);
+    setActiveId(undefined);
     closePanels();
-    history.replaceState(null, "", `${location.pathname}${location.search}`);
+    showHomeInUrl();
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -67,13 +79,11 @@ export function createNavigation(locale: Locale) {
   onSettled(() => {
     const handleHashChange = () => {
       const id = readHash();
-      if (!id || id === "home") {
-        setIsHome(true);
-      } else if (docsById.has(id)) {
-        setHash(id);
-        setActiveId(id);
-        setIsHome(false);
-      }
+      const doc = docsById.get(id);
+      setActiveId(doc?.id);
+      closePanels();
+      if (doc) showDocInUrl(doc.id);
+      else if (location.hash) showHomeInUrl();
     };
     window.addEventListener("hashchange", handleHashChange);
     return () => window.removeEventListener("hashchange", handleHashChange);

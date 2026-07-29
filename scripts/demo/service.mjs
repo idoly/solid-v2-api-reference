@@ -1,15 +1,11 @@
 import * as Solid from "solid-js";
 import * as Web from "@solidjs/web";
 import { compileDemo } from "./compile.mjs";
+import { DEMO_EXECUTION_TIMEOUT, DEMO_SOURCE_LIMIT, serverDemoIds } from "./config.mjs";
 import { DemoError, formatError } from "./i18n.mjs";
 import { loadDemoCatalog } from "./load.mjs";
 
-const serverIds = new Set([
-  "@solidjs/web/renderToString",
-  "@solidjs/web/renderToStringAsync",
-  "@solidjs/web/renderToStream",
-]);
-const demos = loadDemoCatalog();
+const demosById = new Map(loadDemoCatalog().map((demo) => [demo.id, demo.codes]));
 const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
 
 export function format(value, locale = "en") {
@@ -18,13 +14,13 @@ export function format(value, locale = "en") {
 
 export function compile(source) {
   if (typeof source !== "string") throw new DemoError("missingDemoSource");
-  if (Buffer.byteLength(source) > 100_000) throw new DemoError("sourceTooLarge");
+  if (Buffer.byteLength(source) > DEMO_SOURCE_LIMIT) throw new DemoError("sourceTooLarge");
   return compileDemo(source, { filename: "editable-solid-demo.tsx", generate: "dom" });
 }
 
 export async function execute(id, index) {
-  if (!serverIds.has(id)) throw new DemoError("demoNotAllowed");
-  const source = demos.find((item) => item.id === id)?.codes[index];
+  if (!serverDemoIds.has(id)) throw new DemoError("demoNotAllowed");
+  const source = demosById.get(id)?.[index];
   if (!source) throw new DemoError("serverDemoNotFound");
   const compiled = compileDemo(source, {
     filename: `${id.replace(/[^a-zA-Z0-9_-]/g, "_")}.tsx`,
@@ -35,7 +31,7 @@ export async function execute(id, index) {
   const demoConsole = Object.fromEntries(
     ["log", "info", "warn", "error"].map((level) => [
       level,
-      (...values) => logs.push({ level, text: values.map(format).join(" ") }),
+      (...values) => logs.push({ level, text: values.map((value) => format(value)).join(" ") }),
     ]),
   );
   const requireModule = (name) => {
@@ -45,11 +41,22 @@ export async function execute(id, index) {
   };
   const module = { exports: {} };
   const run = new AsyncFunction("require", "module", "exports", "console", compiled);
-  const result = await Promise.race([
-    run(requireModule, module, module.exports, demoConsole),
-    new Promise((_, reject) => setTimeout(() => reject(new DemoError("serverDemoTimedOut")), 5000)),
-  ]);
+  const result = await withTimeout(run(requireModule, module, module.exports, demoConsole));
   if (result !== undefined) logs.push({ level: "result", text: format(result) });
   const htmlIndex = logs.findLastIndex((entry) => /^\s*</.test(entry.text));
   return { logs, html: htmlIndex >= 0 ? logs.splice(htmlIndex, 1)[0].text : "" };
+}
+
+async function withTimeout(promise) {
+  let timer;
+  try {
+    return await Promise.race([
+      promise,
+      new Promise((_, reject) => {
+        timer = setTimeout(() => reject(new DemoError("serverDemoTimedOut")), DEMO_EXECUTION_TIMEOUT);
+      }),
+    ]);
+  } finally {
+    clearTimeout(timer);
+  }
 }

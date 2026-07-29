@@ -63,7 +63,9 @@ function sandboxDocument(mount: HTMLElement): Document {
       if (property === "body") return mount;
       if (property === "getElementById") return (id: string) => targetFor(id);
       if (property === "querySelector")
-        return (selector: string) => mount.querySelector(selector) ?? target.querySelector(selector);
+        return (selector: string) =>
+          selector === "#app" || selector === "#root" ? mount : mount.querySelector(selector);
+      if (property === "querySelectorAll") return (selector: string) => mount.querySelectorAll(selector);
       const value = Reflect.get(target, property, target);
       return typeof value === "function" ? value.bind(target) : value;
     },
@@ -81,6 +83,7 @@ type Input = {
   index: number;
   source: string;
   mount: HTMLElement;
+  onUpdate?: (result: Result) => void;
 };
 
 export async function execute(request: Input): Promise<Result> {
@@ -91,7 +94,7 @@ export async function execute(request: Input): Promise<Result> {
   }
 
   const compiled = await compileBrowserDemo(request.source);
-  return executeBrowserDemo(compiled, request.mount);
+  return executeBrowserDemo(compiled, request.mount, request.onUpdate);
 }
 
 async function requestRuntime<T>(
@@ -154,11 +157,35 @@ export function isServer(id: string) {
   return serverDemoIds.has(id);
 }
 
-async function executeBrowserDemo(compiled: string, mount: HTMLElement): Promise<Result> {
+function createResultPublisher(logs: Log[], mount: HTMLElement, onUpdate?: (result: Result) => void) {
+  let queued = false;
+  let pendingError: string | undefined;
+
+  return (error?: string) => {
+    if (!onUpdate) return;
+    if (error !== undefined) pendingError = error;
+    if (queued) return;
+    queued = true;
+    queueMicrotask(() => {
+      queued = false;
+      const publishedError = pendingError;
+      pendingError = undefined;
+      onUpdate({ logs: [...logs], html: mount.innerHTML, error: publishedError });
+    });
+  };
+}
+
+async function executeBrowserDemo(
+  compiled: string,
+  mount: HTMLElement,
+  onUpdate?: (result: Result) => void,
+): Promise<Result> {
   mount.replaceChildren();
   const logs: Log[] = [];
+  const publish = createResultPublisher(logs, mount, onUpdate);
   const write = (level: Log["level"], values: unknown[]) => {
     logs.push({ level, text: values.map((value) => formatValue(value)).join(" ") });
+    publish();
   };
   const demoConsole = {
     log: (...values: unknown[]) => write("log", values),
@@ -187,6 +214,7 @@ async function executeBrowserDemo(compiled: string, mount: HTMLElement): Promise
   } catch (error) {
     const message = formatValue(error);
     logs.push({ level: "error", text: message });
+    publish(message);
     return { logs, html: mount.innerHTML, error: message };
   }
 }

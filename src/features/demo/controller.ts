@@ -1,9 +1,6 @@
 import { createEffect, createMemo, createSignal, onCleanup } from "solid-js";
-import Prism from "prismjs";
-import "prismjs/components/prism-typescript";
-import "prismjs/components/prism-jsx";
-import "prismjs/components/prism-tsx";
 import type { Doc } from "../../data/catalog";
+import { highlightTsx } from "../../ui/highlight";
 import { execute, isServer, type Result } from "./runtime";
 
 type Input = { doc: Doc; code: string; exampleIndex: number };
@@ -30,7 +27,7 @@ export function createController(input: Input, getMount: () => HTMLDivElement | 
     code: input.code,
     server: isServer(input.doc.id),
   }));
-  const highlighted = createMemo(() => Prism.highlight(`${source()}\n`, Prism.languages.tsx, "tsx"));
+  const highlighted = createMemo(() => highlightTsx(`${source()}\n`));
   const hasPreview = createMemo(
     () =>
       demo().server || /\brender\s*\(|\bhydrate\s*\(|document\.(?:body|getElementById|createElement)/.test(source()),
@@ -38,21 +35,41 @@ export function createController(input: Input, getMount: () => HTMLDivElement | 
 
   // Commands use this snapshot because Solid strict mode rejects untracked reactive reads.
   let current: Snapshot = { id: "", index: 0, code: "", server: false };
+  let execution = 0;
   let timer: number | undefined;
-  onCleanup(() => timer && window.clearTimeout(timer));
+  const invalidateExecution = () => {
+    execution += 1;
+    setRunning(false);
+    return execution;
+  };
+  onCleanup(() => {
+    execution += 1;
+    if (timer) window.clearTimeout(timer);
+  });
 
   async function run(snapshot = current, code = source()) {
     const mount = getMount();
     if (running() || !mount) return;
+    const executionId = ++execution;
     setRunning(true);
     setResult(undefined);
     try {
-      setResult(await execute({ id: snapshot.id, index: snapshot.index, source: code, mount }));
+      const next = await execute({
+        id: snapshot.id,
+        index: snapshot.index,
+        source: code,
+        mount,
+        onUpdate: (update) => {
+          if (executionId === execution) setResult(update);
+        },
+      });
+      if (executionId === execution) setResult(next);
     } catch (error) {
+      if (executionId !== execution) return;
       const message = error instanceof Error ? error.message : String(error);
       setResult({ logs: [{ level: "error", text: message }], html: "", error: message });
     } finally {
-      setRunning(false);
+      if (executionId === execution) setRunning(false);
     }
   }
 
@@ -60,16 +77,19 @@ export function createController(input: Input, getMount: () => HTMLDivElement | 
     () => demo(),
     (nextDemo) => {
       current = nextDemo;
+      const scheduledExecution = invalidateExecution();
       setResult(undefined);
       setCopied(false);
       setSource(nextDemo.code);
-      setRunning(false);
       getMount()?.replaceChildren();
-      queueMicrotask(() => void run(nextDemo, nextDemo.code));
+      queueMicrotask(() => {
+        if (scheduledExecution === execution) void run(nextDemo, nextDemo.code);
+      });
     },
   );
 
   const reset = () => {
+    invalidateExecution();
     setResult(undefined);
     setCopied(false);
     setSource(current.code);
