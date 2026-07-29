@@ -6,7 +6,7 @@ import type { Locale } from "../i18n/locale";
 import { Heading, Reference, pageClass } from "./reference";
 
 const styles = {
-  examples: "relative scroll-mt-20 border-b border-[#d8ded9] py-[54px] dark:border-line-dark max-mobile:py-[43px]",
+  examples: "relative scroll-mt-20 py-[54px] max-mobile:py-[43px]",
   tabs: "mb-2 flex gap-1",
   empty:
     "flex min-h-[110px] items-center justify-center gap-3 border border-dashed border-[#ccd2cd] bg-[#fafbfa] text-[#7c847f] dark:border-[#3b443e] dark:bg-[#171c19] dark:text-[#9fa9a2]",
