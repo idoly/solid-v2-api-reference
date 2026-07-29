@@ -23,10 +23,10 @@ const styles = {
   results: "grid min-h-[230px] grid-cols-1 bg-code",
   panelHeader:
     "flex min-h-[38px] items-center border-b border-border bg-[#eef2ee] px-5 font-mono text-[10px] font-medium text-[#657168] dark:border-line-dark dark:bg-surface-dark dark:text-[#b6c1b9]",
-  mount: `min-h-40 bg-surface p-5 text-[#28322b] transition-colors empty:hidden dark:bg-canvas-dark dark:text-[#dbe4de] ${mountContent}`,
+  mount: `min-h-40 bg-surface p-5 text-[#28322b] transition-colors empty:hidden dark:bg-code dark:text-[#dbe4de] ${mountContent}`,
   previewMessage: "block px-2.5 py-7 text-center text-xs text-[#818a84] dark:text-[#939e96]",
   console: "flex min-h-[110px] max-h-[300px] min-w-0 flex-col overflow-auto bg-code text-[#dbe4de]",
-  consoleBody: "min-h-[72px] flex-1 bg-code p-3.5 dark:bg-canvas-dark",
+  consoleBody: "min-h-[72px] flex-1 bg-code p-3.5",
   consoleEmpty: "block py-2.5 text-xs leading-[1.7] text-[#a6b0a9]",
   consoleText: "m-0 min-w-0 font-mono text-[11px] leading-[1.65] break-words whitespace-pre-wrap text-inherit",
   dialog:
@@ -46,7 +46,7 @@ const styles = {
   dialogHighlight: `${editorLayer} overflow-hidden bg-code text-[#dbe4de] pointer-events-none`,
 } as const;
 
-const preview = "min-w-0 border-b border-border bg-surface transition-colors dark:border-line-dark dark:bg-canvas-dark";
+const preview = "min-w-0 border-b border-border bg-surface transition-colors dark:border-line-dark dark:bg-code";
 const consoleRow = "border-b border-[#29302b] py-1.5";
 const consoleTone = {
   log: "text-[#dbe4de]",
