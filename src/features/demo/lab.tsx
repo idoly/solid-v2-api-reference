@@ -21,12 +21,12 @@ const styles = {
   textarea: `${editorLayer} z-[2] resize-none overflow-auto bg-transparent text-transparent caret-[#f5faf7] outline-0 [-webkit-text-fill-color:transparent] selection:bg-[rgba(121,163,82,.34)] read-only:cursor-default`,
   runtime: "border-t border-[#29302b] bg-code",
   results: "grid min-h-[230px] grid-cols-1 bg-code",
-  browserHeader:
-    "flex min-h-[38px] items-center border-b border-border bg-[#eef2ee] px-5 font-mono text-[10px] font-medium text-[#657168] dark:border-line-dark dark:bg-surface-dark dark:text-[#a6b0a9]",
+  panelHeader:
+    "flex min-h-[38px] items-center border-b border-border bg-[#eef2ee] px-5 font-mono text-[10px] font-medium text-[#657168] dark:border-line-dark dark:bg-surface-dark dark:text-[#b6c1b9]",
   mount: `min-h-40 bg-surface p-5 text-[#28322b] transition-colors empty:hidden dark:bg-canvas-dark dark:text-[#dbe4de] ${mountContent}`,
   previewMessage: "block px-2.5 py-7 text-center text-xs text-[#818a84] dark:text-[#939e96]",
-  console: "min-h-[110px] max-h-[300px] min-w-0 overflow-auto bg-code p-3.5 text-[#dbe4de]",
-  consoleHeader: "border-b border-[#29302b] pb-2.5 font-mono text-[10px] text-[#b8c2bb]",
+  console: "min-h-[110px] max-h-[300px] min-w-0 overflow-auto bg-code text-[#dbe4de]",
+  consoleBody: "p-3.5",
   consoleEmpty: "block py-2.5 text-xs leading-[1.7] text-[#a6b0a9]",
   consoleText: "m-0 min-w-0 font-mono text-[11px] leading-[1.65] break-words whitespace-pre-wrap text-inherit",
   dialog:
@@ -162,7 +162,7 @@ export function Lab(props: Props) {
       <div class={styles.runtime}>
         <div class={styles.results}>
           <div class={`${preview} ${hasPreview() ? "block" : "hidden"}`}>
-            <header class={styles.browserHeader}>{props.locale.t("browser")}</header>
+            <header class={styles.panelHeader}>{props.locale.t("browser")}</header>
             <div ref={mount} class={styles.mount} />
             <Show when={!result()}>
               <span class={styles.previewMessage}>{props.locale.t("browserPending")}</span>
@@ -172,24 +172,26 @@ export function Lab(props: Props) {
             </Show>
           </div>
           <div class={styles.console}>
-            <header class={styles.consoleHeader}>{props.locale.t("console")}</header>
-            <Show
-              when={result()}
-              fallback={<span class={styles.consoleEmpty}>{props.locale.t("consolePending")}</span>}
-            >
+            <header class={styles.panelHeader}>{props.locale.t("console")}</header>
+            <div class={styles.consoleBody}>
               <Show
-                when={result()?.logs.length}
-                fallback={<span class={styles.consoleEmpty}>{props.locale.t("consoleEmpty")}</span>}
+                when={result()}
+                fallback={<span class={styles.consoleEmpty}>{props.locale.t("consolePending")}</span>}
               >
-                <For each={result()?.logs}>
-                  {(entry) => (
-                    <div class={`${consoleRow} ${consoleTone[entry.level]}`}>
-                      <pre class={styles.consoleText}>{entry.text}</pre>
-                    </div>
-                  )}
-                </For>
+                <Show
+                  when={result()?.logs.length}
+                  fallback={<span class={styles.consoleEmpty}>{props.locale.t("consoleEmpty")}</span>}
+                >
+                  <For each={result()?.logs}>
+                    {(entry) => (
+                      <div class={`${consoleRow} ${consoleTone[entry.level]}`}>
+                        <pre class={styles.consoleText}>{entry.text}</pre>
+                      </div>
+                    )}
+                  </For>
+                </Show>
               </Show>
-            </Show>
+            </div>
           </div>
         </div>
       </div>
