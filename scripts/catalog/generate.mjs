@@ -9,7 +9,7 @@ import { demoOverrides } from "./demos.mjs";
 const root = process.cwd();
 const tempDir = path.join(root, ".generated");
 const entryFile = path.join(tempDir, "api-entries.ts");
-const sourceCommit = "595ec2536ddfda5cf705b6a3e0ab59f899c60f71";
+const sourceCommit = "4e3921b77c3dfc538b983710dfd9531709251e84";
 
 fs.mkdirSync(tempDir, { recursive: true });
 fs.writeFileSync(entryFile, 'import * as Solid from "solid-js";\nimport * as Web from "@solidjs/web";\n');

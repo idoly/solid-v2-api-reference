@@ -2,7 +2,7 @@
 
 [English](./README.md) | [简体中文](./README.zh-CN.md)
 
-基于源码生成、可直接运行的 `solid-js@2.0.0-beta.26` 与 `@solidjs/web@2.0.0-beta.26` 中英文 API 参考。
+基于源码生成、可直接运行的 `solid-js@2.0.0-beta.27` 与 `@solidjs/web@2.0.0-beta.27` 中英文 API 参考。
 
 目录直接从当前仓库安装的依赖包生成，包含真实公开导出、TypeScript 签名、相关类型、固定版本源码链接和可编辑示例。浏览器示例使用受控的预览挂载点；SSR 示例通过受限的 Node 执行器运行。
 
@@ -137,11 +137,12 @@ SSR 示例为只读，只执行可信的生成源码。源码和请求正文上�
 
 ## 版本基线
 
-- `solid-js`：`2.0.0-beta.26`
-- `@solidjs/web`：`2.0.0-beta.26`
-- 固定源码提交：`595ec2536ddfda5cf705b6a3e0ab59f899c60f71`
+- `solid-js`：`2.0.0-beta.27`
+- `@solidjs/web`：`2.0.0-beta.27`
+- 固定源码提交：`4e3921b77c3dfc538b983710dfd9531709251e84`
 
 详细维护文档：
 
+- [版本变更](./CHANGELOG.md)
 - [目录与示例工具](./scripts/README.md)
 - [添加语言](./src/features/i18n/README.md)

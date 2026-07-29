@@ -85,8 +85,8 @@ Current generated surface:
 
 ## Baseline
 
-- Runtime packages: `solid-js@2.0.0-beta.26` and `@solidjs/web@2.0.0-beta.26`
-- Source commit: `595ec2536ddfda5cf705b6a3e0ab59f899c60f71`
+- Runtime packages: `solid-js@2.0.0-beta.27` and `@solidjs/web@2.0.0-beta.27`
+- Source commit: `4e3921b77c3dfc538b983710dfd9531709251e84`
 - Generated artifact: `data/catalog.json`
 - Runtime adapter: `src/data/catalog.ts`
 

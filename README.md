@@ -2,7 +2,7 @@
 
 [English](./README.md) | [简体中文](./README.zh-CN.md)
 
-A source-derived, executable Chinese and English API reference for `solid-js@2.0.0-beta.26` and `@solidjs/web@2.0.0-beta.26`.
+A source-derived, executable Chinese and English API reference for `solid-js@2.0.0-beta.27` and `@solidjs/web@2.0.0-beta.27`.
 
 The catalog is generated from the packages installed in this repository. It exposes the real callable exports, TypeScript signatures, related types, pinned source links, and editable examples. Browser examples use a scoped preview mount; SSR examples run through a restricted Node executor.
 
@@ -137,11 +137,12 @@ The application is a Solid single-page interface with hash-based API selection. 
 
 ## Source Baseline
 
-- `solid-js`: `2.0.0-beta.26`
-- `@solidjs/web`: `2.0.0-beta.26`
-- Pinned source commit: `595ec2536ddfda5cf705b6a3e0ab59f899c60f71`
+- `solid-js`: `2.0.0-beta.27`
+- `@solidjs/web`: `2.0.0-beta.27`
+- Pinned source commit: `4e3921b77c3dfc538b983710dfd9531709251e84`
 
 Detailed maintenance documentation:
 
+- [Release changes](./CHANGELOG.md)
 - [Catalog and demo tooling](./scripts/README.md)
 - [Adding a locale](./src/features/i18n/README.md)
