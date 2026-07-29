@@ -11,7 +11,7 @@ const styles = {
   empty:
     "flex min-h-[110px] items-center justify-center gap-3 border border-dashed border-[#ccd2cd] bg-[#fafbfa] text-[#7c847f] dark:border-[#3b443e] dark:bg-[#171c19] dark:text-[#9fa9a2]",
   tab: "min-h-[34px] cursor-pointer rounded border px-3 text-xs transition-colors",
-  active: "border-[#b9d58a] bg-[#f1f7e7] text-[#354425] dark:border-[#526b3c] dark:bg-[#26331f] dark:text-[#b8dc80]",
+  active: "border-[#b9d58a] bg-[#f1f7e7] text-[#354425] dark:border-[#526b3c] dark:bg-[#252d22] dark:text-[#b8dc80]",
   inactive: "border-[#cfd7d1] bg-surface text-[#5d6961] dark:border-[#39423c] dark:bg-surface-dark dark:text-[#aeb8b1]",
 } as const;
 

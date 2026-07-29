@@ -36,7 +36,7 @@ const sidebarPanel =
   "fixed top-16 bottom-0 left-0 z-40 w-[340px] overflow-y-auto border-r border-[#d8ded9] bg-[#f7f9f6] px-[15px] pt-4 pb-[30px] transition-colors dark:border-line-dark dark:bg-panel-dark max-shell:w-[300px] max-mobile:top-0 max-mobile:z-[70] max-mobile:w-[min(86vw,320px)] max-mobile:pt-3 max-mobile:shadow-[20px_0_50px_rgba(0,0,0,.35)] max-mobile:transition-transform";
 const sidebarLink =
   "grid min-h-[34px] w-full cursor-pointer grid-cols-[minmax(0,1fr)_auto_7px] items-center gap-2 rounded-[3px] px-[7px] py-[7px] pl-[9px] text-left font-mono text-xs leading-[1.45] hover:bg-[#eaf0e7] hover:text-[#303732] dark:hover:bg-surface-hover-dark dark:hover:text-[#e3e9e4]";
-const activeLink = "bg-[#e9f4d5] font-medium text-[#3f5c1b] dark:bg-[#293620] dark:text-[#b8dc80]";
+const activeLink = "bg-[#e9f4d5] font-medium text-[#3f5c1b] dark:bg-[#252d22] dark:text-[#b8dc80]";
 const inactiveLink = "bg-transparent text-[#68716b] dark:text-[#a8b2ab]";
 const categoryChevron = "text-[#aab0ac] transition-transform";
 

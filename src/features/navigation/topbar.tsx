@@ -8,7 +8,7 @@ import { Search } from "./search";
 import type { Navigation } from "./navigation";
 
 const styles = {
-  root: "fixed inset-x-0 top-0 z-50 grid h-16 grid-cols-[254px_minmax(300px,560px)_1fr] items-center gap-6 border-b border-[#d8ded9] bg-[rgba(251,252,250,.97)] px-[22px] shadow-[0_2px_10px_rgba(32,42,35,.035)] backdrop-blur-[14px] transition-colors dark:border-line-dark dark:bg-[rgba(23,28,25,.97)] max-shell:grid-cols-[224px_minmax(250px,1fr)_auto] max-shell:gap-[14px] max-mobile:h-[57px] max-mobile:grid-cols-[34px_1fr_auto] max-mobile:gap-2 max-mobile:px-[11px]",
+  root: "fixed inset-x-0 top-0 z-50 grid h-16 grid-cols-[254px_minmax(300px,560px)_1fr] items-center gap-6 border-b border-[#d8ded9] bg-[rgba(251,252,250,.97)] px-[22px] shadow-[0_2px_10px_rgba(32,42,35,.035)] backdrop-blur-[14px] transition-colors dark:border-line-dark dark:bg-[rgba(21,21,23,.97)] max-shell:grid-cols-[224px_minmax(250px,1fr)_auto] max-shell:gap-[14px] max-mobile:h-[57px] max-mobile:grid-cols-[34px_1fr_auto] max-mobile:gap-2 max-mobile:px-[11px]",
   brand:
     "flex cursor-pointer items-center gap-[9px] border-0 bg-transparent p-0 font-display text-[17px] font-extrabold max-mobile:text-[15px]",
   mark: "grid size-[30px] place-items-center rounded-md border border-[#9aca37] bg-accent text-[#19210f] max-mobile:size-7",
@@ -16,7 +16,7 @@ const styles = {
     "ml-[3px] border-l border-[#cfd4d0] pl-[11px] font-mono text-xs font-medium text-[#929994] dark:border-[#3b443e] max-mobile:hidden",
   actions: "flex items-center justify-end gap-2",
   coverage:
-    "inline-flex min-h-[31px] items-center gap-1.5 rounded border border-[#cee3aa] bg-[#f3f8ea] px-2.5 font-mono text-[11px] text-[#527321] dark:border-[#40532f] dark:bg-[#20291b] dark:text-[#afd37a] max-shell:hidden",
+    "inline-flex min-h-[31px] items-center gap-1.5 rounded border border-[#cee3aa] bg-[#f3f8ea] px-2.5 font-mono text-[11px] text-[#527321] dark:border-[#40532f] dark:bg-[#1d241a] dark:text-[#afd37a] max-shell:hidden",
   locale:
     "inline-flex min-h-[31px] cursor-pointer items-center gap-1.5 rounded border border-[#d2d9d3] bg-surface px-2 font-mono text-[10px] font-medium text-[#536058] dark:border-[#39423c] dark:bg-surface-dark dark:text-[#bdc6bf]",
   version:

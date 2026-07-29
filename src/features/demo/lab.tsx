@@ -25,8 +25,8 @@ const styles = {
     "flex min-h-[38px] items-center border-b border-border bg-[#eef2ee] px-5 font-mono text-[10px] font-medium text-[#657168] dark:border-line-dark dark:bg-surface-dark dark:text-[#b6c1b9]",
   mount: `min-h-40 bg-surface p-5 text-[#28322b] transition-colors empty:hidden dark:bg-canvas-dark dark:text-[#dbe4de] ${mountContent}`,
   previewMessage: "block px-2.5 py-7 text-center text-xs text-[#818a84] dark:text-[#939e96]",
-  console: "min-h-[110px] max-h-[300px] min-w-0 overflow-auto bg-code text-[#dbe4de]",
-  consoleBody: "p-3.5",
+  console: "flex min-h-[110px] max-h-[300px] min-w-0 flex-col overflow-auto bg-code text-[#dbe4de]",
+  consoleBody: "min-h-[72px] flex-1 bg-code p-3.5 dark:bg-canvas-dark",
   consoleEmpty: "block py-2.5 text-xs leading-[1.7] text-[#a6b0a9]",
   consoleText: "m-0 min-w-0 font-mono text-[11px] leading-[1.65] break-words whitespace-pre-wrap text-inherit",
   dialog:

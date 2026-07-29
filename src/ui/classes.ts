@@ -18,7 +18,7 @@ export const actionButton = {
 } as const;
 
 export const statusBadge = {
-  api: `${badgeBase} rounded-[3px] border border-[#a9d15e] bg-[#f0f8e1] px-2 py-[5px] text-[11px] font-medium text-[#5c7e1b] dark:border-[#5e783c] dark:bg-[#222c1b] dark:text-[#b2d67b]`,
+  api: `${badgeBase} rounded-[3px] border border-[#a9d15e] bg-[#f0f8e1] px-2 py-[5px] text-[11px] font-medium text-[#5c7e1b] dark:border-[#5e783c] dark:bg-[#20261d] dark:text-[#b2d67b]`,
   internal: `${badgeBase} rounded-[3px] bg-[#fff0c9] px-1.5 py-[3px] text-[9px] font-bold text-[#805b1d] uppercase dark:bg-[#3b301b] dark:text-[#e5c77f]`,
   deprecated: `${badgeBase} rounded-[3px] bg-[#fde2dc] px-1.5 py-[3px] text-[9px] font-bold text-[#9a3f32] uppercase dark:bg-[#3b211e] dark:text-[#efa093]`,
   parameter: `${badgeBase} rounded-[3px] bg-[#edf1e9] px-[5px] py-0.5 text-[9px] text-[#66705f] dark:bg-[#2b332d] dark:text-[#adb8b0]`,

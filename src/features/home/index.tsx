@@ -34,13 +34,13 @@ const styles = {
   factLabel: "text-[#818b84] dark:text-[#8f9a92]",
   factValue: "mt-1.5 font-mono text-[11px] text-[#3f625a] dark:text-[#91c7bb]",
   validation:
-    "mt-6 flex items-start gap-2.5 border-l-2 border-[#8db53f] bg-[#edf3e7] px-3 py-2.5 text-xs leading-[1.65] text-[#4f632f] dark:border-[#91bb4d] dark:bg-[#20291c] dark:text-[#b7d58b]",
+    "mt-6 flex items-start gap-2.5 border-l-2 border-[#8db53f] bg-[#edf3e7] px-3 py-2.5 text-xs leading-[1.65] text-[#4f632f] dark:border-[#91bb4d] dark:bg-[#1d241a] dark:text-[#b7d58b]",
   validationIcon: "mt-0.5 shrink-0",
   stages: "grid gap-3",
   stage:
     "grid min-h-[108px] grid-cols-[42px_minmax(138px,.58fr)_minmax(0,1fr)] items-center gap-4 rounded-[5px] bg-[#e9eeea] px-[18px] py-4 dark:bg-[#181e1a] max-mobile:min-h-0 max-mobile:grid-cols-[34px_minmax(0,1fr)] max-mobile:gap-x-3 max-mobile:gap-y-2 max-mobile:px-4 max-mobile:py-4",
   stageIndex:
-    "grid size-8 place-items-center rounded border border-[#b9cf94] bg-[#f7faf3] font-mono text-[10px] font-medium text-[#5f851e] dark:border-[#4a6335] dark:bg-[#222c1c] dark:text-[#b5da7e]",
+    "grid size-8 place-items-center rounded border border-[#b9cf94] bg-[#f7faf3] font-mono text-[10px] font-medium text-[#5f851e] dark:border-[#4a6335] dark:bg-[#20261d] dark:text-[#b5da7e]",
   stageTitle: "block text-sm font-semibold text-[#344039] dark:text-[#dbe3dd]",
   stageMeta: "mt-2 block font-mono text-[10px] text-[#527169] dark:text-[#90bdb3]",
   stageDescription: "m-0 text-[13px] leading-[1.8] text-[#68726b] dark:text-[#a8b2ab] max-mobile:col-start-2",
