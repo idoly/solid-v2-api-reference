@@ -7,7 +7,26 @@ import { createNavigation } from "./features/navigation/navigation";
 import { Sidebar } from "./features/navigation/sidebar";
 import { TopBar } from "./features/navigation/topbar";
 import { createTheme } from "./features/theme/theme";
+import { Github } from "./ui/icons";
 import "./tailwind.css";
+
+function Footer() {
+  return (
+    <footer class="mx-auto flex max-w-[1320px] items-center justify-between gap-4 border-t border-[#d8ded9] px-9 py-7 text-xs text-[#717a74] dark:border-line-dark dark:text-[#a8b2ab] max-shell:px-6 max-mobile:flex-col max-mobile:items-start max-mobile:px-[19px] max-mobile:py-6">
+      <span>&copy; {new Date().getFullYear()} idoly. All rights reserved.</span>
+      <a
+        class="inline-flex items-center gap-1.5 text-[#42675f] transition-colors hover:text-[#274b43] dark:text-[#9bc9bf] dark:hover:text-[#b9ded5]"
+        href="https://github.com/idoly"
+        target="_blank"
+        rel="noreferrer"
+        aria-label="idoly on GitHub"
+      >
+        <Github size={14} />
+        github.com/idoly
+      </a>
+    </footer>
+  );
+}
 
 function App() {
   const locale = createLocale();
@@ -22,6 +41,7 @@ function App() {
         <Show when={!nav.isHome()} fallback={<Home nav={nav} locale={locale} />}>
           <Api doc={nav.activeDoc()} locale={locale} />
         </Show>
+        <Footer />
       </main>
     </div>
   );
