@@ -39,7 +39,7 @@ const styles = {
   dialogFooter:
     "flex items-center justify-end gap-2 border-t border-[#d2dad4] bg-[#f3f6f3] px-4 dark:border-line-dark dark:bg-surface-dark",
   dialogIconButton:
-    "grid size-9 shrink-0 cursor-pointer place-items-center rounded-[5px] border border-[#cbd4cd] bg-white p-0 text-[#465149] transition-colors hover:border-[#96a299] hover:bg-[#e9eeea] disabled:cursor-not-allowed disabled:opacity-50 dark:border-border-dark dark:bg-panel-dark dark:text-[#e4ebe6] dark:hover:border-[#819487] dark:hover:bg-surface-hover-dark",
+    "grid size-9 shrink-0 cursor-pointer place-items-center rounded-[5px] border border-[#cbd4cd] bg-white p-0 text-[#465149] transition-colors hover:border-[#96a299] hover:bg-[#e9eeea] disabled:cursor-not-allowed disabled:opacity-50 dark:border-border-dark dark:bg-panel-dark dark:text-[#e4ebe6] dark:hover:border-[#708078] dark:hover:bg-surface-hover-dark",
   dialogRunButton:
     "grid size-9 shrink-0 cursor-pointer place-items-center rounded-[5px] border border-[#222923] bg-[#222923] p-0 text-white transition-colors hover:border-[#506b22] hover:bg-[#506b22] disabled:cursor-not-allowed disabled:opacity-50 dark:border-[#a5ce62] dark:bg-[#a5ce62] dark:text-[#172013] dark:hover:border-[#b9df7c] dark:hover:bg-[#b9df7c]",
   dialogTextarea: `${editorLayer} resize-none overflow-auto bg-transparent text-transparent caret-[#f5faf7] outline-0 [-webkit-text-fill-color:transparent] selection:bg-[rgba(121,163,82,.34)] read-only:cursor-default`,

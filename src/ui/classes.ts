@@ -1,5 +1,5 @@
 const iconBase =
-  "grid size-[34px] shrink-0 cursor-pointer place-items-center rounded-[5px] border border-[#cbd4cd] bg-surface p-0 transition-colors hover:border-[#96a299] hover:bg-surface-muted dark:border-[#39423c] dark:bg-surface-dark dark:text-[#dce4de] dark:hover:border-[#718276] dark:hover:bg-surface-hover-dark";
+  "grid size-[34px] shrink-0 cursor-pointer place-items-center rounded-[5px] border border-[#cbd4cd] bg-surface p-0 transition-colors hover:border-[#96a299] hover:bg-surface-muted dark:border-[#39423c] dark:bg-surface-dark dark:text-[#dce4de] dark:hover:border-[#59665d] dark:hover:bg-surface-hover-dark";
 
 const actionBase = "inline-flex cursor-pointer items-center justify-center rounded border font-semibold";
 const actionPrimary =
@@ -12,7 +12,7 @@ export const mobileIconButton = `${iconBase} hidden max-mobile:grid`;
 
 export const actionButton = {
   primary: `${actionBase} ${actionPrimary} min-h-[42px] gap-2 px-[15px] text-[13px]`,
-  secondary: `${actionBase} min-h-[42px] gap-2 border-[#cbd4cd] bg-surface px-[15px] text-[13px] text-[#4d5951] hover:border-[#9eaaa1] hover:bg-surface-muted dark:border-[#465149] dark:bg-surface-dark dark:text-[#d4ddd6] dark:hover:border-[#7b8d80] dark:hover:bg-surface-hover-dark`,
+  secondary: `${actionBase} min-h-[42px] gap-2 border-[#cbd4cd] bg-surface px-[15px] text-[13px] text-[#4d5951] hover:border-[#9eaaa1] hover:bg-surface-muted dark:border-[#465149] dark:bg-surface-dark dark:text-[#d4ddd6] dark:hover:border-[#657268] dark:hover:bg-surface-hover-dark`,
   compact: `${actionBase} ${actionPrimary} min-h-[38px] gap-[7px] px-[15px] text-[13px]`,
   source: `${actionBase} gap-1.5 border-[#c9d5cf] bg-[#f4f8f6] px-2.5 py-2 text-xs text-[#42675f] hover:border-[#82b8ae] hover:bg-[#e9f5f2] dark:border-[#3e5c55] dark:bg-[#1b2925] dark:text-[#9bc9bf] dark:hover:border-[#578178] dark:hover:bg-[#20342f]`,
 } as const;
