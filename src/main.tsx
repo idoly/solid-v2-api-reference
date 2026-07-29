@@ -15,7 +15,7 @@ function App() {
   const theme = createTheme();
 
   return (
-    <div class="min-h-screen bg-[#f1f4f0] font-sans text-ink transition-colors dark:bg-[#111512] dark:text-[#e3e8e4]">
+    <div class="min-h-screen bg-[#f1f4f0] font-sans text-ink transition-colors dark:bg-canvas-dark dark:text-[#e3e8e4]">
       <TopBar nav={nav} theme={theme} locale={locale} />
       <Sidebar nav={nav} locale={locale} />
       <main class="ml-[340px] pt-16 max-shell:ml-[300px] max-mobile:ml-0 max-mobile:pt-[57px]">

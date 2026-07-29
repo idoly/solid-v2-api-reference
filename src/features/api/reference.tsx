@@ -53,7 +53,7 @@ const styles = {
   signatureCode: "block max-w-full font-mono text-xs leading-[1.7] break-words whitespace-pre-wrap text-[#dbe5df]",
   table: "border-t border-border dark:border-border-dark",
   tableHeader:
-    "grid grid-cols-[minmax(100px,.55fr)_minmax(0,1fr)_minmax(0,1.25fr)] bg-surface-muted font-mono text-[10px] text-[#657168] dark:bg-[#202721] dark:text-[#b6c1b9] [&>*]:min-w-0 [&>*]:border-r [&>*]:border-[#e4e7e5] dark:[&>*]:border-border-dark [&>*]:px-[15px] [&>*]:py-3 [&>*:last-child]:border-r-0 max-tablet:hidden",
+    "grid grid-cols-[minmax(100px,.55fr)_minmax(0,1fr)_minmax(0,1.25fr)] bg-surface-muted font-mono text-[10px] text-[#657168] dark:bg-surface-dark dark:text-[#c4cec6] [&>*]:min-w-0 [&>*]:border-r [&>*]:border-[#e4e7e5] dark:[&>*]:border-border-dark [&>*]:px-[15px] [&>*]:py-3 [&>*:last-child]:border-r-0 max-tablet:hidden",
   noParameters:
     "border-t border-[#e4e7e5] px-[15px] py-3.5 text-xs text-[#7d857f] dark:border-border-dark dark:text-[#aebbb2]",
   parameterRow:
@@ -63,7 +63,7 @@ const styles = {
   mobileLabel: "hidden font-mono text-[9px] text-[#7b857e] max-tablet:block dark:text-[#98a39b]",
   parameterValue: "break-words font-mono text-xs leading-[1.65] text-[#315e55] dark:text-[#9ed6ca]",
   parameterDescription: "m-0 text-[13px] leading-[1.7] text-[#59635c] dark:text-[#c2ccc4]",
-  typeHeader: "flex min-h-[66px] items-start justify-between gap-4 bg-[#fafcf9] px-4 py-[13px] dark:bg-[#1a201c]",
+  typeHeader: "flex min-h-[66px] items-start justify-between gap-4 bg-[#fafcf9] px-4 py-[13px] dark:bg-surface-dark",
   typeBody: "min-w-0",
   typeName: "block break-words font-mono text-[13px] font-bold text-[#345e56] dark:text-[#9ed6ca]",
   typeDescription: "mt-1.5 mb-0 text-[13px] leading-[1.65] text-[#5e6861] dark:text-[#c2ccc4]",
