@@ -37,7 +37,9 @@ function App() {
     <div class="min-h-screen bg-[#f1f4f0] font-sans text-ink transition-colors dark:bg-canvas-dark dark:text-[#e3e8e4]">
       <TopBar nav={nav} theme={theme} locale={locale} />
       <Sidebar nav={nav} locale={locale} />
-      <main class="ml-[340px] pt-16 max-shell:ml-[300px] max-mobile:ml-0 max-mobile:pt-[57px]">
+      <main
+        class={`ml-[340px] min-h-[calc(100vh-64px)] pt-16 transition-colors max-shell:ml-[300px] max-mobile:ml-0 max-mobile:min-h-[calc(100vh-57px)] max-mobile:pt-[57px] ${nav.isHome() ? "" : "dark:bg-code"}`}
+      >
         <Show when={!nav.isHome()} fallback={<Home nav={nav} locale={locale} />}>
           <Api doc={nav.activeDoc()} locale={locale} />
         </Show>

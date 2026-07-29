@@ -38,10 +38,10 @@ const styles = {
   section: "border-b border-[#d8ded9] py-[54px] dark:border-line-dark max-mobile:py-[43px]",
   spec: "grid gap-4",
   description:
-    "grid gap-5 rounded-md border border-border border-l-2 border-l-[#93bd43] bg-white px-6 py-[22px] shadow-[0_6px_18px_rgba(38,52,42,.035)] dark:border-[#3b493f] dark:border-l-[#88ad48] dark:bg-surface-dark max-mobile:p-[18px]",
+    "grid gap-5 rounded-md border border-border border-l-2 border-l-[#93bd43] bg-white px-6 py-[22px] shadow-[0_6px_18px_rgba(38,52,42,.035)] dark:border-border-dark dark:border-l-[#88ad48] dark:bg-surface-dark max-mobile:p-[18px]",
   definitionLabel: "mb-2 block font-mono text-[10px] font-medium text-[#6f981d] uppercase dark:text-[#b5da7e]",
   definitionText: "m-0 max-w-[880px] text-[15px] leading-[1.9] text-[#3f4b43] dark:text-[#d2dad4]",
-  useCase: "border-t border-[#e1e6e1] pt-4 dark:border-[#303a33]",
+  useCase: "border-t border-[#e1e6e1] pt-4 dark:border-line-dark",
   useCaseLabel: "mb-2 block font-mono text-[10px] font-medium text-[#63706a] uppercase dark:text-[#91a097]",
   useCaseText: "m-0 max-w-[880px] text-sm leading-[1.85] text-[#5b665f] dark:text-[#adb9b1]",
   group: "grid gap-2.5",
