@@ -10,10 +10,11 @@ const styles = {
   tabs: "mb-2 flex gap-1",
   empty:
     "flex min-h-[110px] items-center justify-center gap-3 border border-dashed border-[#ccd2cd] bg-[#fafbfa] text-[#7c847f] dark:border-border-dark dark:bg-panel-dark dark:text-[#aeb7b0]",
-  tab: "min-h-[34px] cursor-pointer rounded border px-3 text-xs transition-colors",
-  active: "border-[#b9d58a] bg-[#f1f7e7] text-[#354425] dark:border-[#526b3c] dark:bg-[#252d22] dark:text-[#b8dc80]",
+  tab: "min-h-[34px] cursor-pointer rounded border-[1.5px] px-3 text-xs transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#719a2e]",
+  active:
+    "border-[#b9d58a] bg-[#f1f7e7] text-[#354425] hover:border-[#7f9f48] hover:shadow-[0_4px_12px_rgba(70,95,45,.18)] dark:border-[#46563e] dark:bg-[#252d22] dark:text-[#b8dc80] dark:hover:border-[#c8d0cb] dark:hover:bg-[#c8d0cb] dark:hover:text-[#171b18] dark:hover:shadow-[0_6px_18px_rgba(0,0,0,.48)]",
   inactive:
-    "border-[#cfd7d1] bg-surface text-[#5d6961] dark:border-border-dark dark:bg-surface-dark dark:text-[#b8c1ba]",
+    "border-[#cfd7d1] bg-surface text-[#5d6961] hover:border-[#7f9f48] hover:bg-[#edf4e5] hover:shadow-[0_4px_12px_rgba(70,95,45,.18)] dark:border-border-dark dark:bg-surface-dark dark:text-[#b8c1ba] dark:hover:border-[#c8d0cb] dark:hover:bg-[#c8d0cb] dark:hover:text-[#171b18] dark:hover:shadow-[0_6px_18px_rgba(0,0,0,.48)]",
 } as const;
 
 type Props = { doc: Doc; locale: Locale };

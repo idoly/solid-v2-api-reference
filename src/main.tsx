@@ -15,7 +15,7 @@ function Footer() {
     <footer class="mx-auto flex max-w-[1320px] items-center justify-between gap-4 border-t border-[#d8ded9] px-9 py-7 text-xs text-[#717a74] dark:border-line-dark dark:text-[#a8b2ab] max-shell:px-6 max-mobile:flex-col max-mobile:items-start max-mobile:px-[19px] max-mobile:py-6">
       <span>&copy; {new Date().getFullYear()} idoly. All rights reserved.</span>
       <a
-        class="inline-flex items-center gap-1.5 text-[#42675f] transition-colors hover:text-[#274b43] dark:text-[#9bc9bf] dark:hover:text-[#b9ded5]"
+        class="inline-flex min-w-0 items-center gap-1.5 [overflow-wrap:anywhere] text-[#42675f] transition-colors hover:text-[#274b43] dark:text-[#9bc9bf] dark:hover:text-[#b9ded5]"
         href="https://github.com/idoly"
         target="_blank"
         rel="noreferrer"
@@ -37,9 +37,7 @@ function App() {
     <div class="min-h-screen bg-[#f1f4f0] font-sans text-ink transition-colors dark:bg-canvas-dark dark:text-[#e3e8e4]">
       <TopBar nav={nav} theme={theme} locale={locale} />
       <Sidebar nav={nav} locale={locale} />
-      <main
-        class={`ml-[340px] min-h-[calc(100vh-64px)] pt-16 transition-colors max-shell:ml-[300px] max-mobile:ml-0 max-mobile:min-h-[calc(100vh-57px)] max-mobile:pt-[57px] ${nav.isHome() ? "" : "dark:bg-code"}`}
-      >
+      <main class="ml-[340px] min-h-[calc(100vh-64px)] bg-transparent pt-16 transition-colors dark:bg-code max-shell:ml-[300px] max-mobile:ml-0 max-mobile:min-h-[calc(100vh-57px)] max-mobile:pt-[57px]">
         <Show when={!nav.isHome()} fallback={<Home nav={nav} locale={locale} />}>
           <Api doc={nav.activeDoc()} locale={locale} />
         </Show>

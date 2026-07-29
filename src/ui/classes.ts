@@ -1,9 +1,10 @@
 const iconBase =
-  "grid size-[34px] shrink-0 cursor-pointer place-items-center rounded-[5px] border border-[#cbd4cd] bg-surface p-0 transition-colors hover:border-[#96a299] hover:bg-surface-muted dark:border-[#39423c] dark:bg-surface-dark dark:text-[#dce4de] dark:hover:border-[#59665d] dark:hover:bg-surface-hover-dark";
+  "grid size-[34px] shrink-0 cursor-pointer place-items-center rounded-[5px] border-[1.5px] border-[#cbd4cd] bg-surface p-0 transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-out hover:-translate-y-0.5 hover:border-[#7f9f48] hover:bg-[#edf4e5] hover:shadow-[0_4px_12px_rgba(70,95,45,.2)] active:translate-y-0 active:scale-[.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#719a2e] dark:border-[#3f4742] dark:bg-surface-dark dark:text-[#dce4de] dark:hover:border-[#c8d0cb] dark:hover:bg-[#c8d0cb] dark:hover:text-[#171b18] dark:hover:shadow-[0_6px_18px_rgba(0,0,0,.5)]";
 
-const actionBase = "inline-flex cursor-pointer items-center justify-center rounded border font-semibold";
+const actionBase =
+  "inline-flex cursor-pointer items-center justify-center whitespace-nowrap rounded border-[1.5px] font-semibold transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#719a2e]";
 const actionPrimary =
-  "border-[#222923] bg-[#222923] text-white hover:border-[#506b22] hover:bg-[#506b22] disabled:cursor-wait disabled:opacity-60 dark:border-[#a5ce62] dark:bg-[#a5ce62] dark:text-[#172013] dark:hover:border-[#b9df7c] dark:hover:bg-[#b9df7c]";
+  "border-[#222923] bg-[#222923] text-white hover:border-[#506b22] hover:bg-[#506b22] hover:shadow-[0_5px_14px_rgba(57,78,36,.26)] disabled:cursor-wait disabled:opacity-60 dark:border-[#a5ce62] dark:bg-[#a5ce62] dark:text-[#172013] dark:hover:border-[#d2f49d] dark:hover:bg-[#d2f49d] dark:hover:shadow-[0_6px_18px_rgba(0,0,0,.45)]";
 
 const badgeBase = "inline-flex items-center font-mono";
 
@@ -12,9 +13,9 @@ export const mobileIconButton = `${iconBase} hidden max-mobile:grid`;
 
 export const actionButton = {
   primary: `${actionBase} ${actionPrimary} min-h-[42px] gap-2 px-[15px] text-[13px]`,
-  secondary: `${actionBase} min-h-[42px] gap-2 border-[#cbd4cd] bg-surface px-[15px] text-[13px] text-[#4d5951] hover:border-[#9eaaa1] hover:bg-surface-muted dark:border-[#465149] dark:bg-surface-dark dark:text-[#d4ddd6] dark:hover:border-[#657268] dark:hover:bg-surface-hover-dark`,
+  secondary: `${actionBase} min-h-[42px] gap-2 border-[#cbd4cd] bg-surface px-[15px] text-[13px] text-[#4d5951] hover:border-[#8e9c91] hover:bg-[#edf4e5] hover:shadow-[0_4px_12px_rgba(70,95,45,.16)] dark:border-[#465149] dark:bg-surface-dark dark:text-[#d4ddd6] dark:hover:border-[#c8d0cb] dark:hover:bg-[#c8d0cb] dark:hover:text-[#171b18] dark:hover:shadow-[0_6px_18px_rgba(0,0,0,.48)]`,
   compact: `${actionBase} ${actionPrimary} min-h-[38px] gap-[7px] px-[15px] text-[13px]`,
-  source: `${actionBase} gap-1.5 border-[#c9d5cf] bg-[#f4f8f6] px-2.5 py-2 text-xs text-[#42675f] hover:border-[#82b8ae] hover:bg-[#e9f5f2] dark:border-[#3e5c55] dark:bg-[#1b2925] dark:text-[#9bc9bf] dark:hover:border-[#578178] dark:hover:bg-[#20342f]`,
+  source: `${actionBase} gap-1.5 border-[#c9d5cf] bg-[#f4f8f6] px-2.5 py-2 text-xs text-[#42675f] hover:border-[#82b8ae] hover:bg-[#e9f5f2] hover:shadow-[0_4px_12px_rgba(70,95,45,.16)] dark:border-[#465149] dark:bg-[#20241f] dark:text-[#b8dc80] dark:hover:border-[#c8d0cb] dark:hover:bg-[#c8d0cb] dark:hover:text-[#171b18] dark:hover:shadow-[0_6px_18px_rgba(0,0,0,.5)]`,
 } as const;
 
 export const statusBadge = {

@@ -12,7 +12,7 @@ const styles = {
   eyebrow:
     "inline-flex items-center gap-2 border-l-2 border-[#8db53f] pl-2.5 font-mono text-[11px] font-medium text-[#52721d] dark:border-[#9cc75a] dark:text-[#b7da83] [&>svg]:text-[#779e2d]",
   title:
-    "mt-[18px] font-display text-[56px] leading-[1.06] font-bold break-words text-ink dark:text-[#edf2ee] max-shell:text-[49px] max-mobile:mt-4 max-mobile:text-[38px]",
+    "mt-[18px] font-display text-[56px] leading-[1.06] font-bold [overflow-wrap:anywhere] text-ink dark:text-[#edf2ee] max-shell:text-[49px] max-mobile:mt-4 max-mobile:text-[38px]",
   lead: "mt-5 max-w-[570px] text-[15px] leading-[1.85] text-[#536058] dark:text-[#b2bcb5] max-mobile:mt-4 max-mobile:text-sm",
   actions: "mt-7 flex flex-wrap gap-2.5 max-mobile:mt-5",
   codePanel:
@@ -21,7 +21,8 @@ const styles = {
     "flex h-11 items-center justify-between border-b border-[#303632] bg-[#1b201d] px-4 font-mono text-[10px] text-[#9ba69f]",
   codeBody:
     "min-h-[218px] overflow-auto px-[22px] py-[22px] font-mono text-xs leading-[1.8] whitespace-pre max-mobile:min-h-[210px] max-mobile:px-[17px] max-mobile:py-5 max-mobile:text-[11px]",
-  codeFooter: "flex min-h-11 items-center gap-2 border-t border-[#303632] bg-[#1b201d] px-4 text-[11px] text-[#acd477]",
+  codeFooter:
+    "flex min-h-11 items-center gap-2 border-t border-[#303632] bg-[#1b201d] px-4 py-2 text-[11px] text-[#acd477] [&>span]:min-w-0 [&>span]:[overflow-wrap:anywhere]",
   about:
     "grid grid-cols-[minmax(280px,.82fr)_minmax(0,1.18fr)] gap-[52px] py-[52px] max-shell:gap-9 max-tablet:grid-cols-1 max-tablet:gap-9 max-tablet:py-11",
   aboutCopy: "max-w-[390px] max-tablet:max-w-[680px]",
@@ -32,7 +33,7 @@ const styles = {
   fact: "",
   factWide: "col-span-2",
   factLabel: "text-[#818b84] dark:text-[#8f9a92]",
-  factValue: "mt-1.5 font-mono text-[11px] text-[#3f625a] dark:text-[#91c7bb]",
+  factValue: "mt-1.5 font-mono text-[11px] [overflow-wrap:anywhere] text-[#3f625a] dark:text-[#91c7bb]",
   validation:
     "mt-6 flex items-start gap-2.5 border-l-2 border-[#8db53f] bg-[#edf3e7] px-3 py-2.5 text-xs leading-[1.65] text-[#4f632f] dark:border-[#91bb4d] dark:bg-[#1d241a] dark:text-[#b7d58b]",
   validationIcon: "mt-0.5 shrink-0",
@@ -42,7 +43,7 @@ const styles = {
   stageIndex:
     "grid size-8 place-items-center rounded border border-[#b9cf94] bg-[#f7faf3] font-mono text-[10px] font-medium text-[#5f851e] dark:border-[#4a6335] dark:bg-[#20261d] dark:text-[#b5da7e]",
   stageTitle: "block text-sm font-semibold text-[#344039] dark:text-[#dbe3dd]",
-  stageMeta: "mt-2 block font-mono text-[10px] text-[#527169] dark:text-[#90bdb3]",
+  stageMeta: "mt-2 block font-mono text-[10px] [overflow-wrap:anywhere] text-[#527169] dark:text-[#90bdb3]",
   stageDescription: "m-0 text-[13px] leading-[1.8] text-[#68726b] dark:text-[#a8b2ab] max-mobile:col-start-2",
 } as const;
 

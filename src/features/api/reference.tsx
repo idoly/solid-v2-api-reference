@@ -29,16 +29,16 @@ export function Heading(props: { index: string; title: string }) {
 }
 
 const styles = {
-  page: "mx-auto max-w-[1320px] px-9 pb-20 max-shell:px-6 max-mobile:px-[19px] max-mobile:pb-[60px]",
-  hero: "border-b border-[#d8ded9] py-[49px] pt-[58px] dark:border-line-dark max-mobile:py-[38px] max-mobile:pt-[42px]",
+  page: "mx-auto max-w-[1320px] px-9 pb-20 max-shell:px-6 max-mobile:px-4 max-mobile:pb-[52px]",
+  hero: "border-b border-[#d8ded9] py-[49px] pt-[58px] dark:border-line-dark max-mobile:py-8 max-mobile:pt-8",
   heroLine: "flex flex-wrap items-center gap-3.5 max-mobile:gap-2.5",
   title:
-    "min-w-0 flex-[1_1_360px] [overflow-wrap:anywhere] font-display text-[clamp(36px,5vw,59px)] leading-[1.08] font-bold text-ink dark:text-[#edf2ee] max-mobile:basis-[calc(100%_-_60px)] max-mobile:text-[37px]",
+    "min-w-0 flex-[1_1_360px] [overflow-wrap:anywhere] font-display text-[59px] leading-[1.08] font-bold text-ink dark:text-[#edf2ee] max-shell:text-[49px] max-mobile:basis-[calc(100%_-_56px)] max-mobile:text-[32px]",
   packageName: "font-mono text-xs text-[#67716a] dark:text-[#a7b2aa]",
-  section: "border-b border-[#d8ded9] py-[54px] dark:border-line-dark max-mobile:py-[43px]",
+  section: "border-b border-[#d8ded9] py-[54px] dark:border-line-dark max-mobile:py-9",
   spec: "grid gap-4",
   description:
-    "grid gap-5 rounded-md border border-border border-l-2 border-l-[#93bd43] bg-white px-6 py-[22px] shadow-[0_6px_18px_rgba(38,52,42,.035)] dark:border-border-dark dark:border-l-[#88ad48] dark:bg-surface-dark max-mobile:p-[18px]",
+    "grid gap-5 rounded-md border border-border border-l-2 border-l-[#93bd43] bg-white px-6 py-[22px] shadow-[0_6px_18px_rgba(38,52,42,.035)] dark:border-border-dark dark:border-l-[#88ad48] dark:bg-surface-dark max-mobile:p-4",
   definitionLabel: "mb-2 block font-mono text-[10px] font-medium text-[#6f981d] uppercase dark:text-[#b5da7e]",
   definitionText: "m-0 max-w-[880px] text-[15px] leading-[1.9] text-[#3f4b43] dark:text-[#d2dad4]",
   useCase: "border-t border-[#e1e6e1] pt-4 dark:border-line-dark",
@@ -50,30 +50,33 @@ const styles = {
   groupMeta: "font-mono text-[11px] text-[#6f7972] dark:text-[#98a39b]",
   card: "overflow-hidden rounded-md border border-border bg-white shadow-[0_8px_22px_rgba(35,46,39,.055)] dark:border-border-dark dark:bg-panel-dark dark:shadow-none",
   signatureHeader: "flex min-h-[58px] flex-col items-start justify-center gap-1.5 bg-code px-4 py-3.5",
-  signatureCode: "block max-w-full font-mono text-xs leading-[1.7] break-words whitespace-pre-wrap text-[#dbe5df]",
+  signatureCode:
+    "block max-w-full font-mono text-xs leading-[1.7] whitespace-pre-wrap [overflow-wrap:anywhere] text-[#dbe5df]",
   table: "border-t border-border dark:border-border-dark",
   tableHeader:
     "grid grid-cols-[minmax(100px,.55fr)_minmax(0,1fr)_minmax(0,1.25fr)] bg-surface-muted font-mono text-[10px] text-[#657168] dark:bg-surface-dark dark:text-[#c4cec6] [&>*]:min-w-0 [&>*]:border-r [&>*]:border-[#e4e7e5] dark:[&>*]:border-border-dark [&>*]:px-[15px] [&>*]:py-3 [&>*:last-child]:border-r-0 max-tablet:hidden",
   noParameters:
     "border-t border-[#e4e7e5] px-[15px] py-3.5 text-xs text-[#7d857f] dark:border-border-dark dark:text-[#aebbb2]",
   parameterRow:
-    "grid grid-cols-[minmax(100px,.55fr)_minmax(0,1fr)_minmax(0,1.25fr)] items-start border-t border-[#e4e7e5] dark:border-border-dark [&>*]:min-w-0 [&>*]:border-r [&>*]:border-[#e4e7e5] dark:[&>*]:border-border-dark [&>*]:px-[15px] [&>*]:py-3 [&>*:last-child]:border-r-0 max-tablet:grid-cols-1 max-tablet:[&>*]:border-r-0 max-tablet:[&>*]:border-b max-tablet:[&>*]:border-[#e4e7e5] dark:max-tablet:[&>*]:border-border-dark max-tablet:[&>*:last-child]:border-b-0",
+    "grid grid-cols-[minmax(100px,.55fr)_minmax(0,1fr)_minmax(0,1.25fr)] items-start border-t border-[#e4e7e5] dark:border-border-dark [&>*]:min-w-0 [&>*]:border-r [&>*]:border-[#e4e7e5] dark:[&>*]:border-border-dark [&>*]:px-[15px] [&>*]:py-3 [&>*:last-child]:border-r-0 max-tablet:grid-cols-1 max-tablet:[&>*]:border-r-0 max-tablet:[&>*]:border-b max-tablet:[&>*]:border-[#e4e7e5] dark:max-tablet:[&>*]:border-border-dark max-tablet:[&>*:last-child]:border-b-0 max-mobile:[&>*]:px-3",
   parameterField: "max-tablet:grid max-tablet:grid-cols-[62px_minmax(0,1fr)] max-tablet:items-start",
   parameterIdentity: "flex items-center gap-[7px] max-tablet:grid max-tablet:grid-cols-[62px_minmax(0,1fr)]",
   mobileLabel: "hidden font-mono text-[9px] text-[#7b857e] max-tablet:block dark:text-[#98a39b]",
-  parameterValue: "break-words font-mono text-xs leading-[1.65] text-[#315e55] dark:text-[#9ed6ca]",
+  parameterValue:
+    "min-w-0 font-mono text-xs leading-[1.65] [overflow-wrap:anywhere] text-[#315e55] dark:text-[#9ed6ca]",
   parameterDescription: "m-0 text-[13px] leading-[1.7] text-[#59635c] dark:text-[#c2ccc4]",
-  typeHeader: "flex min-h-[66px] items-start justify-between gap-4 bg-[#fafcf9] px-4 py-[13px] dark:bg-surface-dark",
+  typeHeader:
+    "flex min-h-[66px] items-start justify-between gap-4 bg-[#fafcf9] px-4 py-[13px] dark:bg-surface-dark max-mobile:flex-col max-mobile:gap-3",
   typeBody: "min-w-0",
-  typeName: "block break-words font-mono text-[13px] font-bold text-[#345e56] dark:text-[#9ed6ca]",
+  typeName: "block min-w-0 font-mono text-[13px] font-bold [overflow-wrap:anywhere] text-[#345e56] dark:text-[#9ed6ca]",
   typeDescription: "mt-1.5 mb-0 text-[13px] leading-[1.65] text-[#5e6861] dark:text-[#c2ccc4]",
   sourceLink: "inline-flex shrink-0 items-center gap-[5px] text-[11px] text-[#55716a] dark:text-[#8eb7ae]",
   typeCode:
-    "m-0 max-h-80 overflow-auto overflow-x-hidden border-t border-[#29332e] bg-code p-4 text-[#dbe5df] dark:border-[#3b463e]",
+    "m-0 max-h-80 overflow-auto border-t border-[#29332e] bg-code p-4 text-[#dbe5df] dark:border-[#3b463e] max-mobile:p-3",
 } as const;
 
 const inlineDoc =
-  "[&_p_code]:rounded-[3px] [&_p_code]:border [&_p_code]:border-[#d5e2d2] [&_p_code]:bg-[#f0f6f3] [&_p_code]:px-1 [&_p_code]:py-px [&_p_code]:font-mono [&_p_code]:text-[.9em] [&_p_code]:text-[#315e55] [&_p_strong]:font-bold [&_p_strong]:text-[#303a33] [&_p_em]:text-[#46544b] dark:[&_p_code]:border-[#3c5148] dark:[&_p_code]:bg-[#1d2c27] dark:[&_p_code]:text-[#9bc9bf] dark:[&_p_strong]:text-[#e0e7e2] dark:[&_p_em]:text-[#bac4bd]";
+  "[&_p_code]:rounded-[3px] [&_p_code]:border [&_p_code]:border-[#d5e2d2] [&_p_code]:bg-[#f0f6f3] [&_p_code]:px-1 [&_p_code]:py-px [&_p_code]:font-mono [&_p_code]:text-[.9em] [&_p_code]:[overflow-wrap:anywhere] [&_p_code]:text-[#315e55] [&_p_strong]:font-bold [&_p_strong]:text-[#303a33] [&_p_em]:text-[#46544b] dark:[&_p_code]:border-[#3c5148] dark:[&_p_code]:bg-[#1d2c27] dark:[&_p_code]:text-[#9bc9bf] dark:[&_p_strong]:text-[#e0e7e2] dark:[&_p_em]:text-[#bac4bd]";
 export const pageClass = styles.page;
 
 export function Reference(props: { doc: Doc; locale: Locale }) {
@@ -148,7 +151,7 @@ export function Reference(props: { doc: Doc; locale: Locale }) {
                           <div class={`${inlineDoc} ${styles.parameterRow}`}>
                             <div class={styles.parameterIdentity}>
                               <span class={styles.mobileLabel}>{props.locale.t("parameter")}</span>
-                              <div class="flex min-w-0 items-center gap-[7px]">
+                              <div class="flex min-w-0 flex-wrap items-center gap-[7px]">
                                 <code class={styles.parameterValue}>{parameter.name}</code>
                                 <small class={statusBadge.parameter}>
                                   {parameter.optional ? props.locale.t("optional") : props.locale.t("required")}

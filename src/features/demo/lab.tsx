@@ -13,7 +13,8 @@ const mountContent =
 
 const styles = {
   root: "overflow-hidden rounded-md border border-[#cbd4cd] bg-white shadow-[0_14px_38px_rgba(34,45,38,.075)] dark:border-border-dark dark:bg-panel-dark dark:shadow-none",
-  controls: "absolute top-[49px] right-0 z-[2] flex min-h-9 items-center justify-end gap-2 max-mobile:top-[38px]",
+  controls:
+    "absolute top-[49px] right-0 z-[2] flex min-h-9 items-center justify-end gap-2 max-mobile:static max-mobile:min-h-[56px] max-mobile:border-b max-mobile:border-[#29302b] max-mobile:bg-code max-mobile:px-3 max-mobile:py-2 max-mobile:[&>button]:size-10",
   codePane: "flex min-h-80 max-h-[620px] min-w-0 flex-col border-r-0 bg-code text-[#dbe4de]",
   editor:
     "relative h-[380px] min-h-80 max-h-[620px] flex-1 resize-y overflow-hidden bg-code max-mobile:h-80 max-mobile:min-h-[260px] max-mobile:max-h-[420px]",
@@ -24,13 +25,14 @@ const styles = {
   panelHeader:
     "flex min-h-[38px] items-center border-b border-border bg-[#eef2ee] px-5 font-mono text-[10px] font-medium text-[#657168] dark:border-line-dark dark:bg-surface-dark dark:text-[#b6c1b9]",
   mount: `min-h-40 bg-surface p-5 text-[#28322b] transition-colors empty:hidden dark:bg-code dark:text-[#dbe4de] ${mountContent}`,
-  previewMessage: "block px-2.5 py-7 text-center text-xs text-[#818a84] dark:text-[#939e96]",
+  previewMessage: "block px-5 py-7 text-left text-xs [overflow-wrap:anywhere] text-[#818a84] dark:text-[#939e96]",
   console: "flex min-h-[110px] max-h-[300px] min-w-0 flex-col overflow-auto bg-code text-[#dbe4de]",
   consoleBody: "min-h-[72px] flex-1 bg-code p-3.5",
   consoleEmpty: "block py-2.5 text-xs leading-[1.7] text-[#a6b0a9]",
-  consoleText: "m-0 min-w-0 font-mono text-[11px] leading-[1.65] break-words whitespace-pre-wrap text-inherit",
+  consoleText:
+    "m-0 min-w-0 font-mono text-[11px] leading-[1.65] whitespace-pre-wrap [overflow-wrap:anywhere] text-inherit",
   dialog:
-    "fixed inset-0 z-[100] m-auto h-[min(88vh,900px)] w-[min(92vw,1180px)] max-w-none overflow-hidden rounded-md border border-[#cbd4cd] bg-white p-0 text-[#354139] shadow-[0_28px_90px_rgba(0,0,0,.25)] backdrop:bg-[rgba(13,17,14,.42)] backdrop:backdrop-blur-[2px] dark:border-border-dark dark:bg-panel-dark dark:text-[#dbe4de] dark:shadow-[0_28px_90px_rgba(0,0,0,.42)] dark:backdrop:bg-[rgba(13,17,14,.68)] max-mobile:h-[calc(100dvh-20px)] max-mobile:w-[calc(100vw-20px)]",
+    "fixed inset-0 z-[100] m-auto h-[min(88vh,900px)] w-[min(92vw,1180px)] max-w-none overflow-hidden rounded-md border border-[#cbd4cd] bg-white p-0 text-[#354139] shadow-[0_28px_90px_rgba(0,0,0,.25)] backdrop:bg-[rgba(13,17,14,.42)] backdrop:backdrop-blur-[2px] dark:border-border-dark dark:bg-panel-dark dark:text-[#dbe4de] dark:shadow-[0_28px_90px_rgba(0,0,0,.42)] dark:backdrop:bg-[rgba(13,17,14,.68)] max-mobile:h-dvh max-mobile:w-screen max-mobile:rounded-none max-mobile:border-0",
   dialogShell: "grid h-full min-h-0 grid-rows-[52px_minmax(0,1fr)_58px]",
   dialogHeader:
     "flex items-center justify-between border-b border-[#d2dad4] bg-[#f3f6f3] px-4 dark:border-line-dark dark:bg-surface-dark",
@@ -39,9 +41,9 @@ const styles = {
   dialogFooter:
     "flex items-center justify-end gap-2 border-t border-[#d2dad4] bg-[#f3f6f3] px-4 dark:border-line-dark dark:bg-surface-dark",
   dialogIconButton:
-    "grid size-9 shrink-0 cursor-pointer place-items-center rounded-[5px] border border-[#cbd4cd] bg-white p-0 text-[#465149] transition-colors hover:border-[#96a299] hover:bg-[#e9eeea] disabled:cursor-not-allowed disabled:opacity-50 dark:border-border-dark dark:bg-panel-dark dark:text-[#e4ebe6] dark:hover:border-[#708078] dark:hover:bg-surface-hover-dark",
+    "grid size-9 shrink-0 cursor-pointer place-items-center rounded-[5px] border-[1.5px] border-[#cbd4cd] bg-white p-0 text-[#465149] transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-out hover:-translate-y-0.5 hover:border-[#7f9f48] hover:bg-[#edf4e5] hover:shadow-[0_4px_12px_rgba(70,95,45,.2)] active:translate-y-0 active:scale-[.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#719a2e] disabled:cursor-not-allowed disabled:opacity-50 dark:border-[#3f4742] dark:bg-panel-dark dark:text-[#e4ebe6] dark:hover:border-[#c8d0cb] dark:hover:bg-[#c8d0cb] dark:hover:text-[#171b18] dark:hover:shadow-[0_6px_18px_rgba(0,0,0,.5)]",
   dialogRunButton:
-    "grid size-9 shrink-0 cursor-pointer place-items-center rounded-[5px] border border-[#222923] bg-[#222923] p-0 text-white transition-colors hover:border-[#506b22] hover:bg-[#506b22] disabled:cursor-not-allowed disabled:opacity-50 dark:border-[#a5ce62] dark:bg-[#a5ce62] dark:text-[#172013] dark:hover:border-[#b9df7c] dark:hover:bg-[#b9df7c]",
+    "grid size-9 shrink-0 cursor-pointer place-items-center rounded-[5px] border-[1.5px] border-[#222923] bg-[#222923] p-0 text-white transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-out hover:-translate-y-0.5 hover:border-[#506b22] hover:bg-[#506b22] hover:shadow-[0_5px_14px_rgba(57,78,36,.26)] active:translate-y-0 active:scale-[.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#719a2e] disabled:cursor-not-allowed disabled:opacity-50 dark:border-[#a5ce62] dark:bg-[#a5ce62] dark:text-[#172013] dark:hover:border-[#d2f49d] dark:hover:bg-[#d2f49d] dark:hover:shadow-[0_6px_18px_rgba(0,0,0,.45)]",
   dialogTextarea: `${editorLayer} resize-none overflow-auto bg-transparent text-transparent caret-[#f5faf7] outline-0 [-webkit-text-fill-color:transparent] selection:bg-[rgba(121,163,82,.34)] read-only:cursor-default`,
   dialogHighlight: `${editorLayer} overflow-hidden bg-code text-[#dbe4de] pointer-events-none`,
 } as const;
