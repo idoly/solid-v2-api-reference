@@ -10,6 +10,7 @@
 
 - Node.js `^20.19.0` 或 `>=22.12.0`
 - npm
+- Podman（用于容器化浏览器测试）
 
 ## 快速开始
 
@@ -23,24 +24,40 @@ Vite 会输出本地开发地址，通常为 <http://localhost:5173/>。
 ## 常用命令
 
 ```bash
-npm run dev          # 生成目录并启动 Vite
-npm run generate     # 根据已安装的 Solid 包重新生成目录
-npm run check        # 重新生成目录并执行 TypeScript 检查
-npm run build        # 重新生成目录并构建生产版本
-npm run preview      # 通过 Vite 预览生产构建
-npm start            # 使用生产 Node 服务器提供构建产物和示例接口
-npm run verify:demos # 验证全部浏览器与 SSR 示例
-npm run format       # 使用 Prettier 格式化项目源码
-npm run format:check # 仅检查格式，不写入文件
+npm run dev              # 生成两个目录产物并启动 Vite
+npm run generate         # 重新生成目录产物
+npm run check            # 重新生成目录并执行 TypeScript 检查
+npm run build            # 重新生成目录并构建生产版本
+npm run preview          # 通过 Vite 预览生产构建
+npm start                # 使用生产 Node 服务器提供构建产物和示例接口
+npm test                 # 执行完整静态、Demo 与浏览器测试
+npm run test:e2e         # 使用本机已安装的浏览器运行 Playwright
+npm run test:e2e:podman  # 在固定版本浏览器容器中运行 Playwright
+npm run verify:demos     # 验证全部浏览器与 SSR 示例
+npm run format           # 使用 Prettier 格式化项目源码
+npm run format:check     # 仅检查格式，不写入文件
 ```
 
-`predev`、`precheck` 和 `prebuild` 会自动重新生成 API 目录。
+`predev`、`precheck` 和 `prebuild` 会自动重新生成两个 API 目录产物。
+
+## 浏览器测试
+
+端到端测试使用 Playwright 和 Podman 镜像 `mcr.microsoft.com/playwright:v1.62.0-noble`。Chromium 及其系统依赖均由镜像提供，宿主机无需安装浏览器。测试会在临时容器中构建生产版本、启动 Vite 预览服务，并覆盖桌面端搜索与浏览器历史、语言和主题持久化、可执行示例、移动端目录以及 API chunk 懒加载边界。
+
+```bash
+npm run test:e2e:podman
+```
+
+失败时，截图、视频和 Playwright trace 会保留在 `test-results/`，HTML 报告输出到 `playwright-report/`。内部镜像仓库或镜像代理可通过 `PLAYWRIGHT_IMAGE` 覆盖默认镜像，但镜像中的 Playwright 版本必须与 `@playwright/test` 保持一致。
+
+GitHub Actions 会在 push 和 pull request 时执行类型检查、格式检查和同一套 Podman 浏览器测试。测试分层、环境变量和失败产物排查方式见 [tests/README.md](tests/README.md)。
 
 ## 项目结构
 
 ```text
 data/
-  catalog.json             生成的元数据、本地化文本池和示例源码池
+  catalog-index.json       生成的轻量导航与搜索索引
+  catalog.json             完整元数据、本地化文本池和示例源码池
 
 scripts/
   README.md                 目录和示例工具文档
@@ -63,7 +80,8 @@ scripts/
 
 src/
   main.tsx                 浏览器入口与应用组合
-  data/catalog.ts          生成数据的类型适配器
+  data/catalog-index.ts    轻量发现数据的首屏适配器
+  data/catalog.ts          完整 API 参考数据的懒加载适配器
   features/api/            API 页面与参考视图
   features/demo/           示例控制器、视图与运行时适配器
   features/home/           项目首页
@@ -73,6 +91,10 @@ src/
   lib/preferences.ts       安全的浏览器偏好适配器
   ui/                      共享样式、代码高亮与图标
   tailwind.css             Tailwind CSS 设计系统
+
+tests/
+  README.md                测试架构与问题排查
+  e2e/                     Playwright 生产浏览器流程
 ```
 
 `data` 保存生成产物，`scripts/catalog` 负责目录内容与生成，`scripts/demo` 负责可执行示例服务，`src` 包含浏览器应用。
@@ -86,7 +108,7 @@ src/
 3. 至少有一个可调用的 TypeScript 签名。
 4. 没有标记为 `@internal`。
 
-生成的 `data/catalog.json` 保存元数据、分类、本地化内容、示例源码和紧凑记录索引。[src/data/catalog.ts](src/data/catalog.ts) 负责验证并展开数据供应用使用。不要编辑或手动格式化该生成文件。
+生成器会写入两个产物。`data/catalog-index.json` 只包含导航和搜索所需的双语摘要与标识字段；`data/catalog.json` 保存完整签名、关联类型、本地化文本池和示例源码。[src/data/catalog-index.ts](src/data/catalog-index.ts) 在首屏加载轻量索引，[src/data/catalog.ts](src/data/catalog.ts) 仅在打开 API 页面时验证并展开完整目录。不要编辑或手动格式化这两个生成文件。
 
 中英文 API 内容分别由 `scripts/catalog/locale-en.mjs` 和 `scripts/catalog/locale-zh-cn.mjs` 解析。每种策略包含当前 API 内容，以及用于处理未来新增 API 的回退解析器。每个 API 都在 `scripts/catalog/demos.mjs` 中拥有独立、完整且与语言无关的示例程序。
 
@@ -130,9 +152,11 @@ SSR 示例为只读，只执行可信的生成源码。源码和请求正文上�
 
 ## 前端架构
 
-应用是使用 Hash 选择 API 的 Solid 单页界面，不依赖路由器或外部状态管理器。首页和 API 页面由单一的可选当前文档 ID 表达，避免维护重复路由状态。
+应用是使用 Hash 选择 API 的 Solid 单页界面，不依赖路由器或外部状态管理器。首页和 API 页面由单一的可选当前文档 ID 表达，小型历史适配层负责同步深链接和浏览器前进、后退行为。
 
+- 导航与搜索使用轻量生成索引；完整参考数据和 API 功能区按需加载。
 - 示例执行由功能控制器负责，内嵌与全屏编辑器复用同一实现。
+- 浏览器运行时仅在执行示例时动态导入；结果类型和 SSR 分类位于无重依赖的模型层。
 - Tailwind CSS v4 提供 CSS-first 设计系统和工具类。
 - Prism 提供 TypeScript/TSX 代码高亮。
 - Lucide 提供界面图标。
@@ -146,6 +170,8 @@ SSR 示例为只读，只执行可信的生成源码。源码和请求正文上�
 
 详细维护文档：
 
+- [部署与代码包](./DEPLOYMENT.md)
 - [版本变更](./CHANGELOG.md)
 - [目录与示例工具](./scripts/README.md)
+- [测试与浏览器自动化](./tests/README.md)
 - [添加语言](./src/features/i18n/README.md)

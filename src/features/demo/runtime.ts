@@ -1,17 +1,7 @@
 import * as Solid from "solid-js";
 import * as Web from "@solidjs/web";
 import { runtimeError, runtimeLocale, runtimeMessage } from "../i18n/runtime";
-
-export type Log = {
-  level: "log" | "info" | "warn" | "error" | "result";
-  text: string;
-};
-
-export type Result = {
-  logs: Log[];
-  html: string;
-  error?: string;
-};
+import { isServerDemo, type Log, type Result } from "./model";
 
 const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor as new (
   ...args: string[]
@@ -72,13 +62,6 @@ function sandboxDocument(mount: HTMLElement): Document {
   });
 }
 
-const serverDemoIds = new Set([
-  "@solidjs/web/renderToString",
-  "@solidjs/web/renderToStringAsync",
-  "@solidjs/web/renderToStream",
-  "@solidjs/web/httpHeader",
-  "@solidjs/web/httpStatus",
-]);
 const CLIENT_EXECUTION_TIMEOUT = 8_000;
 
 type Input = {
@@ -100,7 +83,7 @@ export function execute(request: Input): Promise<Result> {
 }
 
 async function executeRequest(request: Input): Promise<Result> {
-  if (isServer(request.id)) {
+  if (isServerDemo(request.id)) {
     const result = await executeServerDemo(request.id, request.index);
     if (result.html) request.mount.innerHTML = result.html;
     return result;
@@ -164,10 +147,6 @@ async function executeServerDemo(id: string, index: number): Promise<Result> {
     const message = error instanceof Error ? error.message : runtimeMessage("runtimeUnavailable");
     return { logs: [{ level: "error", text: message }], html: "", error: message };
   }
-}
-
-export function isServer(id: string) {
-  return serverDemoIds.has(id);
 }
 
 function createResultPublisher(logs: Log[], mount: HTMLElement, onUpdate?: (result: Result) => void) {

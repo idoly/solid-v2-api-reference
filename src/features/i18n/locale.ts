@@ -1,5 +1,5 @@
 import { createSignal } from "solid-js";
-import type { Text } from "../../data/catalog";
+import type { Text } from "../../data/catalog-index";
 import { readPreference, writePreference } from "../../lib/preferences";
 import { defaultLocale, localeCodes, localeOptions, nextLocale, type Code } from "./config";
 import { categories, metadata, messages, type Key } from "./messages";

@@ -17,9 +17,26 @@
 - 目录现包含 9 个分类、121 个公开可调用 API 和 121 个独立 demo。
 - 新增 API 获得完整中英文说明；`clientOnly` 使用浏览器 demo，两个 HTTP 声明 API 使用请求上下文中的 SSR demo。
 
+### Architecture and Performance
+
+- 生成器新增 `data/catalog-index.json` 轻量发现索引；完整签名、关联类型和 demo 源码继续保存在 `data/catalog.json`。
+- 首页、搜索和侧栏只加载轻量索引，API 功能区与完整目录通过 Solid `lazy()` 按需加载。
+- 浏览器 demo 执行器改为动态导入；结果模型和 SSR demo 分类从运行实现中拆分。
+- Hash 导航接入浏览器历史，支持深链接、前进、后退，并在恢复 API 时同步展开所属分类。
+- 生产入口从 557.46 KB 降至 230.58 KB，gzip 从 116.20 KB 降至 75.48 KB；完整 API 数据进入独立按需 chunk。
+
+### Test Automation
+
+- 引入 `@playwright/test@1.62.0`，浏览器及系统依赖由 `mcr.microsoft.com/playwright:v1.62.0-noble` Podman 镜像提供。
+- 新增桌面搜索与导航、浏览器历史、语言和主题持久化、真实 demo 执行、移动端目录以及按需 chunk 加载测试。
+- 新增 GitHub Actions 工作流，并保留失败截图、视频、trace 和 HTML 报告。
+- `npm test` 统一执行类型检查、格式检查、121 个 demo 验证和容器化端到端测试。
+- 新增测试维护指南与函数代码包交付文档，记录 Podman 排错、`code.zip` 内容、监听端口和启动命令。
+
 ### Verification
 
-- 116 个浏览器 demo 和 5 个 SSR demo 全部通过。
+- 116 个浏览器 demo 和 5 个 SSR demo 全部通过，合计 121/121。
+- Podman Chromium 端到端测试 4/4 通过。
 - 类型检查、格式检查和生产构建通过。
 
 ## 1.2-2.0.0-beta.27 - 2026-07-29

@@ -1,6 +1,5 @@
 import { render } from "@solidjs/web";
-import { Show } from "solid-js";
-import { Api } from "./features/api";
+import { Show, lazy } from "solid-js";
 import { Home } from "./features/home";
 import { createLocale } from "./features/i18n/locale";
 import { createNavigation } from "./features/navigation/navigation";
@@ -9,6 +8,8 @@ import { TopBar } from "./features/navigation/topbar";
 import { createTheme } from "./features/theme/theme";
 import { Github } from "./ui/icons";
 import "./tailwind.css";
+
+const Api = lazy(async () => ({ default: (await import("./features/api")).Api }));
 
 function Footer() {
   return (
@@ -39,7 +40,7 @@ function App() {
       <Sidebar nav={nav} locale={locale} />
       <main class="ml-[340px] min-h-[calc(100vh-64px)] bg-transparent pt-16 transition-colors dark:bg-code max-shell:ml-[300px] max-mobile:ml-0 max-mobile:min-h-[calc(100vh-57px)] max-mobile:pt-[57px]">
         <Show when={!nav.isHome()} fallback={<Home nav={nav} locale={locale} />}>
-          <Api doc={nav.activeDoc()} locale={locale} />
+          <Api id={nav.activeId() ?? ""} locale={locale} />
         </Show>
         <Footer />
       </main>

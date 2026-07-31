@@ -1,7 +1,7 @@
 import { ArrowRight, Check, ExternalLink, Sparkles } from "../../ui/icons";
 import { actionButton } from "../../ui/classes";
 import { highlightTsx, syntaxClasses } from "../../ui/highlight";
-import { docs } from "../../data/catalog";
+import { docs } from "../../data/catalog-index";
 import type { Locale } from "../i18n/locale";
 import type { Navigation } from "../navigation/navigation";
 

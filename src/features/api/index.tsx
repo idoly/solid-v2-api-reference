@@ -1,5 +1,5 @@
 import { For, Show, createEffect, createMemo, createSignal } from "solid-js";
-import type { Doc } from "../../data/catalog";
+import { docs, docsById } from "../../data/catalog";
 import { Code2 } from "../../ui/icons";
 import { Lab } from "../demo/lab";
 import type { Locale } from "../i18n/locale";
@@ -17,14 +17,18 @@ const styles = {
     "border-[#cfd7d1] bg-surface text-[#5d6961] hover:border-[#7f9f48] hover:bg-[#edf4e5] hover:shadow-[0_4px_12px_rgba(70,95,45,.18)] dark:border-border-dark dark:bg-surface-dark dark:text-[#b8c1ba] dark:hover:border-[#c8d0cb] dark:hover:bg-[#c8d0cb] dark:hover:text-[#171b18] dark:hover:shadow-[0_6px_18px_rgba(0,0,0,.48)]",
 } as const;
 
-type Props = { doc: Doc; locale: Locale };
+type Props = { id: string; locale: Locale };
+
+const fallback = docs[0];
+if (!fallback) throw new Error("The API catalog is empty");
 
 export function Api(props: Props) {
   const [selected, setSelected] = createSignal(0);
-  const codes = createMemo(() => props.doc.codes);
+  const doc = createMemo(() => docsById.get(props.id) ?? fallback);
+  const codes = createMemo(() => doc().codes);
 
   createEffect(
-    () => props.doc.id,
+    () => doc().id,
     () => {
       setSelected(0);
     },
@@ -32,7 +36,7 @@ export function Api(props: Props) {
 
   return (
     <article class={pageClass}>
-      <Reference doc={props.doc} locale={props.locale} />
+      <Reference doc={doc()} locale={props.locale} />
       <section class={styles.examples}>
         <Heading index="02" title={props.locale.t("usage")} />
         <Show
@@ -58,7 +62,7 @@ export function Api(props: Props) {
               </For>
             </div>
           </Show>
-          <Lab doc={props.doc} code={codes()[selected()]} exampleIndex={selected()} locale={props.locale} />
+          <Lab doc={doc()} code={codes()[selected()]} exampleIndex={selected()} locale={props.locale} />
         </Show>
       </section>
     </article>

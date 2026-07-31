@@ -14,7 +14,7 @@ import {
   Zap,
 } from "../../ui/icons";
 import { iconButton } from "../../ui/classes";
-import { groups } from "../../data/catalog";
+import { groups } from "../../data/catalog-index";
 import type { Locale } from "../i18n/locale";
 import type { Navigation } from "./navigation";
 

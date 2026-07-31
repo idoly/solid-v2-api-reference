@@ -1,7 +1,7 @@
 import { Show } from "solid-js";
 import { Check, ExternalLink, Github, Languages, Menu, Moon, Sparkles, Sun } from "../../ui/icons";
 import { iconButton, mobileIconButton } from "../../ui/classes";
-import { docs } from "../../data/catalog";
+import { docs } from "../../data/catalog-index";
 import type { Locale } from "../i18n/locale";
 import type { Theme } from "../theme/theme";
 import { Search } from "./search";

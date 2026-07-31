@@ -40,11 +40,11 @@ npm run generate
 4. Resolve English and Chinese prose through the locale strategies.
 5. Apply registered demo overrides, normalize them, and reject demos that do not compile or produce observable output.
 6. Deduplicate localized prose and demo source into indexed pools.
-7. Write the compact, versioned `data/catalog.json` artifact.
+7. Write the lightweight `data/catalog-index.json` discovery index and the complete, versioned `data/catalog.json` artifact.
 
-The generated file is consumed through `src/data/catalog.ts`. It contains category order, locale text pools, a demo source pool, API records, and the pinned source commit.
+The browser consumes the index through `src/data/catalog-index.ts` for navigation and search. The lazy API feature consumes the complete catalog through `src/data/catalog.ts`; it contains category order, locale text pools, a demo source pool, full API records, and the pinned source commit.
 
-The generator uses a shared `.generated` entry file and writes `data/catalog.json` directly. Do not run `generate`, `check`, `build`, or `verify:demos` concurrently; their lifecycle scripts can otherwise race over those files.
+The generator uses a shared `.generated` entry file and writes both catalog artifacts directly. Do not run `generate`, `check`, `build`, or `verify:demos` concurrently; their lifecycle scripts can otherwise race over those files.
 
 ## Locale Strategy
 
@@ -72,9 +72,19 @@ Browser demos are compiled on demand through the shared `demo/service.mjs` modul
 
 ## Verification
 
+Run the generated demo verifier on its own with:
+
 ```sh
 npm run verify:demos
 ```
+
+Run the complete release gate, including type checks, formatting, the demo verifier, and Podman Playwright tests, with:
+
+```sh
+npm test
+```
+
+Browser automation details and failure artifact instructions are maintained in [`tests/README.md`](../tests/README.md).
 
 The verifier runs browser API groups in isolated DOM processes and executes SSR groups separately. Event-driven source is exercised through generic input, select, and button interactions. API contracts requiring exact values or ordered asynchronous work use a scenario registry containing both the runner and expected text. SSR groups call the production `service.execute` path instead of maintaining a second executor. Verification fails on compilation errors, runtime exceptions, timeouts, framework diagnostics, `console.error`, missing DOM output, or missing SSR HTML.
 
@@ -91,7 +101,7 @@ Current generated surface:
 
 - Runtime packages: `solid-js@2.0.0-beta.29` and `@solidjs/web@2.0.0-beta.29`
 - Source commit: `4bc0be0bae7870071f30c79c6b70f95b7eddc303`
-- Generated artifact: `data/catalog.json`
-- Runtime adapter: `src/data/catalog.ts`
+- Generated artifacts: `data/catalog-index.json` and `data/catalog.json`
+- Runtime adapters: `src/data/catalog-index.ts` and `src/data/catalog.ts`
 
 `predev`, `precheck`, and `prebuild` regenerate the catalog automatically.

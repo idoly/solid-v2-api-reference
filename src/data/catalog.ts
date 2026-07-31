@@ -1,17 +1,9 @@
 import catalog from "../../data/catalog.json";
+import type { CatalogEntry, Text } from "./catalog-index";
 
-export type Text = { "zh-CN": string; en: string };
+export type { Text } from "./catalog-index";
 
-export type Doc = {
-  id: string;
-  title: string;
-  packageName: string;
-  category: string;
-  kind: string;
-  internal: boolean;
-  deprecated: boolean;
-  definition: Text;
-  useCase: Text;
+export type Doc = CatalogEntry & {
   overloads: Array<{
     signature: string;
     parameters: Array<{ name: string; type: string; optional: boolean; description: Text }>;

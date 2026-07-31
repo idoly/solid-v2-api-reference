@@ -17,8 +17,9 @@ Browser runtime messages and Node service errors remain separate because they sh
 2. Add complete UI, metadata, and category dictionaries in `messages.ts`.
 3. Add the browser runtime dictionary in `runtime.ts`.
 4. Add a catalog locale strategy under `scripts/catalog/` and register it in `scripts/catalog/generate.mjs`.
-5. Extend the generated catalog types and pools in `src/data/catalog.ts`.
+5. Extend the locale mapping and generated contracts for both `data/catalog-index.json` and `data/catalog.json`; update `src/data/catalog-index.ts` and `src/data/catalog.ts` as needed.
 6. Add the matching service-error dictionary in `scripts/demo/i18n.mjs`.
-7. Run `npm run format:check`, `npm run check`, and `npm run verify:demos`.
+7. Add or update Playwright preference coverage when locale cycling behavior changes.
+8. Run the complete `npm test` quality gate.
 
-Catalog API prose is generated separately from UI copy. A locale is not complete until both its catalog strategy and runtime/UI dictionaries are present.
+Catalog API prose is generated separately from UI copy. A locale is not complete until its catalog strategy, lightweight index output, full catalog pools, runtime/UI dictionaries, and service errors are all present.

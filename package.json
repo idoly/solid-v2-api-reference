@@ -18,6 +18,9 @@
     "start": "node scripts/demo/server.mjs",
     "precheck": "npm run generate",
     "check": "tsc --noEmit",
+    "test": "npm run check && npm run format:check && npm run verify:demos && npm run test:e2e:podman",
+    "test:e2e": "npm run build && playwright test",
+    "test:e2e:podman": "bash scripts/test/e2e-podman.sh",
     "verify:demos": "npm run generate && node scripts/demo/verify.mjs --all"
   },
   "dependencies": {
@@ -30,6 +33,7 @@
     "typescript": "^5.7.2"
   },
   "devDependencies": {
+    "@playwright/test": "1.62.0",
     "@tailwindcss/vite": "^4.3.3",
     "@types/prismjs": "^1.26.6",
     "happy-dom": "^20.8.9",

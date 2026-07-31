@@ -723,7 +723,23 @@ const catalog = {
   codePool,
   records: pooledRecords,
 };
+const catalogIndex = {
+  schemaVersion: 1,
+  categories,
+  records: records.map(({ id, title, packageName, category, kind, internal, deprecated, definition, useCase }) => ({
+    id,
+    title,
+    packageName,
+    category,
+    kind,
+    internal,
+    deprecated,
+    definition: { "zh-CN": definition.zh, en: definition.en },
+    useCase: { "zh-CN": useCase.zh, en: useCase.en },
+  })),
+};
 fs.writeFileSync(path.join(root, "data", "catalog.json"), `${JSON.stringify(catalog)}\n`);
+fs.writeFileSync(path.join(root, "data", "catalog-index.json"), `${JSON.stringify(catalogIndex)}\n`);
 console.log(
   `Generated ${records.length} public callable APIs across ${categories.length} categories and ${locales.length} locales.`,
 );

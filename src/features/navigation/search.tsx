@@ -1,5 +1,5 @@
 import { For, Show, createSignal } from "solid-js";
-import { docs, docsByTitle } from "../../data/catalog";
+import { docs, docsByTitle } from "../../data/catalog-index";
 import { ChevronRight, SearchIcon, X } from "../../ui/icons";
 import type { Locale } from "../i18n/locale";
 import type { Navigation } from "./navigation";
