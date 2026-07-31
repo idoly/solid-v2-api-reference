@@ -81,16 +81,16 @@ The verifier runs browser API groups in isolated DOM processes and executes SSR 
 Current generated surface:
 
 - `solid-js`: 54 callable APIs
-- `@solidjs/web`: 64 callable APIs
-- Total: 118 APIs across 9 categories
-- Browser groups: 115
-- SSR groups: 3
-- Unique complete demo programs: 118
+- `@solidjs/web`: 67 callable APIs
+- Total: 121 APIs across 9 categories
+- Browser groups: 116
+- SSR groups: 5
+- Unique complete demo programs: 121
 
 ## Baseline
 
-- Runtime packages: `solid-js@2.0.0-beta.27` and `@solidjs/web@2.0.0-beta.27`
-- Source commit: `4e3921b77c3dfc538b983710dfd9531709251e84`
+- Runtime packages: `solid-js@2.0.0-beta.29` and `@solidjs/web@2.0.0-beta.29`
+- Source commit: `4bc0be0bae7870071f30c79c6b70f95b7eddc303`
 - Generated artifact: `data/catalog.json`
 - Runtime adapter: `src/data/catalog.ts`
 

@@ -76,7 +76,10 @@ const serverDemoIds = new Set([
   "@solidjs/web/renderToString",
   "@solidjs/web/renderToStringAsync",
   "@solidjs/web/renderToStream",
+  "@solidjs/web/httpHeader",
+  "@solidjs/web/httpStatus",
 ]);
+const CLIENT_EXECUTION_TIMEOUT = 8_000;
 
 type Input = {
   id: string;
@@ -86,7 +89,17 @@ type Input = {
   onUpdate?: (result: Result) => void;
 };
 
-export async function execute(request: Input): Promise<Result> {
+export function execute(request: Input): Promise<Result> {
+  let timer: number | undefined;
+  const timeout = new Promise<never>((_resolve, reject) => {
+    timer = window.setTimeout(() => reject(runtimeError("executionTimedOut")), CLIENT_EXECUTION_TIMEOUT);
+  });
+  return Promise.race([executeRequest(request), timeout]).finally(() => {
+    if (timer) window.clearTimeout(timer);
+  });
+}
+
+async function executeRequest(request: Input): Promise<Result> {
   if (isServer(request.id)) {
     const result = await executeServerDemo(request.id, request.index);
     if (result.html) request.mount.innerHTML = result.html;

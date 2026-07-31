@@ -280,6 +280,14 @@ export const apiContent = {
     "getRequestEvent 是 @solidjs/web 对外提供的可调用 API。",
     "用于源码声明所描述的响应式和组件场景。",
   ],
+  "@solidjs/web/httpHeader": [
+    "在 SSR 期间为当前响应式作用域声明 HTTP 响应头；`append` 可追加值而不是覆盖响应头。",
+    "组件或响应式分支需要声明缓存策略、内容语言等响应元数据时使用。",
+  ],
+  "@solidjs/web/httpStatus": [
+    "在 SSR 期间为当前响应式作用域声明 HTTP 状态码和可选状态文本。",
+    "路由、错误 fallback 或其他渲染分支需要决定 404 等响应状态时使用。",
+  ],
   "@solidjs/web/isHref": [
     "判断值是否带有 `Href` 品牌标记。",
     "处理 redirect 等响应辅助值，需要跨重复模块实例可靠识别 Href 时使用。",

@@ -98,7 +98,7 @@ async function verifyServer(id) {
   }
 
   console.log(JSON.stringify({ id, passed, failed: failures.length, failures }));
-  if (failures.length) process.exitCode = 1;
+  process.exit(failures.length ? 1 : 0);
 }
 
 async function verifyBrowser(onlyId) {
@@ -196,7 +196,7 @@ async function verifyBrowser(onlyId) {
   }
 
   console.log(JSON.stringify({ passed, failed: failures.length, failures }, null, 2));
-  if (failures.length) process.exitCode = 1;
+  process.exit(failures.length ? 1 : 0);
 }
 
 function hasInteractiveControls(source) {

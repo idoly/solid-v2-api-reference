@@ -1,5 +1,27 @@
 # Change Log
 
+## 1.3-2.0.0-beta.29 - 2026-07-31
+
+基线从 Solid `2.0.0-beta.27` 更新到 `2.0.0-beta.29`，并重新生成 API 目录。
+
+### Dependency Baseline
+
+- `solid-js`、`@solidjs/web`、`babel-preset-solid` 和间接依赖 `@solidjs/signals` 更新至 `2.0.0-beta.29`。
+- DOM Expressions Babel 工具链更新至 `0.50.0-next.34`。
+- 固定上游源码提交更新为 `4bc0be0bae7870071f30c79c6b70f95b7eddc303`。
+
+### Catalog Changes
+
+- 新增 `@solidjs/web/clientOnly`、`@solidjs/web/httpHeader` 和 `@solidjs/web/httpStatus`。
+- `renderToStream` 的返回值新增只读 `readable: ReadableStream<Uint8Array>` 属性。
+- 目录现包含 9 个分类、121 个公开可调用 API 和 121 个独立 demo。
+- 新增 API 获得完整中英文说明；`clientOnly` 使用浏览器 demo，两个 HTTP 声明 API 使用请求上下文中的 SSR demo。
+
+### Verification
+
+- 116 个浏览器 demo 和 5 个 SSR demo 全部通过。
+- 类型检查、格式检查和生产构建通过。
+
 ## 1.2-2.0.0-beta.27 - 2026-07-29
 
 保持 Solid `2.0.0-beta.27` 依赖基线，重点完善 API demo 的交互性、运行稳定性与项目架构。

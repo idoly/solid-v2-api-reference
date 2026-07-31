@@ -5,11 +5,12 @@ import { resolveApiContent as resolveEnContent } from "./locale-en.mjs";
 import { resolveApiContent as resolveZhContent } from "./locale-zh-cn.mjs";
 import { compileDemo } from "../demo/compile.mjs";
 import { demoOverrides } from "./demos.mjs";
+import { serverDemoIds } from "../demo/config.mjs";
 
 const root = process.cwd();
 const tempDir = path.join(root, ".generated");
 const entryFile = path.join(tempDir, "api-entries.ts");
-const sourceCommit = "4e3921b77c3dfc538b983710dfd9531709251e84";
+const sourceCommit = "4bc0be0bae7870071f30c79c6b70f95b7eddc303";
 
 fs.mkdirSync(tempDir, { recursive: true });
 fs.writeFileSync(entryFile, 'import * as Solid from "solid-js";\nimport * as Web from "@solidjs/web";\n');
@@ -89,7 +90,16 @@ const ssrNames = new Set([
   "resolveSSRNode",
   "generateHydrationScript",
 ]);
-const responseNames = new Set(["redirect", "reload", "respond", "isHref", "isResponseEnvelope", "getRequestEvent"]);
+const responseNames = new Set([
+  "redirect",
+  "reload",
+  "respond",
+  "isHref",
+  "isResponseEnvelope",
+  "getRequestEvent",
+  "httpHeader",
+  "httpStatus",
+]);
 const deprecatedNames = new Set(["@solidjs/web/renderToStringAsync"]);
 const CATEGORY = {
   reactivity: "reactivity",
@@ -620,11 +630,7 @@ function isObservableDemo(source, record) {
     /console\.(?:log|info|warn|error)\s*\(|\brender\s*\(|\bhydrate\s*\(|document\.(?:getElementById|createElement|body)/.test(
       source,
     );
-  const isServerDemo = new Set([
-    "@solidjs/web/renderToString",
-    "@solidjs/web/renderToStringAsync",
-    "@solidjs/web/renderToStream",
-  ]).has(record.id);
+  const isServerDemo = serverDemoIds.has(record.id);
   const hasTsxEntry =
     /\b(?:function|const)\s+App\b/.test(source) && /\b(?:render|hydrate)\s*\(\s*\(\)\s*=>\s*<App\s*\/>/.test(source);
   return invokesCurrent && hasOutput && (isServerDemo || hasTsxEntry);
@@ -632,7 +638,7 @@ function isObservableDemo(source, record) {
 
 function compileExample(source, id) {
   try {
-    const server = id.startsWith("@solidjs/web/renderTo");
+    const server = serverDemoIds.has(id);
     return compileDemo(source, {
       filename: `${id.replace(/[^a-zA-Z0-9_-]/g, "_")}.tsx`,
       generate: server ? "ssr" : "dom",

@@ -2,7 +2,7 @@
 
 [English](./README.md) | [简体中文](./README.zh-CN.md)
 
-A source-derived, executable Chinese and English API reference for `solid-js@2.0.0-beta.27` and `@solidjs/web@2.0.0-beta.27`.
+A source-derived, executable Chinese and English API reference for `solid-js@2.0.0-beta.29` and `@solidjs/web@2.0.0-beta.29`.
 
 The catalog is generated from the packages installed in this repository. It exposes the real callable exports, TypeScript signatures, related types, pinned source links, and editable examples. Browser examples use a scoped preview mount; SSR examples run through a restricted Node executor.
 
@@ -122,11 +122,11 @@ Browser demos publish console and DOM updates incrementally and discard stale ex
 
 Current verified surface:
 
-- 118 callable APIs
-- 118 unique complete demo programs
-- 115 browser API groups
-- 3 SSR API groups
-- 118/118 passing
+- 121 callable APIs
+- 121 unique complete demo programs
+- 116 browser API groups
+- 5 SSR API groups
+- 121/121 passing
 
 ## Frontend Architecture
 
@@ -140,9 +140,9 @@ The application is a Solid single-page interface with hash-based API selection. 
 
 ## Source Baseline
 
-- `solid-js`: `2.0.0-beta.27`
-- `@solidjs/web`: `2.0.0-beta.27`
-- Pinned source commit: `4e3921b77c3dfc538b983710dfd9531709251e84`
+- `solid-js`: `2.0.0-beta.29`
+- `@solidjs/web`: `2.0.0-beta.29`
+- Pinned source commit: `4bc0be0bae7870071f30c79c6b70f95b7eddc303`
 
 Detailed maintenance documentation:
 

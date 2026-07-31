@@ -5,4 +5,6 @@ export const serverDemoIds = new Set([
   "@solidjs/web/renderToString",
   "@solidjs/web/renderToStringAsync",
   "@solidjs/web/renderToStream",
+  "@solidjs/web/httpHeader",
+  "@solidjs/web/httpStatus",
 ]);

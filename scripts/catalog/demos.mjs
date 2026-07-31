@@ -1705,6 +1705,70 @@ function App() {
 
 render(() => <App />, document.getElementById("root")!);`,
 
+  "@solidjs/web/clientOnly": `import { clientOnly, render } from "@solidjs/web";
+
+const ClientGreeting = clientOnly(
+  () =>
+    Promise.resolve({
+      default: (props: { name: string }) => <p>Client module: {props.name}</p>,
+    }),
+  { lazy: true },
+);
+
+function App() {
+  return (
+    <main>
+      <h3>Client-only component</h3>
+      <ClientGreeting name="Ada" fallback={<p>Loading browser module</p>} />
+    </main>
+  );
+}
+
+render(() => <App />, document.getElementById("root")!);`,
+
+  "@solidjs/web/httpHeader": `import { httpHeader, renderToString, RequestContext } from "@solidjs/web";
+
+const response = { status: 200, statusText: "OK", headers: new Headers(), committed: false };
+(globalThis as any)[RequestContext] = { getStore: () => ({ response }) };
+
+const html = renderToString(() => {
+  httpHeader("cache-control", "private, max-age=60");
+  httpHeader("vary", "accept-encoding");
+  httpHeader("vary", "accept-language", { append: true });
+  response.committed = true;
+  return (
+    <main>
+      <h1>Response headers declared</h1>
+      <p>Cache-Control: {response.headers.get("cache-control")}</p>
+      <p>Vary: {response.headers.get("vary")}</p>
+    </main>
+  );
+});
+
+delete (globalThis as any)[RequestContext];
+console.log(html);`,
+
+  "@solidjs/web/httpStatus": `import { httpStatus, renderToString, RequestContext } from "@solidjs/web";
+
+const response = { status: 200, statusText: "OK", headers: new Headers(), committed: false };
+(globalThis as any)[RequestContext] = { getStore: () => ({ response }) };
+
+const html = renderToString(() => {
+  httpStatus(404, "Not Found");
+  response.committed = true;
+  return (
+    <main>
+      <h1>
+        {response.status} {response.statusText}
+      </h1>
+      <p>The requested document was not found.</p>
+    </main>
+  );
+});
+
+delete (globalThis as any)[RequestContext];
+console.log(html);`,
+
   "@solidjs/web/renderToString": `import { renderToString } from "@solidjs/web";
 
 const App = () => (

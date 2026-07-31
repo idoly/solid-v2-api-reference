@@ -304,6 +304,14 @@ export const apiContent = {
     "Returns the request event associated with the current server execution context, when one exists.",
     "Use it in server-side code that needs request headers, response metadata, or other request-scoped state.",
   ],
+  "@solidjs/web/httpHeader": [
+    "Declares an HTTP response header for the lifetime of the current reactive scope during SSR; `append` adds another value instead of replacing the header.",
+    "Call it in a component or reactive scope when that rendered branch owns response metadata such as caching or content-language headers.",
+  ],
+  "@solidjs/web/httpStatus": [
+    "Declares the HTTP response status and optional status text for the lifetime of the current reactive scope during SSR.",
+    "Call it in a route, error fallback, or other rendered branch that determines a response such as 404 Not Found.",
+  ],
   "@solidjs/web/isHref": [
     "Whether `value` is an `Href`-branded URL-bearing value.",
     "Registered-symbol check, so it stays correct across duplicated module instances — same rationale as `isResponseEnvelope`.",

@@ -1,4 +1,4 @@
-import { createEffect, createMemo, createSignal, onCleanup } from "solid-js";
+import { createEffect, createMemo, createSignal, flush, onCleanup } from "solid-js";
 import type { Doc } from "../../data/catalog";
 import { highlightTsx } from "../../ui/highlight";
 import { execute, isServer, type Result } from "./runtime";
@@ -69,7 +69,10 @@ export function createController(input: Input, getMount: () => HTMLDivElement | 
       const message = error instanceof Error ? error.message : String(error);
       setResult({ logs: [{ level: "error", text: message }], html: "", error: message });
     } finally {
-      if (executionId === execution) setRunning(false);
+      if (executionId === execution) {
+        setRunning(false);
+        flush();
+      }
     }
   }
 

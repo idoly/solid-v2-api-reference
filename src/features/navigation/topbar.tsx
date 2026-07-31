@@ -57,7 +57,7 @@ export function TopBar(props: Props) {
           target="_blank"
           rel="noreferrer"
         >
-          2.0.0-beta.27 <ExternalLink size={12} />
+          2.0.0-beta.29 <ExternalLink size={12} />
         </a>
         <button
           class={styles.locale}
