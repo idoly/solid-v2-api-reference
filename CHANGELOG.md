@@ -21,21 +21,27 @@
 
 - 生成器新增 `data/catalog-index.json` 轻量发现索引；完整签名、关联类型和 demo 源码继续保存在 `data/catalog.json`。
 - 首页、搜索和侧栏只加载轻量索引，API 功能区与完整目录通过 Solid `lazy()` 按需加载。
-- 浏览器 demo 执行器改为动态导入；结果模型和 SSR demo 分类从运行实现中拆分。
-- Hash 导航接入浏览器历史，支持深链接、前进、后退，并在恢复 API 时同步展开所属分类。
+- 浏览器 demo 执行器改为动态导入；服务通信、DOM 作用域、值格式化和执行编排拆分为独立模块。
+- 完整目录升级为 schema 4，从 Node 允许列表生成浏览器/服务端执行类型，删除前端重复维护的 SSR API 名单。
+- Hash 导航接入浏览器历史，支持深链接、前进、后退，并将 URL 读写和事件订阅收敛到独立路由适配器。
 - 生产入口从 557.46 KB 降至 230.58 KB，gzip 从 116.20 KB 降至 75.48 KB；完整 API 数据进入独立按需 chunk。
 
 ### Test Automation
 
 - 引入 `@playwright/test@1.62.0`，浏览器及系统依赖由 `mcr.microsoft.com/playwright:v1.62.0-noble` Podman 镜像提供。
 - 新增桌面搜索与导航、浏览器历史、语言和主题持久化、真实 demo 执行、移动端目录以及按需 chunk 加载测试。
-- 新增 GitHub Actions 工作流，并保留失败截图、视频、trace 和 HTML 报告。
-- `npm test` 统一执行类型检查、格式检查、121 个 demo 验证和容器化端到端测试。
-- 新增测试维护指南与函数代码包交付文档，记录 Podman 排错、`code.zip` 内容、监听端口和启动命令。
+- 增加 12 个 Node 单元与服务集成测试，覆盖目录 schema、加载适配器、执行类型契约、HTTP 协议、静态资源、SPA 回退、缓存和限流。
+- Demo HTTP 端点补齐方法与索引校验，错误响应继续复用统一本地化协议。
+- 生产服务器拆分为可注入 HTTP 应用工厂和薄进程入口，可通过随机端口测试且不再在导入时产生监听副作用。
+- GitHub Actions 与本地统一执行 `npm test`，并保留失败截图、视频、trace 和 HTML 报告。
+- 完整门禁只生成一次目录、构建一次生产包，再由 Podman 复用 `dist`；独立测试命令仍保留自准备能力。
+- `npm test` 统一执行类型检查、格式检查、单元测试、121 个 demo 验证和容器化端到端测试。
+- 新增 `npm run package:code`，自动构建、压缩、校验 `code.zip` 并输出 SHA-256。
 
 ### Verification
 
 - 116 个浏览器 demo 和 5 个 SSR demo 全部通过，合计 121/121。
+- Node 契约、协议与服务集成测试 12/12 通过。
 - Podman Chromium 端到端测试 4/4 通过。
 - 类型检查、格式检查和生产构建通过。
 

@@ -30,12 +30,14 @@ npm run check            # Regenerate and run TypeScript checks
 npm run build            # Regenerate and create a production build
 npm run preview          # Preview the production build through Vite
 npm start                # Serve the build and Demo APIs with the production Node server
-npm test                 # Run the complete static, demo, and browser test suite
+npm test                 # Run the complete static, unit, demo, and browser test suite
+npm run test:unit        # Run Node contract and HTTP protocol tests
 npm run test:e2e         # Run Playwright with a locally installed browser
 npm run test:e2e:podman  # Run Playwright in the pinned browser container
 npm run verify:demos     # Verify all browser and SSR examples
 npm run format           # Format project source files with Prettier
 npm run format:check     # Check formatting without writing files
+npm run package:code     # Build and validate the deployable code.zip
 ```
 
 `predev`, `precheck`, and `prebuild` regenerate both API catalog artifacts automatically.
@@ -50,7 +52,7 @@ npm run test:e2e:podman
 
 Failures retain screenshots, videos, and Playwright traces under `test-results/`; the HTML report is written to `playwright-report/`. Override the image for an internal registry or mirror with `PLAYWRIGHT_IMAGE` while keeping its Playwright version aligned with `@playwright/test`.
 
-GitHub Actions runs type checks, formatting checks, and the same Podman browser suite on pushes and pull requests. See [tests/README.md](tests/README.md) for the test layers, environment overrides, and artifact workflow.
+GitHub Actions runs the same complete `npm test` quality gate on pushes and pull requests. See [tests/README.md](tests/README.md) for the test layers, environment overrides, and artifact workflow.
 
 ## Project Structure
 
@@ -68,6 +70,7 @@ scripts/
     locale-en.mjs          English API prose and generation rules
     locale-zh-cn.mjs       Chinese API prose and generation rules
   demo/
+    app.mjs                Testable production server factory
     compile.mjs            Shared TypeScript/JSX compiler
     config.mjs             Runtime limits and registered SSR APIs
     http.mjs               Framework-neutral Demo API request handler
@@ -75,15 +78,16 @@ scripts/
     load.mjs               Generated demo source loader
     service.mjs            Shared compile and SSR service
     plugin.ts              Vite development endpoints
-    server.mjs             Production HTTP server
+    server.mjs             Environment and process lifecycle entry
     verify.mjs             Browser and SSR verification
+  release/package.sh       Reproducible deployment package builder
 
 src/
   main.tsx                 Browser entry and application composition
   data/catalog-index.ts    Eager adapter for lightweight discovery data
   data/catalog.ts          Lazy adapter for complete API reference data
   features/api/            API page and reference view
-  features/demo/           Controller, view, and runtime adapter
+  features/demo/           Controller, service client, scoped DOM, and runtime
   features/home/           Project home page
   features/i18n/           Locale config, UI messages, and runtime messages
   features/navigation/     Controller, search, sidebar, and top bar
@@ -94,6 +98,7 @@ src/
 
 tests/
   README.md                Test architecture and troubleshooting
+  unit/                    Catalog and HTTP protocol contracts
   e2e/                     Playwright production-browser workflows
 ```
 
@@ -108,7 +113,7 @@ tests/
 3. Has at least one callable TypeScript signature.
 4. Is not marked `@internal`.
 
-The generator writes two artifacts. `data/catalog-index.json` contains only the bilingual summaries and identity fields needed by navigation and search. `data/catalog.json` stores complete signatures, related types, localized prose pools, and demo source. [src/data/catalog-index.ts](src/data/catalog-index.ts) loads the index eagerly, while [src/data/catalog.ts](src/data/catalog.ts) validates and expands the complete catalog only when an API page is opened. Do not edit or manually format either generated file.
+The generator writes two artifacts. `data/catalog-index.json` contains only the bilingual summaries and identity fields needed by navigation and search. Schema 4 of `data/catalog.json` stores complete signatures, related types, localized prose pools, demo source, and the generated browser/server execution type. [src/data/catalog-index.ts](src/data/catalog-index.ts) loads the index eagerly, while [src/data/catalog.ts](src/data/catalog.ts) validates and expands the complete catalog only when an API page is opened. Do not edit or manually format either generated file.
 
 English and Chinese API prose is resolved by `scripts/catalog/locale-en.mjs` and `scripts/catalog/locale-zh-cn.mjs`. Each strategy contains the current API content and a resolver for APIs discovered in later package versions. Every API has its own language-neutral, complete demo program in `scripts/catalog/demos.mjs`.
 
@@ -127,7 +132,7 @@ npm run build
 npm start
 ```
 
-The server hosts both `dist` and executable demos on port `9000` by default. Set `PORT` to use another port.
+The server hosts both `dist` and executable demos on port `9000` by default. Set `PORT` to use another port. `scripts/demo/app.mjs` owns the injectable HTTP application; `server.mjs` only validates environment settings, starts listening, and handles shutdown signals.
 
 Pure static hosting is also supported for reading the reference. Without the Node server, demos remain clickable but show a localized runtime-unavailable message.
 
@@ -138,7 +143,7 @@ Browser examples are compiled through `scripts/demo/compile.mjs` and executed wi
 - `solid-js`
 - `@solidjs/web`
 
-SSR examples are read-only and execute only trusted generated code. Source and request bodies are limited to 100 KB; SSR execution is limited to the three registered rendering APIs and times out after five seconds.
+SSR examples are read-only and execute only trusted generated code. Source and request bodies are limited to 100 KB; SSR execution is limited to five registered API demos and times out after five seconds. Runtime endpoints enforce their HTTP methods and validate demo indexes before execution.
 
 Browser demos publish console and DOM updates incrementally and discard stale execution results. The verifier compiles and runs every example, exercises interactive controls, applies targeted scenarios where ordering matters, and validates SSR through the production service.
 
@@ -155,8 +160,10 @@ Current verified surface:
 The application is a Solid single-page interface with hash-based API selection. It does not use a router or external state manager. A single optional active-document ID represents both home and API routes, while a small history adapter keeps deep links and browser back/forward navigation synchronized.
 
 - Navigation and search use a lightweight generated index; complete reference data and the API feature load on demand.
+- URL mechanics live in a hash-route adapter; navigation owns only catalog, search, and panel state.
 - Demo execution stays in the feature controller; inline and fullscreen editors share one implementation.
-- The browser runtime is dynamically imported only when an example executes; result types and SSR classification live in a dependency-light model.
+- The browser runtime is dynamically imported only when an example executes; service transport, scoped DOM access, value formatting, and execution orchestration have separate modules.
+- Browser/server execution metadata is generated from the Node allowlist and contract-tested, eliminating duplicate frontend API lists.
 - Tailwind CSS v4 provides the CSS-first design system and utility styles.
 - Prism provides TypeScript/TSX highlighting.
 - Lucide provides interface icons.

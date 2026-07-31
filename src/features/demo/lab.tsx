@@ -58,7 +58,12 @@ const consoleTone = {
   result: "text-[#a9d778]",
 } as const;
 
-type Props = { doc: Doc; code: string; exampleIndex: number; locale: Locale };
+type Props = {
+  doc: Pick<Doc, "id" | "title" | "execution">;
+  code: string;
+  exampleIndex: number;
+  locale: Locale;
+};
 type CodeEditorProps = {
   class: string;
   highlightClass: string;

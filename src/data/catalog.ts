@@ -4,6 +4,7 @@ import type { CatalogEntry, Text } from "./catalog-index";
 export type { Text } from "./catalog-index";
 
 export type Doc = CatalogEntry & {
+  execution: "browser" | "server";
   overloads: Array<{
     signature: string;
     parameters: Array<{ name: string; type: string; optional: boolean; description: Text }>;
@@ -32,7 +33,7 @@ type RawApi = Omit<Doc, "definition" | "useCase" | "overloads" | "relatedTypes" 
 };
 
 type Catalog = {
-  schemaVersion: 3;
+  schemaVersion: 4;
   sourceCommit: string;
   categories: string[];
   textPools: { "zh-CN": string[]; en: string[] };
@@ -42,7 +43,7 @@ type Catalog = {
 
 const data = catalog as unknown as Catalog;
 
-if (data.schemaVersion !== 3) throw new Error(`Unsupported catalog schema: ${data.schemaVersion}`);
+if (data.schemaVersion !== 4) throw new Error(`Unsupported catalog schema: ${data.schemaVersion}`);
 if (data.textPools["zh-CN"].length !== data.textPools.en.length) {
   throw new Error("Catalog locale pools contain different numbers of text entries");
 }
@@ -79,16 +80,3 @@ export const docs: Doc[] = data.records.map(({ overloads, relatedTypes, ...recor
 }));
 
 export const docsById = new Map(docs.map((doc) => [doc.id, doc]));
-export const docsByTitle = new Map<string, Doc>();
-for (const doc of docs) {
-  if (!docsByTitle.has(doc.title)) docsByTitle.set(doc.title, doc);
-}
-
-const order = data.categories;
-const groupedDocs = Map.groupBy(docs, (doc) => doc.category);
-export const groups = order.map((category) => ({
-  category,
-  docs: groupedDocs.get(category) ?? [],
-}));
-
-export const findDoc = (idOrTitle: string) => docsById.get(idOrTitle) ?? docsByTitle.get(idOrTitle);

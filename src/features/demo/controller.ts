@@ -1,9 +1,9 @@
 import { createEffect, createMemo, createSignal, flush, onCleanup } from "solid-js";
 import type { Doc } from "../../data/catalog";
 import { highlightTsx } from "../../ui/highlight";
-import { isServerDemo, type Result } from "./model";
+import type { Result } from "./model";
 
-type Input = { doc: Doc; code: string; exampleIndex: number };
+type Input = { doc: Pick<Doc, "id" | "execution">; code: string; exampleIndex: number };
 type Snapshot = { id: string; index: number; code: string; server: boolean };
 
 async function writeClipboard(source: string) {
@@ -25,7 +25,7 @@ export function createController(input: Input, getMount: () => HTMLDivElement | 
     id: input.doc.id,
     index: input.exampleIndex,
     code: input.code,
-    server: isServerDemo(input.doc.id),
+    server: input.doc.execution === "server",
   }));
   const highlighted = createMemo(() => highlightTsx(`${source()}\n`));
   const hasPreview = createMemo(
@@ -60,6 +60,7 @@ export function createController(input: Input, getMount: () => HTMLDivElement | 
         id: snapshot.id,
         index: snapshot.index,
         source: code,
+        server: snapshot.server,
         mount,
         onUpdate: (update) => {
           if (executionId === execution) setResult(update);

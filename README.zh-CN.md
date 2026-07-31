@@ -30,12 +30,14 @@ npm run check            # 重新生成目录并执行 TypeScript 检查
 npm run build            # 重新生成目录并构建生产版本
 npm run preview          # 通过 Vite 预览生产构建
 npm start                # 使用生产 Node 服务器提供构建产物和示例接口
-npm test                 # 执行完整静态、Demo 与浏览器测试
+npm test                 # 执行完整静态、单元、Demo 与浏览器测试
+npm run test:unit        # 执行 Node 目录契约与 HTTP 协议测试
 npm run test:e2e         # 使用本机已安装的浏览器运行 Playwright
 npm run test:e2e:podman  # 在固定版本浏览器容器中运行 Playwright
 npm run verify:demos     # 验证全部浏览器与 SSR 示例
 npm run format           # 使用 Prettier 格式化项目源码
 npm run format:check     # 仅检查格式，不写入文件
+npm run package:code     # 构建并校验可部署的 code.zip
 ```
 
 `predev`、`precheck` 和 `prebuild` 会自动重新生成两个 API 目录产物。
@@ -50,7 +52,7 @@ npm run test:e2e:podman
 
 失败时，截图、视频和 Playwright trace 会保留在 `test-results/`，HTML 报告输出到 `playwright-report/`。内部镜像仓库或镜像代理可通过 `PLAYWRIGHT_IMAGE` 覆盖默认镜像，但镜像中的 Playwright 版本必须与 `@playwright/test` 保持一致。
 
-GitHub Actions 会在 push 和 pull request 时执行类型检查、格式检查和同一套 Podman 浏览器测试。测试分层、环境变量和失败产物排查方式见 [tests/README.md](tests/README.md)。
+GitHub Actions 会在 push 和 pull request 时执行与本地一致的完整 `npm test` 质量门禁。测试分层、环境变量和失败产物排查方式见 [tests/README.md](tests/README.md)。
 
 ## 项目结构
 
@@ -68,6 +70,7 @@ scripts/
     locale-en.mjs          英文 API 内容与生成规则
     locale-zh-cn.mjs       中文 API 内容与生成规则
   demo/
+    app.mjs                可测试的生产服务器工厂
     compile.mjs            共享 TypeScript/JSX 编译器
     config.mjs             运行限制与已注册 SSR API
     http.mjs               与 HTTP 框架无关的示例接口处理器
@@ -75,15 +78,16 @@ scripts/
     load.mjs               生成后的示例源码加载器
     service.mjs            共享编译与 SSR 服务
     plugin.ts              Vite 开发接口
-    server.mjs             生产 HTTP 服务器
+    server.mjs             环境配置与进程生命周期入口
     verify.mjs             浏览器与 SSR 验证器
+  release/package.sh       可重复执行的部署包构建器
 
 src/
   main.tsx                 浏览器入口与应用组合
   data/catalog-index.ts    轻量发现数据的首屏适配器
   data/catalog.ts          完整 API 参考数据的懒加载适配器
   features/api/            API 页面与参考视图
-  features/demo/           示例控制器、视图与运行时适配器
+  features/demo/           示例控制器、服务客户端、DOM 作用域与运行时
   features/home/           项目首页
   features/i18n/           语言配置、界面文案与运行时文案
   features/navigation/     导航、搜索、侧边栏与顶部栏
@@ -94,6 +98,7 @@ src/
 
 tests/
   README.md                测试架构与问题排查
+  unit/                    目录与 HTTP 协议契约
   e2e/                     Playwright 生产浏览器流程
 ```
 
@@ -108,7 +113,7 @@ tests/
 3. 至少有一个可调用的 TypeScript 签名。
 4. 没有标记为 `@internal`。
 
-生成器会写入两个产物。`data/catalog-index.json` 只包含导航和搜索所需的双语摘要与标识字段；`data/catalog.json` 保存完整签名、关联类型、本地化文本池和示例源码。[src/data/catalog-index.ts](src/data/catalog-index.ts) 在首屏加载轻量索引，[src/data/catalog.ts](src/data/catalog.ts) 仅在打开 API 页面时验证并展开完整目录。不要编辑或手动格式化这两个生成文件。
+生成器会写入两个产物。`data/catalog-index.json` 只包含导航和搜索所需的双语摘要与标识字段；schema 4 的 `data/catalog.json` 保存完整签名、关联类型、本地化文本池、示例源码以及生成的浏览器/服务端执行类型。[src/data/catalog-index.ts](src/data/catalog-index.ts) 在首屏加载轻量索引，[src/data/catalog.ts](src/data/catalog.ts) 仅在打开 API 页面时验证并展开完整目录。不要编辑或手动格式化这两个生成文件。
 
 中英文 API 内容分别由 `scripts/catalog/locale-en.mjs` 和 `scripts/catalog/locale-zh-cn.mjs` 解析。每种策略包含当前 API 内容，以及用于处理未来新增 API 的回退解析器。每个 API 都在 `scripts/catalog/demos.mjs` 中拥有独立、完整且与语言无关的示例程序。
 
@@ -127,7 +132,7 @@ npm run build
 npm start
 ```
 
-服务器同时提供 `dist` 和可执行示例，默认监听 `9000` 端口，可通过 `PORT` 修改。
+服务器同时提供 `dist` 和可执行示例，默认监听 `9000` 端口，可通过 `PORT` 修改。`scripts/demo/app.mjs` 负责可注入的 HTTP 应用，`server.mjs` 只校验环境配置、监听端口并处理退出信号。
 
 也可以只静态托管文档。缺少 Node 服务时，示例按钮仍可点击，但会显示本地化的“运行环境不可用”提示。
 
@@ -138,7 +143,7 @@ npm start
 - `solid-js`
 - `@solidjs/web`
 
-SSR 示例为只读，只执行可信的生成源码。源码和请求正文上限均为 100 KB；SSR 仅允许执行三个已注册的渲染 API，并在五秒后超时。
+SSR 示例为只读，只执行可信的生成源码。源码和请求正文上限均为 100 KB；SSR 仅允许执行五个已注册的 API 示例，并在五秒后超时。运行时端点会校验 HTTP 方法和示例索引后再执行。
 
 浏览器示例会增量发布控制台与 DOM 结果，并丢弃过期执行。验证器会编译并运行全部示例、操作交互控件、对顺序敏感的 API 执行专项场景，并通过生产服务验证 SSR。
 
@@ -155,8 +160,10 @@ SSR 示例为只读，只执行可信的生成源码。源码和请求正文上�
 应用是使用 Hash 选择 API 的 Solid 单页界面，不依赖路由器或外部状态管理器。首页和 API 页面由单一的可选当前文档 ID 表达，小型历史适配层负责同步深链接和浏览器前进、后退行为。
 
 - 导航与搜索使用轻量生成索引；完整参考数据和 API 功能区按需加载。
+- URL 机械逻辑位于 Hash 路由适配器；导航层只负责目录、搜索与面板状态。
 - 示例执行由功能控制器负责，内嵌与全屏编辑器复用同一实现。
-- 浏览器运行时仅在执行示例时动态导入；结果类型和 SSR 分类位于无重依赖的模型层。
+- 浏览器运行时仅在执行示例时动态导入；服务通信、DOM 作用域、值格式化和执行编排分别归属独立模块。
+- 浏览器/服务端执行类型由 Node 允许列表生成并接受契约测试，不再维护重复的前端 API 名单。
 - Tailwind CSS v4 提供 CSS-first 设计系统和工具类。
 - Prism 提供 TypeScript/TSX 代码高亮。
 - Lucide 提供界面图标。

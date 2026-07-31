@@ -1,7 +1,6 @@
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { compileDemo } from "./compile.mjs";
-import { serverDemoIds as serverIds } from "./config.mjs";
 import { loadDemoCatalog } from "./load.mjs";
 const targetedScenarios = {
   "solid-js/createSignal": {
@@ -31,7 +30,10 @@ else await verifyBrowser(mode === "--browser" ? selectedId : mode);
 
 async function verifyAll() {
   const docs = loadDemoCatalog();
-  const browserIds = docs.filter((entry) => entry.codes.length && !serverIds.has(entry.id)).map((entry) => entry.id);
+  const browserIds = docs
+    .filter((entry) => entry.codes.length && entry.execution === "browser")
+    .map((entry) => entry.id);
+  const serverIds = docs.filter((entry) => entry.codes.length && entry.execution === "server").map((entry) => entry.id);
   const failures = [];
 
   for (const id of browserIds) {
@@ -56,13 +58,17 @@ async function verifyAll() {
     if (result.status !== 0) failures.push({ id, output: `${result.stdout}\n${result.stderr}`.trim() });
   }
 
-  const total = browserIds.length + serverIds.size;
+  const total = browserIds.length + serverIds.length;
+  const expected = docs.filter((entry) => entry.codes.length).length;
+  if (total !== expected || total === 0) {
+    throw new Error(`Verifier grouped ${total} of ${expected} generated demo API records`);
+  }
   console.log(
     JSON.stringify(
       {
         apiGroups: total,
         browser: browserIds.length,
-        server: serverIds.size,
+        server: serverIds.length,
         passed: total - failures.length,
         failed: failures.length,
       },
@@ -124,7 +130,7 @@ async function verifyBrowser(onlyId) {
 
   for (const doc of docs) {
     if (onlyId && doc.id !== onlyId) continue;
-    if (serverIds.has(doc.id)) continue;
+    if (doc.execution === "server") continue;
     for (let index = 0; index < doc.codes.length; index++) {
       document.body.innerHTML = '<div id="root"></div><div id="app"></div><div id="modal-root"></div>';
       const module = { exports: {} };

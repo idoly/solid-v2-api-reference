@@ -9,34 +9,26 @@
 ```bash
 npm ci
 npm test
-npm run build
 ```
 
-`npm run build` 会重新生成 `data/catalog-index.json` 和 `data/catalog.json`，并将前端生产文件写入 `dist/`。
+完整质量门禁通过后再生成交付包。打包机还需要提供 `zip`、`unzip`、`rg` 和 `sha256sum`；自动化脚本会在开始构建前检查这些命令。
 
 ### 生成 ZIP
 
 代码包必须包含 `node_modules`。在仓库根目录执行：
 
 ```bash
-rm -f code.zip
-zip -rq -y code.zip ./ \
-  -x '.git/*' \
-     '.generated/*' \
-     '.tmp/*' \
-     'dist/.vite/*' \
-     'playwright-report/*' \
-     'test-results/*' \
-     'code.zip'
+npm run package:code
 ```
 
-也可以在文件管理器中进入项目根目录，全选所有部署文件和 `node_modules`，右键压缩为 ZIP。ZIP 内应直接看到 `package.json`，不能在外层额外包一层项目目录。
+版本化脚本 `scripts/release/package.sh` 会自动完成以下工作：
 
-上传前可检查关键内容：
+1. 重新生成目录并构建 `dist/`。
+2. 删除旧 `code.zip`，排除 Git 元数据、临时文件和测试报告后重新压缩。
+3. 保留 `node_modules`，并校验 `package.json`、生产页面、服务端入口和两个目录产物。
+4. 输出压缩包大小、文件数量和 SHA-256。
 
-```bash
-unzip -l code.zip | rg '(^|/)(package.json|dist/index.html|scripts/demo/server.mjs|data/catalog.json)$'
-```
+也可以在文件管理器中进入项目根目录，全选所有部署文件和 `node_modules`，右键压缩为 ZIP。ZIP 内应直接看到 `package.json`，不能在外层额外包一层项目目录。自动化脚本是默认交付方式。
 
 ### 函数配置
 
@@ -55,8 +47,8 @@ unzip -l code.zip | rg '(^|/)(package.json|dist/index.html|scripts/demo/server.m
 
 Before each deployment handoff:
 
-1. Run the complete test suite and production build.
-2. Generate `code.zip` from the repository root, including `node_modules`.
+1. Run the complete `npm test` quality gate.
+2. Run `npm run package:code` to build and validate `code.zip`, including `node_modules`.
 3. Verify that `package.json` is at the ZIP root.
 4. Configure port `9000` and startup command `npm start`.
 5. Keep `code.zip` out of Git; it is a delivery artifact and is already ignored.

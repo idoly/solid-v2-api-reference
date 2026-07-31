@@ -14,29 +14,48 @@ export async function handleRuntimeRequest(request, url) {
   let locale = normalizeLocale(requestedLocale);
 
   if (url.pathname === COMPILE_PATH) {
-    if (request.method !== "POST") {
-      return { status: 405, body: { error: message(locale, "methodNotAllowed") } };
-    }
+    if (request.method !== "POST") return methodNotAllowed(locale);
     try {
       const payload = await readJson(request);
       locale = normalizeLocale(payload.locale ?? requestedLocale);
       return { status: 200, body: { code: compile(payload.source) } };
     } catch (error) {
-      return { status: 400, body: { error: format(error, locale) } };
+      return errorResponse(error, locale);
     }
   }
 
-  try {
-    const id = url.searchParams.get("id") ?? "";
-    const index = Number(url.searchParams.get("index") ?? 0);
-    return { status: 200, body: await execute(id, index) };
-  } catch (error) {
-    const errorMessage = format(error, locale);
-    return {
-      status: 400,
-      body: { logs: [{ level: "error", text: errorMessage }], html: "", error: errorMessage },
-    };
+  if (url.pathname === DEMO_PATH) {
+    if (request.method !== "GET") return methodNotAllowed(locale);
+    try {
+      const id = url.searchParams.get("id") ?? "";
+      const index = parseDemoIndex(url.searchParams.get("index"));
+      return { status: 200, body: await execute(id, index) };
+    } catch (error) {
+      return errorResponse(error, locale, true);
+    }
   }
+
+  return { status: 404, body: { error: "Not found" } };
+}
+
+function methodNotAllowed(locale) {
+  return { status: 405, body: { error: message(locale, "methodNotAllowed") } };
+}
+
+function errorResponse(error, locale, result = false) {
+  const errorMessage = format(error, locale);
+  return {
+    status: 400,
+    body: result
+      ? { logs: [{ level: "error", text: errorMessage }], html: "", error: errorMessage }
+      : { error: errorMessage },
+  };
+}
+
+function parseDemoIndex(value) {
+  const index = value === null ? 0 : Number(value);
+  if (!Number.isSafeInteger(index) || index < 0) throw new DemoError("invalidDemoIndex");
+  return index;
 }
 
 async function readJson(request) {

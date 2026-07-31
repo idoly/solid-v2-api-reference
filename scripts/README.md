@@ -13,6 +13,7 @@ scripts/
     locale-en.mjs          English API content strategy
     locale-zh-cn.mjs       Chinese API content strategy
   demo/
+    app.mjs                Injectable production HTTP application
     compile.mjs            Shared TypeScript and JSX compiler
     config.mjs             Source limits, execution timeout, and SSR API registry
     http.mjs               Framework-neutral runtime request handling
@@ -20,8 +21,10 @@ scripts/
     load.mjs               Minimal generated demo loader
     service.mjs            Shared compilation and SSR service
     plugin.ts              Vite development endpoints
-    server.mjs             Production HTTP and static file server
+    server.mjs             Environment and process lifecycle entry
     verify.mjs             Browser and SSR verifier
+  release/
+    package.sh             Builds and validates the deployment ZIP
 ```
 
 ## Catalog Pipeline
@@ -36,13 +39,13 @@ npm run generate
 
 1. Scan the public exports of installed `solid-js` and `@solidjs/web` packages with the TypeScript compiler API.
 2. Keep runtime values with at least one callable signature and exclude symbols marked `@internal`.
-3. Derive overloads, parameter types, return types, related definitions, source ownership, examples, and deprecation state.
+3. Derive overloads, parameter types, return types, related definitions, source ownership, examples, deprecation state, and browser/server execution type.
 4. Resolve English and Chinese prose through the locale strategies.
 5. Apply registered demo overrides, normalize them, and reject demos that do not compile or produce observable output.
 6. Deduplicate localized prose and demo source into indexed pools.
 7. Write the lightweight `data/catalog-index.json` discovery index and the complete, versioned `data/catalog.json` artifact.
 
-The browser consumes the index through `src/data/catalog-index.ts` for navigation and search. The lazy API feature consumes the complete catalog through `src/data/catalog.ts`; it contains category order, locale text pools, a demo source pool, full API records, and the pinned source commit.
+The browser consumes the index through `src/data/catalog-index.ts` for navigation and search. The lazy API feature consumes schema 4 of the complete catalog through `src/data/catalog.ts`; it contains category order, locale text pools, a demo source pool, full API records, generated execution metadata, and the pinned source commit. Server execution IDs remain owned by `demo/config.mjs`; catalog generation projects that allowlist into browser data.
 
 The generator uses a shared `.generated` entry file and writes both catalog artifacts directly. Do not run `generate`, `check`, `build`, or `verify:demos` concurrently; their lifecycle scripts can otherwise race over those files.
 
@@ -65,7 +68,7 @@ npm run format
 
 `catalog/format.mjs` parses the outer MJS file, formats each embedded TSX template with Prettier, and preserves template literal escaping. `npm run format:check` verifies both embedded demos and normal project files.
 
-Browser demos are compiled on demand through the shared `demo/service.mjs` module and run in an isolated DOM mount. `demo/http.mjs` owns request parsing and API dispatch without depending on Connect or Node response objects. `demo/plugin.ts` and `demo/server.mjs` are thin adapters around that handler; the production server additionally owns rate limiting and static files. `demo/config.mjs` centralizes limits and the SSR allowlist. `demo/i18n.mjs` owns service error keys, locale normalization, and English fallback. SSR demos are read-only and execute through the restricted service. Demo imports are limited to:
+Browser demos are compiled on demand through the shared `demo/service.mjs` module and run in an isolated DOM mount. `demo/http.mjs` owns request parsing and API dispatch without depending on Connect or Node response objects. `demo/plugin.ts` is the Vite adapter around that handler. `demo/app.mjs` owns the production HTTP application, rate limiting, static files, SPA fallback, and response headers; `demo/server.mjs` only validates environment settings and owns process lifecycle. `demo/config.mjs` centralizes limits and the SSR allowlist. `demo/i18n.mjs` owns service error keys, locale normalization, and English fallback. SSR demos are read-only and execute through the restricted service. Demo imports are limited to:
 
 - `solid-js`
 - `@solidjs/web`
@@ -78,13 +81,13 @@ Run the generated demo verifier on its own with:
 npm run verify:demos
 ```
 
-Run the complete release gate, including type checks, formatting, the demo verifier, and Podman Playwright tests, with:
+Run the complete release gate, including type checks, formatting, Node contract tests, the demo verifier, and Podman Playwright tests, with:
 
 ```sh
 npm test
 ```
 
-Browser automation details and failure artifact instructions are maintained in [`tests/README.md`](../tests/README.md).
+Unit and browser automation details, contract ownership, and failure artifact instructions are maintained in [`tests/README.md`](../tests/README.md). GitHub Actions runs the same `npm test` command. Internal `*:run`, `build:app`, and `check:types` scripts let that complete gate generate and build once; public standalone commands keep their preparation lifecycle.
 
 The verifier runs browser API groups in isolated DOM processes and executes SSR groups separately. Event-driven source is exercised through generic input, select, and button interactions. API contracts requiring exact values or ordered asynchronous work use a scenario registry containing both the runner and expected text. SSR groups call the production `service.execute` path instead of maintaining a second executor. Verification fails on compilation errors, runtime exceptions, timeouts, framework diagnostics, `console.error`, missing DOM output, or missing SSR HTML.
 

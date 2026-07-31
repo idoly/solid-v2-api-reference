@@ -560,6 +560,7 @@ for (const { packageName, exports } of moduleEntries) {
       kind,
       internal,
       deprecated,
+      execution: serverDemoIds.has(id) ? "server" : "browser",
       definition,
       useCase,
       overloads,
@@ -716,7 +717,7 @@ const textPools = Object.fromEntries(
   locales.map((locale) => [locale, textPool.map((value) => value[localeProperty[locale]])]),
 );
 const catalog = {
-  schemaVersion: 3,
+  schemaVersion: 4,
   sourceCommit,
   categories,
   textPools,

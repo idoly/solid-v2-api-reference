@@ -1,34 +1,16 @@
 import { createMemo, createSignal, onSettled } from "solid-js";
 import { docs, docsById, findDoc } from "../../data/catalog-index";
 import type { Locale } from "../i18n/locale";
-
-// API IDs keep `@` and `/` readable in the hash while legacy encoded links remain valid.
-function readHash() {
-  const hash = location.hash.slice(1);
-  try {
-    return decodeURIComponent(hash);
-  } catch {
-    return hash;
-  }
-}
-
-function routeUrl(id?: string) {
-  return id ? `#${id}` : `${location.pathname}${location.search}`;
-}
-
-function writeRoute(id: string | undefined, mode: "push" | "replace") {
-  const method = mode === "push" ? history.pushState : history.replaceState;
-  method.call(history, null, "", routeUrl(id));
-}
+import { createHashRoute } from "./route";
 
 export function createNavigation(locale: Locale) {
+  const route = createHashRoute();
   const fallback = docsById.get("solid-js/createSignal") ?? docs[0];
   if (!fallback) throw new Error("The API catalog is empty");
 
-  const initialId = readHash();
-  const initialDoc = docsById.get(initialId);
-  if (initialDoc && location.hash !== `#${initialDoc.id}`) writeRoute(initialDoc.id, "replace");
-  else if (!initialDoc && location.hash) writeRoute(undefined, "replace");
+  const initialDoc = docsById.get(route.read());
+  if (initialDoc && !route.matches(initialDoc.id)) route.replace(initialDoc.id);
+  else if (!initialDoc && !route.matches()) route.replace();
 
   // `undefined` is the home route; a document ID is the only other route state.
   const [activeId, setActiveId] = createSignal<string | undefined>(initialDoc?.id);
@@ -61,14 +43,14 @@ export function createNavigation(locale: Locale) {
     setActiveId(doc.id);
     revealCategory(doc.category);
     closePanels();
-    writeRoute(doc.id, "push");
+    route.push(doc.id);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const goHome = () => {
     setActiveId(undefined);
     closePanels();
-    writeRoute(undefined, "push");
+    route.push();
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -79,22 +61,16 @@ export function createNavigation(locale: Locale) {
       return next;
     });
 
-  onSettled(() => {
-    const syncFromUrl = () => {
-      const doc = docsById.get(readHash());
+  onSettled(() =>
+    route.subscribe(() => {
+      const doc = docsById.get(route.read());
       setActiveId(doc?.id);
       if (doc) revealCategory(doc.category);
       closePanels();
-      if (doc && location.hash !== `#${doc.id}`) writeRoute(doc.id, "replace");
-      else if (!doc && location.hash) writeRoute(undefined, "replace");
-    };
-    window.addEventListener("hashchange", syncFromUrl);
-    window.addEventListener("popstate", syncFromUrl);
-    return () => {
-      window.removeEventListener("hashchange", syncFromUrl);
-      window.removeEventListener("popstate", syncFromUrl);
-    };
-  });
+      if (doc && !route.matches(doc.id)) route.replace(doc.id);
+      else if (!doc && !route.matches()) route.replace();
+    }),
+  );
 
   return {
     isHome,
