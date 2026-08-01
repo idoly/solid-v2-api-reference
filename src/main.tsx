@@ -7,7 +7,7 @@ import { createLocale } from "./features/i18n/locale";
 import { createNavigation } from "./features/navigation/controller";
 import { Sidebar } from "./features/navigation/sidebar";
 import { TopBar } from "./features/navigation/topbar";
-import { createAntTheme, createTheme } from "./features/theme";
+import { createTheme } from "./features/theme";
 import { iconButton } from "./ui/classes";
 import { ArrowUp, Github } from "./ui/icons";
 import styles from "./main.module.css";
@@ -64,7 +64,7 @@ function App() {
   const theme = createTheme();
 
   return (
-    <ConfigProvider theme={createAntTheme(theme.isDark())}>
+    <ConfigProvider theme={theme.antTheme()}>
       <div class={styles.shell}>
         <TopBar nav={nav} theme={theme} locale={locale} />
         <Sidebar nav={nav} locale={locale} />

@@ -14,37 +14,40 @@ function apply(name: Name) {
     ?.setAttribute("content", name === "dark" ? "#151517" : "#f7f8f5");
 }
 
-export function createAntTheme(isDark: boolean): ConfigThemeConfig {
-  return {
-    algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
-    token: {
-      colorPrimary: isDark ? "#a5ce62" : "#6f981d",
-      colorInfo: "#148f82",
-      colorText: isDark ? "#e3e8e4" : "#202522",
-      colorTextSecondary: isDark ? "#a8b2ab" : "#717a74",
-      colorBgContainer: isDark ? "#1d1d20" : "#fdfefd",
-      colorBorder: isDark ? "#46464f" : "#d5ddd6",
-      borderRadius: "5px",
-      fontFamily: 'system-ui, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif',
-    },
-  };
-}
-
 export function createTheme() {
   const initial =
     readPreference(key, themes) ?? (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
   const [name, setName] = createSignal<Name>(initial);
   apply(initial);
 
+  const isDark = () => name() === "dark";
+  const antTheme = (): ConfigThemeConfig => {
+    const dark = isDark();
+    return {
+      algorithm: dark ? theme.darkAlgorithm : theme.defaultAlgorithm,
+      token: {
+        colorPrimary: dark ? "#a5ce62" : "#6f981d",
+        colorInfo: "#148f82",
+        colorText: dark ? "#e3e8e4" : "#202522",
+        colorTextSecondary: dark ? "#a8b2ab" : "#717a74",
+        colorBgContainer: dark ? "#1d1d20" : "#fdfefd",
+        colorBorder: dark ? "#46464f" : "#d5ddd6",
+        borderRadius: "5px",
+        fontFamily: 'system-ui, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif',
+      },
+    };
+  };
+
   const toggle = () => {
-    const next = name() === "dark" ? "light" : "dark";
+    const next = isDark() ? "light" : "dark";
     setName(next);
     writePreference(key, next);
     apply(next);
   };
 
   return {
-    isDark: () => name() === "dark",
+    antTheme,
+    isDark,
     toggle,
   };
 }
