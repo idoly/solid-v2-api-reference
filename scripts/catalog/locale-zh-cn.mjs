@@ -195,7 +195,7 @@ export const apiContent = {
     "Fallback 回调会收到错误 accessor 和 `reset()`；需要显示当前错误并让用户重试受保护子树时使用。",
   ],
   "@solidjs/web/For": [
-    "根据列表创建并复用元素。",
+    "根据响应式列表创建元素，并在列表更新时按键复用现有元素。",
     "渲染响应式数组，并需要 keyed 或非 keyed 更新策略以及空列表 fallback 时使用。",
   ],
   "@solidjs/web/Hydration": [
@@ -240,7 +240,7 @@ export const apiContent = {
     "Fallback 回调会收到错误 accessor 和 `reset()`；需要显示当前错误并让用户重试受保护子树时使用。",
   ],
   "solid-js/For": [
-    "根据列表创建并复用元素。",
+    "根据响应式列表创建元素，并在列表更新时按键复用现有元素。",
     "渲染响应式数组，并需要 keyed 或非 keyed 更新策略以及空列表 fallback 时使用。",
   ],
   "solid-js/Hydration": [
@@ -450,11 +450,11 @@ export const apiContent = {
     "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
   ],
   "@solidjs/web/unregisterDelegatedContainer": [
-    "移除之前注册的事件委托容器。",
+    "移除先前注册的事件委托容器，使该容器不再通过所属根处理委托事件。",
     "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
   ],
   "@solidjs/web/unregisterDelegatedRoot": [
-    "移除之前注册的事件委托根。",
+    "移除先前注册的事件委托根，使后续查找与事件分派不再使用该根。",
     "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
   ],
   "@solidjs/web/untrack": [

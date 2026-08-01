@@ -59,7 +59,7 @@ export const apiContent = {
     "Use it when a custom reactive primitive must make the same change-detection decision as the runtime.",
   ],
   "solid-js/lazy": [
-    "Defines a code-split component.",
+    "Defines a code-split component whose module loader runs only when the component is first rendered.",
     "The returned component triggers its dynamic import on first render and suspends through any enclosing `<Loading>` boundary while the chunk is in flight.",
   ],
   "solid-js/mapArray": [
@@ -139,7 +139,7 @@ export const apiContent = {
     "Capture it when work must later resume in the same lifecycle scope with `runWithOwner`.",
   ],
   "solid-js/createRoot": [
-    "Creates a detached reactive root.",
+    "Creates a detached reactive Owner and returns the value produced within that independently disposable scope.",
     "The callback receives a `dispose()` function which, when called, tears down every signal, memo, effect, and `onCleanup` registered inside the root.",
   ],
   "solid-js/getObserver": [
@@ -211,7 +211,7 @@ export const apiContent = {
     "Any computation (`createMemo`, `createSignal(fn)`, `createStore(fn)`, `lazy(...)`, etc.) that throws because data isn't ready is caught by the nearest enclosing `<Loading>`.",
   ],
   "@solidjs/web/Match": [
-    "A branch inside a `<Switch>`.",
+    "Declares a conditional branch that is evaluated and selected by its enclosing `<Switch>`.",
     "The first `<Match>` whose `when` is truthy wins; remaining matches are skipped.",
   ],
   "@solidjs/web/NoHydration": [
@@ -255,7 +255,7 @@ export const apiContent = {
     "Any computation (`createMemo`, `createSignal(fn)`, `createStore(fn)`, `lazy(...)`, etc.) that throws because data isn't ready is caught by the nearest enclosing `<Loading>`.",
   ],
   "solid-js/Match": [
-    "A branch inside a `<Switch>`.",
+    "Declares a conditional branch that is evaluated and selected by its enclosing `<Switch>`.",
     "The first `<Match>` whose `when` is truthy wins; remaining matches are skipped.",
   ],
   "solid-js/NoHydration": [

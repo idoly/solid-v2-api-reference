@@ -34,6 +34,7 @@
 - 桌面侧栏改为 `clamp(300px, 22vw, 320px)`，内容上限提升到 1480px；390px 移动端无水平溢出。
 - Demo Lab 拆分为编排、Editor 和 Output 组件及对应 CSS Module；移动端 BackTop 隐藏以避免遮挡表单与输出。
 - 移除远程 Google Fonts 依赖，改用系统字体栈，并提升导航、代码和面板小字号的清晰度。
+- 统一中英文 UI、空状态与运行错误的术语和句式：用户界面使用“示例 / example”，中文主题使用“浅色 / 深色”，成对状态采用平行文案。
 
 ### Architecture and Delivery
 

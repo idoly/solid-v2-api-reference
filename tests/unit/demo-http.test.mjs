@@ -35,7 +35,7 @@ test("rejects invalid demo indexes before execution", async () => {
       url(`/__solid_api_demo?id=@solidjs/web/renderToString&index=${index}`),
     );
     assert.equal(response.status, 400);
-    assert.match(response.body.error, /Demo index must be a non-negative integer/);
+    assert.match(response.body.error, /Example index must be a non-negative integer/);
     assert.equal(response.body.logs[0].level, "error");
   }
 });

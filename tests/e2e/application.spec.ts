@@ -86,7 +86,7 @@ test("persists locale and theme preferences across reloads", async ({ page }) =>
   await expect(page.locator("html")).toHaveAttribute("lang", "zh-CN");
   await expect(page.getByRole("heading", { level: 1, name: "Solid v2 中文接口参考" })).toBeVisible();
 
-  await page.getByRole("button", { name: "切换到黑夜模式" }).click();
+  await page.getByRole("button", { name: "切换到深色模式" }).click();
   await expect(page.locator("html")).toHaveClass(/dark/);
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute("content", "#151517");
   await expect(page.getByRole("complementary")).toHaveCSS("background-color", "rgb(21, 21, 23)");
@@ -112,7 +112,7 @@ test("persists locale and theme preferences across reloads", async ({ page }) =>
   await darkBackTop.focus();
   await page.waitForTimeout(180);
   const darkBackFocus = await darkBackTop.evaluate((element) => getComputedStyle(element).boxShadow);
-  const darkThemeButton = page.getByRole("button", { name: "切换到日间模式" });
+  const darkThemeButton = page.getByRole("button", { name: "切换到浅色模式" });
   await darkThemeButton.focus();
   await page.waitForTimeout(180);
   expect(darkBackFocus).toBe(await darkThemeButton.evaluate((element) => getComputedStyle(element).boxShadow));
@@ -163,7 +163,7 @@ test("runs a browser demo through the production runtime", async ({ page }) => {
   await expect(page.getByRole("paragraph").filter({ hasText: /^State: loading$/ })).toBeVisible();
   await page.getByRole("button", { name: "Resolve content" }).click();
   await expect(page.getByRole("paragraph").filter({ hasText: /^State: content ready$/ })).toBeVisible();
-  await expect(page.getByText("The code produced no console logs.", { exact: true })).toBeVisible();
+  await expect(page.getByText("No console logs were produced.", { exact: true })).toBeVisible();
 });
 
 test("supports catalog search on a mobile viewport", async ({ page }) => {

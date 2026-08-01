@@ -5,10 +5,10 @@ const runtimeMessages = {
     circular: "[Circular reference]",
     compileFailed: "Code compilation failed",
     functionValue: (name: string) => `[function ${name}]`,
-    executionTimedOut: "Demo execution timed out. You can edit the code and run it again.",
-    importDenied: (name: string) => `Demo cannot import undeclared module: ${name}`,
-    missingOutput: "This demo has no executable compiled output",
-    runtimeUnavailable: "This deployment does not provide the demo runtime service.",
+    executionTimedOut: "Example execution timed out. You can edit the code and run it again.",
+    importDenied: (name: string) => `Example cannot import undeclared module: ${name}`,
+    missingOutput: "This example has no executable compiled output",
+    runtimeUnavailable: "Example execution is unavailable in this deployment.",
   },
   "zh-CN": {
     circular: "[循环引用]",
@@ -17,7 +17,7 @@ const runtimeMessages = {
     executionTimedOut: "示例运行超时，可以修改代码后重新运行。",
     importDenied: (name: string) => `示例不允许导入未声明的模块：${name}`,
     missingOutput: "该示例没有可执行的编译产物",
-    runtimeUnavailable: "当前部署环境未提供代码运行服务。",
+    runtimeUnavailable: "当前部署环境无法运行示例。",
   },
 } as const;
 

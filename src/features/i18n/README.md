@@ -11,6 +11,14 @@ All lookups fall back to `defaultLocale`. Browser-visible runtime errors must us
 
 Browser runtime messages and Node service errors remain separate because they ship to different environments; `scripts/demo/http.mjs` gives Vite and production service responses the same locale fallback.
 
+## Copy Style
+
+- Use command phrases without terminal punctuation for buttons, tooltips, and short labels. Use complete sentences with locale-appropriate punctuation for descriptions, empty states, and errors.
+- Keep paired controls structurally parallel, such as open/close and light/dark actions. Chinese theme labels use `浅色模式` and `深色模式`.
+- User-facing copy calls executable samples `示例` in Chinese and `example` in English. Reserve `Demo` for code identifiers, scripts, and developer documentation.
+- Translate concepts naturally rather than preserving source-language word order. Related states in one locale should still use parallel sentence structure.
+- Keep API names, package names, code identifiers, and established terms such as DOM and SSR unchanged.
+
 ## Adding A Locale
 
 1. Add the locale code and display metadata in `config.ts`.
