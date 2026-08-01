@@ -132,7 +132,7 @@ test("runs a browser demo through the production runtime", async ({ page }) => {
   await expect(editorDialog.getByRole("textbox", { name: "Code editor" })).toBeVisible();
   await editorDialog.getByRole("button", { name: "Close editor" }).click();
   await expect(editorDialog).toBeHidden();
-  await expect(page.getByText("Run the code to inspect console output.", { exact: true })).toBeVisible();
+  await expect(page.getByText("Click “Run code” to view console logs.", { exact: true })).toBeVisible();
   expect(runtimeRequests).toEqual([]);
 
   await page.getByRole("button", { name: "Run code" }).click();
@@ -148,8 +148,8 @@ test("runs a browser demo through the production runtime", async ({ page }) => {
   await expect(consoleBody).toHaveCSS("overflow-y", "auto");
   await page.getByRole("button", { name: "Restore the original example and clear output" }).click();
   await expect(consolePanel.getByText(/Generated IDs/)).toBeHidden();
-  await expect(consoleBody).toHaveText("Run the code to inspect console output.");
-  await expect(page.getByText("DOM output will appear here after execution.", { exact: true })).toBeVisible();
+  await expect(consoleBody).toHaveText("Click “Run code” to view console logs.");
+  await expect(page.getByText("Click “Run code” to view page output.", { exact: true })).toBeVisible();
 
   await page.goto("/#@solidjs/web/Loading");
   await expect(page.getByRole("heading", { level: 1, name: "Loading" })).toBeVisible();
@@ -163,7 +163,7 @@ test("runs a browser demo through the production runtime", async ({ page }) => {
   await expect(page.getByRole("paragraph").filter({ hasText: /^State: loading$/ })).toBeVisible();
   await page.getByRole("button", { name: "Resolve content" }).click();
   await expect(page.getByRole("paragraph").filter({ hasText: /^State: content ready$/ })).toBeVisible();
-  await expect(page.getByText("The program produced no console output.", { exact: true })).toBeVisible();
+  await expect(page.getByText("The code produced no console logs.", { exact: true })).toBeVisible();
 });
 
 test("supports catalog search on a mobile viewport", async ({ page }) => {
