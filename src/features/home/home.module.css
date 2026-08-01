@@ -1,0 +1,349 @@
+.page {
+  width: min(100%, var(--app-content-width));
+  margin: 0 auto;
+  padding: 38px 36px 80px;
+}
+.hero {
+  display: grid;
+  min-height: 410px;
+  grid-template-columns: minmax(0, 1.04fr) minmax(390px, 0.96fr);
+  align-items: center;
+  gap: 62px;
+  padding: 28px 0 48px;
+  border-bottom: 1px solid #d3dbd4;
+}
+.heroCopy {
+  min-width: 0;
+}
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 10px;
+  color: #52721d;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  border-left: 2px solid #8db53f;
+}
+.eyebrow svg {
+  color: #779e2d;
+}
+.title {
+  margin: 18px 0 0;
+  color: var(--app-text);
+  font-family: var(--font-display);
+  font-size: 56px;
+  font-weight: 700;
+  line-height: 1.06;
+  overflow-wrap: anywhere;
+}
+.lead {
+  max-width: 570px;
+  margin: 20px 0 0;
+  color: #536058;
+  font-size: 15px;
+  line-height: 1.85;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 28px;
+}
+.codePanel {
+  min-width: 0;
+  overflow: hidden;
+  color: #dbe5df;
+  background: var(--app-code);
+  border: 1px solid #303732;
+  border-top: 2px solid #9fca50;
+  border-radius: 6px;
+  box-shadow: 12px 12px 0 #dce5cc;
+}
+.codeHeader,
+.codeFooter {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  background: #1b201d;
+}
+.codeHeader {
+  justify-content: space-between;
+  padding: 0 16px;
+  color: #9ba69f;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  border-bottom: 1px solid #303632;
+}
+.codeMeta {
+  color: #a9d778;
+}
+.codeBody {
+  min-height: 218px;
+  margin: 0;
+  padding: 22px;
+  overflow: auto;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.8;
+  white-space: pre;
+}
+.codeFooter {
+  gap: 8px;
+  padding: 8px 16px;
+  color: #acd477;
+  font-size: 12px;
+  border-top: 1px solid #303632;
+}
+.codeFooter span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.about {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.82fr) minmax(0, 1.18fr);
+  gap: 52px;
+  padding: 52px 0;
+}
+.aboutCopy {
+  max-width: 390px;
+}
+.sectionLabel {
+  color: #73806f;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.aboutTitle {
+  margin: 8px 0 0;
+  color: var(--app-text);
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.32;
+}
+.aboutText {
+  margin: 16px 0 0;
+  color: #566159;
+  font-size: 14px;
+  line-height: 1.85;
+}
+.facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 24px;
+  margin: 24px 0 0;
+  font-size: 13px;
+}
+.factWide {
+  grid-column: 1 / -1;
+}
+.factLabel {
+  color: #818b84;
+}
+.factValue {
+  margin: 6px 0 0;
+  color: #3f625a;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.validation {
+  margin-top: 24px;
+  padding: 10px 12px;
+  color: #4f632f;
+  font-size: 12px;
+  background: #edf3e7;
+  border: 0;
+  border-left: 2px solid #8db53f;
+  border-radius: 0;
+}
+.validationTitle {
+  color: #4f632f;
+  font-size: 13px;
+  line-height: 1.65;
+}
+.stages {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.stage {
+  display: grid;
+  min-height: 108px;
+  grid-template-columns: 42px minmax(138px, 0.58fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  padding: 16px 18px;
+  background: #e9eeea;
+  border-radius: 5px;
+}
+.stageIndex {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  color: #5f851e;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  background: #f7faf3;
+  border: 1px solid #b9cf94;
+  border-radius: 4px;
+  place-items: center;
+}
+.stageTitle {
+  display: block;
+  color: #344039;
+  font-size: 14px;
+  font-weight: 600;
+}
+.stageMeta {
+  display: block;
+  margin-top: 8px;
+  color: #527169;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+.stageDescription {
+  margin: 0;
+  color: #68726b;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+:global(.dark) .hero {
+  border-color: var(--app-line);
+}
+:global(.dark) .eyebrow {
+  color: #b7da83;
+  border-color: #9cc75a;
+}
+:global(.dark) .title {
+  color: #edf2ee;
+}
+:global(.dark) .lead {
+  color: #b2bcb5;
+}
+:global(.dark) .codePanel {
+  border-color: #39423c;
+  border-top-color: #9fca50;
+  box-shadow: 12px 12px 0 #253026;
+}
+:global(.dark) .sectionLabel {
+  color: #93a18f;
+}
+:global(.dark) .aboutTitle {
+  color: #e5ebe6;
+}
+:global(.dark) .aboutText {
+  color: #b6c0b8;
+}
+:global(.dark) .factLabel {
+  color: #8f9a92;
+}
+:global(.dark) .factValue {
+  color: #91c7bb;
+}
+:global(.dark) .validation {
+  color: #b7d58b;
+  background: #1d241a;
+  border-left-color: #91bb4d;
+}
+:global(.dark) .validationTitle {
+  color: #b7d58b;
+}
+:global(.dark) .stage {
+  background: #181e1a;
+}
+:global(.dark) .stageIndex {
+  color: #b5da7e;
+  background: #20261d;
+  border-color: #4a6335;
+}
+:global(.dark) .stageTitle {
+  color: #dbe3dd;
+}
+:global(.dark) .stageMeta {
+  color: #90bdb3;
+}
+:global(.dark) .stageDescription {
+  color: #a8b2ab;
+}
+
+@media (max-width: 1050px) {
+  .page {
+    padding-right: 24px;
+    padding-left: 24px;
+  }
+  .hero {
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 0.86fr);
+    gap: 32px;
+  }
+  .title {
+    font-size: 49px;
+  }
+  .about {
+    gap: 36px;
+  }
+}
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+  .about {
+    grid-template-columns: 1fr;
+    gap: 36px;
+    padding: 44px 0;
+  }
+  .aboutCopy {
+    max-width: 680px;
+  }
+}
+@media (max-width: 761px) {
+  .page {
+    padding: 22px 19px 55px;
+  }
+  .hero {
+    min-height: 0;
+    gap: 36px;
+    padding: 24px 0 44px;
+  }
+  .title {
+    margin-top: 16px;
+    font-size: 38px;
+  }
+  .lead {
+    margin-top: 16px;
+    font-size: 14px;
+  }
+  .actions {
+    margin-top: 20px;
+  }
+  .codePanel {
+    box-shadow: 7px 7px 0 #dce5cc;
+  }
+  :global(.dark) .codePanel {
+    box-shadow: 7px 7px 0 #253026;
+  }
+  .codeBody {
+    min-height: 210px;
+    padding: 20px 17px;
+    font-size: 11px;
+  }
+  .stage {
+    min-height: 0;
+    grid-template-columns: 34px minmax(0, 1fr);
+    gap: 8px 12px;
+    padding: 16px;
+  }
+  .stageDescription {
+    grid-column: 2;
+  }
+}

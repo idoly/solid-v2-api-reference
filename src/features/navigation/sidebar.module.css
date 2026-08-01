@@ -1,0 +1,325 @@
+.collapseRoot {
+  background: transparent;
+  border: 0;
+}
+.collapseHeader {
+  min-height: 42px;
+  padding: 4px 8px;
+  color: #4f5852;
+  font-size: 14px;
+  line-height: 1.4;
+  background: transparent;
+  border-radius: 4px;
+  transition:
+    color 150ms,
+    background-color 150ms,
+    box-shadow 150ms;
+}
+.collapseHeader button {
+  min-width: 0;
+  color: inherit !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+  white-space: nowrap;
+}
+.collapseHeader:hover {
+  color: #303732;
+  background: #e3ebe1;
+}
+.collapseHeader:focus-within {
+  color: #405c20;
+  background: #edf4e5;
+  box-shadow: inset 0 0 0 1px #8caf4e;
+}
+.collapseTitle {
+  min-width: 0;
+}
+.collapseBody {
+  position: relative;
+  margin: 1px 0 7px 18px;
+  padding: 0 0 0 14px !important;
+  background: transparent !important;
+  border-left: 1px solid #dce1dd;
+}
+.chevron {
+  color: #aab0ac;
+  transition: transform 150ms;
+}
+.chevronActive {
+  transform: rotate(90deg);
+}
+
+.sidebar {
+  position: fixed;
+  z-index: 40;
+  top: 64px;
+  bottom: 0;
+  left: 0;
+  width: var(--app-sidebar-width);
+  padding: 16px 15px 30px;
+  overflow-y: auto;
+  background: var(--app-sidebar);
+  border-right: 1px solid #d8ded9;
+  transition:
+    background-color 150ms,
+    border-color 150ms;
+}
+
+.link {
+  display: grid;
+  width: 100%;
+  min-height: 34px;
+  grid-template-columns: minmax(0, 1fr) auto 7px;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 7px 7px 9px;
+  color: #4f5852 !important;
+  font-family: var(--font-mono);
+  font-size: 13px !important;
+  font-weight: 500;
+  line-height: 1.45 !important;
+  text-align: left;
+  cursor: pointer;
+  background: transparent !important;
+  border: 0;
+  border-radius: 3px;
+  transition:
+    color 150ms,
+    background-color 150ms,
+    box-shadow 150ms;
+}
+.link:hover {
+  color: #303732 !important;
+  background: #e3ebe1 !important;
+}
+.link:focus-visible {
+  color: #405c20 !important;
+  background: #edf4e5 !important;
+  box-shadow: 0 0 0 2px rgb(111 152 29 / 24%) !important;
+}
+.activeLink,
+.activeLink:hover {
+  color: #3f5c1b !important;
+  font-weight: 500;
+  background: #e9f4d5 !important;
+}
+.linkName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.package {
+  color: #7c857f;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+.activeDot,
+.inactiveDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+.activeDot {
+  background: #7ca625;
+}
+.inactiveDot {
+  background: transparent;
+}
+
+.mobileSearch {
+  display: none;
+  height: 44px;
+  margin-bottom: 12px;
+  color: #7c8780;
+  background: #fff;
+  border-color: #cbd4cd;
+  border-radius: 5px;
+  box-shadow: none;
+}
+.mobileSearch:focus-within {
+  border-color: #8caf4e;
+  box-shadow: 0 0 0 3px rgb(184 239 74 / 16%);
+}
+.mobileSearchInput {
+  min-width: 0;
+  color: var(--app-text);
+  font-size: 14px;
+  background: transparent;
+}
+.mobileResults {
+  display: none;
+  padding: 4px 0;
+}
+.mobileEmpty {
+  display: block;
+  padding: 16px 10px;
+  color: var(--app-text-muted);
+  font-size: 14px;
+}
+.mobileResult {
+  display: grid;
+  width: 100%;
+  min-height: 44px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  color: #465149;
+  text-align: left;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  transition:
+    color 150ms,
+    background-color 150ms;
+}
+.mobileResult:hover {
+  color: #303732 !important;
+  background: #e3ebe1 !important;
+}
+.mobileResultName {
+  min-width: 0;
+  color: inherit;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.mobilePackage {
+  color: #78817b;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+.hiddenMobileNav {
+  display: block;
+}
+
+.categoryLabel {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  white-space: nowrap;
+}
+.categoryIcon {
+  flex-shrink: 0;
+}
+.categoryName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.categoryCount {
+  color: #858d87;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.drawerRoot {
+  display: none;
+}
+.drawerSection {
+  background: var(--app-sidebar);
+}
+.drawerHeader {
+  min-height: 57px;
+  padding: 0 15px;
+  border-color: #d8ded9;
+}
+.drawerTitle {
+  color: var(--app-text);
+  font-size: 14px;
+  font-weight: 600;
+}
+.drawerBody {
+  padding: 12px 15px;
+  overflow-y: auto;
+}
+.drawerMask {
+  background: rgb(20 25 22 / 37%);
+}
+
+:global(.dark) .sidebar,
+:global(.dark) .drawerSection {
+  background: var(--app-panel);
+  border-color: var(--app-line);
+}
+:global(.dark) .collapseHeader {
+  color: #c4cdc6;
+}
+:global(.dark) .collapseHeader:hover {
+  color: #edf2ee;
+  background: #303532;
+}
+:global(.dark) .collapseHeader:focus-within {
+  color: #dce8cf;
+  background: #293127;
+  box-shadow: inset 0 0 0 1px #75934b;
+}
+:global(.dark) .collapseBody {
+  border-color: #343c36;
+}
+:global(.dark) .link {
+  color: #a8b2ab !important;
+}
+:global(.dark) .link:hover {
+  color: #edf2ee !important;
+  background: #303532 !important;
+}
+:global(.dark) .link:focus-visible {
+  color: #e5eee7 !important;
+  background: #303a32 !important;
+  box-shadow: 0 0 0 2px rgb(169 216 95 / 28%) !important;
+}
+:global(.dark) .activeLink,
+:global(.dark) .activeLink:hover {
+  color: #b8dc80 !important;
+  background: #252d22 !important;
+}
+:global(.dark) .mobileSearch {
+  color: #96a198;
+  background: var(--app-surface-dark);
+  border-color: #39423c;
+}
+:global(.dark) .mobileSearchInput {
+  color: #e2e8e3;
+}
+:global(.dark) .mobileResult {
+  color: #c4cdc6;
+}
+:global(.dark) .mobileResult:hover {
+  color: #edf2ee !important;
+  background: #303532 !important;
+}
+:global(.dark) .drawerHeader {
+  border-color: var(--app-line);
+}
+
+@media (max-width: 1050px) {
+  .sidebar {
+    width: var(--app-sidebar-width);
+  }
+}
+@media (max-width: 761px) {
+  .sidebar {
+    display: none;
+  }
+  .drawerRoot {
+    display: block;
+  }
+  .mobileSearch,
+  .mobileResults {
+    display: flex;
+  }
+  .mobileResults {
+    flex-direction: column;
+  }
+  .hiddenMobileNav {
+    display: none;
+  }
+  .link {
+    min-height: 44px;
+  }
+}

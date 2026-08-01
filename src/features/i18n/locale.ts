@@ -34,7 +34,6 @@ export function createLocale() {
     category: (category: string) => categories[code()]?.[category] ?? categories[defaultLocale][category] ?? category,
     nextLabel: () => localeOptions[nextLocale(code())].shortLabel,
     toggle: () => select(nextLocale(code())),
-    select,
   };
 }
 

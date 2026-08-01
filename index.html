@@ -1,30 +1,26 @@
 <!doctype html>
-<html lang="en" class="scroll-smooth motion-reduce:scroll-auto">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
-      rel="stylesheet"
-    />
+    <meta name="description" content="Solid v2 API reference with editable examples and strict runtime verification." />
+    <meta name="theme-color" content="#f7f8f5" />
+    <title>Solid v2 API Reference</title>
     <script>
-      // Apply the persisted preference before the application paints.
+      // Apply persisted preferences before the application paints.
       try {
         const savedLocale = localStorage.getItem("solid-v2-locale");
         if (savedLocale === "zh-CN") document.documentElement.lang = "zh-CN";
 
         const savedTheme = localStorage.getItem("solid-v2-theme");
-        if (savedTheme === "dark" || (!savedTheme && matchMedia("(prefers-color-scheme: dark)").matches))
+        if (savedTheme === "dark" || (!savedTheme && matchMedia("(prefers-color-scheme: dark)").matches)) {
           document.documentElement.classList.add("dark");
+          document.querySelector('meta[name="theme-color"]').setAttribute("content", "#151517");
+        }
       } catch {}
     </script>
-    <meta name="description" content="Solid v2 API reference with editable examples and strict runtime verification." />
-    <meta name="theme-color" content="#f7f8f5" />
-    <title>Solid v2 API Reference</title>
   </head>
-  <body class="m-0 min-w-80 bg-[#f1f4f0] antialiased [font-synthesis:none] dark:bg-[#111512]">
+  <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

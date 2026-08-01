@@ -1,22 +1,51 @@
+import { ConfigProvider, Skeleton, Tooltip } from "@idoly/ant-design-solid";
+import "@idoly/ant-design-solid/styles.css";
 import { render } from "@solidjs/web";
-import { Show, lazy } from "solid-js";
-import { Home } from "./features/home";
+import { Loading, Show, lazy } from "solid-js";
+import { Home } from "./features/home/home";
 import { createLocale } from "./features/i18n/locale";
-import { createNavigation } from "./features/navigation/navigation";
+import { createNavigation } from "./features/navigation/controller";
 import { Sidebar } from "./features/navigation/sidebar";
 import { TopBar } from "./features/navigation/topbar";
-import { createTheme } from "./features/theme/theme";
-import { Github } from "./ui/icons";
-import "./tailwind.css";
+import { createAntTheme, createTheme } from "./features/theme";
+import { iconButton } from "./ui/classes";
+import { ArrowUp, Github } from "./ui/icons";
+import styles from "./main.module.css";
+import "./styles/global.css";
 
-const Api = lazy(async () => ({ default: (await import("./features/api")).Api }));
+const Api = lazy(async () => ({ default: (await import("./features/api/api")).Api }));
+
+function BackToTop(props: { label: string }) {
+  const setupVisibility = (element: HTMLDivElement) => {
+    const update = () => {
+      element.hidden = window.scrollY <= 420;
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+  };
+
+  return (
+    <div ref={setupVisibility} class={styles.backTopSlot} hidden>
+      <Tooltip title={props.label} placement="left">
+        <button
+          type="button"
+          class={`${iconButton} ${styles.backTop}`}
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          aria-label={props.label}
+        >
+          <ArrowUp size={17} />
+        </button>
+      </Tooltip>
+    </div>
+  );
+}
 
 function Footer() {
   return (
-    <footer class="mx-auto flex max-w-[1320px] items-center justify-between gap-4 border-t border-[#d8ded9] px-9 py-7 text-xs text-[#717a74] dark:border-line-dark dark:text-[#a8b2ab] max-shell:px-6 max-mobile:flex-col max-mobile:items-center max-mobile:px-[19px] max-mobile:py-6 max-mobile:text-center">
+    <footer class={styles.footer}>
       <span>&copy; {new Date().getFullYear()} idoly. All rights reserved.</span>
       <a
-        class="inline-flex min-w-0 items-center gap-1.5 [overflow-wrap:anywhere] text-[#42675f] transition-colors hover:text-[#274b43] dark:text-[#9bc9bf] dark:hover:text-[#b9ded5]"
+        class={styles.footerLink}
         href="https://github.com/idoly"
         target="_blank"
         rel="noreferrer"
@@ -35,16 +64,31 @@ function App() {
   const theme = createTheme();
 
   return (
-    <div class="min-h-screen bg-[#f1f4f0] font-sans text-ink transition-colors dark:bg-canvas-dark dark:text-[#e3e8e4]">
-      <TopBar nav={nav} theme={theme} locale={locale} />
-      <Sidebar nav={nav} locale={locale} />
-      <main class="ml-[340px] min-h-[calc(100vh-64px)] bg-transparent pt-16 transition-colors dark:bg-code max-shell:ml-[300px] max-mobile:ml-0 max-mobile:min-h-[calc(100vh-57px)] max-mobile:pt-[57px]">
-        <Show when={!nav.isHome()} fallback={<Home nav={nav} locale={locale} />}>
-          <Api id={nav.activeId() ?? ""} locale={locale} />
-        </Show>
-        <Footer />
-      </main>
-    </div>
+    <ConfigProvider theme={createAntTheme(theme.isDark())}>
+      <div class={styles.shell}>
+        <TopBar nav={nav} theme={theme} locale={locale} />
+        <Sidebar nav={nav} locale={locale} />
+        <main class={styles.content}>
+          <Loading
+            fallback={
+              <div class={styles.loading}>
+                <Skeleton
+                  active
+                  title={{ width: "42%" }}
+                  paragraph={{ rows: 7, width: ["100%", "92%", "96%", "84%", "100%", "88%", "64%"] }}
+                />
+              </div>
+            }
+          >
+            <Show when={!nav.isHome()} fallback={<Home nav={nav} locale={locale} />}>
+              <Api id={nav.activeId() ?? ""} locale={locale} />
+            </Show>
+          </Loading>
+          <Footer />
+        </main>
+        <BackToTop label={locale.t("backToTop")} />
+      </div>
+    </ConfigProvider>
   );
 }
 

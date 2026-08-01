@@ -1,0 +1,314 @@
+.runtime {
+  background: var(--app-code);
+  border-top: 1px solid #29302b;
+}
+.results {
+  display: grid;
+  min-height: 230px;
+  grid-template-columns: 1fr;
+  background: var(--app-code);
+}
+.panelHeader {
+  display: flex;
+  min-height: 38px;
+  flex-shrink: 0;
+  align-items: center;
+  padding: 0 20px;
+  color: #657168;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  background: #eef2ee;
+  border-bottom: 1px solid var(--app-border);
+}
+.preview {
+  min-width: 0;
+  background: var(--app-surface);
+  border-bottom: 1px solid var(--app-border);
+  transition: background-color 150ms;
+}
+.previewVisible {
+  display: block;
+}
+.previewHidden {
+  display: none;
+}
+.mount {
+  min-height: 160px;
+  padding: 20px;
+  color: #28322b;
+  background: var(--app-surface);
+  transition:
+    color 150ms,
+    background-color 150ms;
+}
+.mount:empty {
+  display: none;
+}
+.mount main {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+}
+.mount h1,
+.mount h3 {
+  margin: 0 0 12px;
+  color: #28322b;
+  font-size: 18px;
+  line-height: 1.35;
+}
+.mount p {
+  margin: 8px 0;
+  color: #5d6860;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.mount strong {
+  color: #315e55;
+  font-size: 16px;
+}
+.mount ul,
+.mount ol {
+  margin-top: 10px;
+  padding-left: 22px;
+  color: #465149;
+  font-size: 13px;
+  line-height: 1.8;
+}
+.mount pre {
+  margin-top: 10px;
+  padding: 12px;
+  overflow-x: auto;
+  color: #dbe4de;
+  font-size: 12px;
+  line-height: 1.65;
+  background: #1a1f1c;
+}
+.mount input,
+.mount textarea,
+.mount select {
+  width: 100%;
+  min-height: 36px;
+  margin-top: 6px;
+  padding: 8px 10px;
+  color: #354139;
+  font-size: 13px;
+  background: var(--app-surface);
+  border: 1px solid #bcc8bf;
+  border-radius: 4px;
+  outline: none;
+  transition:
+    border-color 150ms,
+    box-shadow 150ms;
+}
+.mount input:focus,
+.mount textarea:focus,
+.mount select:focus {
+  border-color: #6e9231;
+  box-shadow: 0 0 0 2px rgb(184 239 74 / 25%);
+}
+.mount input::placeholder {
+  color: #8d9790;
+}
+.mount input[type="range"] {
+  height: 32px;
+  padding: 0;
+  cursor: pointer;
+  border: 0;
+  box-shadow: none;
+}
+.mount input[type="checkbox"] {
+  width: auto;
+  min-height: 0;
+  margin-right: 8px;
+  accent-color: #6f981d;
+}
+.mount label {
+  display: block;
+  margin-top: 12px;
+  color: #59645c;
+  font-size: 12px;
+  font-weight: 600;
+}
+.mount button {
+  min-height: 36px;
+  margin-top: 12px;
+  padding: 8px 12px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #28312b;
+  border: 1px solid #28312b;
+  border-radius: 4px;
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+.mount button + button {
+  margin-left: 8px;
+}
+.mount button:hover {
+  background: #567225;
+  border-color: #567225;
+}
+.mount button:focus-visible {
+  outline: 0;
+  box-shadow: var(--app-control-focus-shadow);
+}
+.mount button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.mount output {
+  display: block;
+  margin-top: 12px;
+  padding: 10px 12px;
+  color: #315e55;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  background: #f3f6f3;
+  border: 1px solid #d7dfd8;
+  border-radius: 4px;
+}
+.mount aside {
+  margin-top: 10px;
+  padding: 12px;
+  background: #eef5e7;
+  border: 1px solid #cbd6c9;
+}
+.mount form {
+  margin-top: 12px;
+  padding-top: 4px;
+  border-top: 1px solid #e0e6e1;
+}
+.previewMessage {
+  display: block;
+  padding: 28px 20px;
+  color: #818a84;
+  font-size: 13px;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.console {
+  display: flex;
+  min-width: 0;
+  min-height: 110px;
+  max-height: 300px;
+  flex-direction: column;
+  overflow: hidden;
+  color: #fff;
+  background: var(--app-code);
+}
+.consoleBody {
+  min-height: 72px;
+  flex: 1;
+  padding: 14px;
+  overflow: auto;
+  background: var(--app-code);
+}
+.consoleEmpty {
+  display: block;
+  padding: 10px 0;
+  color: #fff;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.consoleRow {
+  padding: 6px 0;
+  border-bottom: 1px solid #29302b;
+}
+.consoleText {
+  min-width: 0;
+  margin: 0;
+  color: inherit;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.log {
+  color: #fff;
+}
+.info {
+  color: #c5ddd7;
+}
+.warn {
+  color: #e8cc7c;
+}
+.error {
+  color: #ff9d8b;
+}
+.result {
+  color: #a9d778;
+}
+:global(.dark) .panelHeader {
+  color: #c1ccc4;
+  background: #202023;
+  border-color: #3a3a40;
+}
+:global(.dark) .preview,
+:global(.dark) .mount {
+  color: #dbe4de;
+  background: #151517;
+  border-color: #3a3a40;
+}
+:global(.dark) .mount h1,
+:global(.dark) .mount h3 {
+  color: #edf2ee;
+}
+:global(.dark) .mount p,
+:global(.dark) .mount label {
+  color: #bac4bd;
+}
+:global(.dark) .mount strong {
+  color: #b5da7e;
+}
+:global(.dark) .mount ul,
+:global(.dark) .mount ol {
+  color: #c4cdc6;
+}
+:global(.dark) .mount input,
+:global(.dark) .mount textarea,
+:global(.dark) .mount select {
+  color: #e0e7e2;
+  background: var(--app-panel);
+  border-color: var(--app-border);
+}
+:global(.dark) .mount button {
+  color: #dce5df;
+  background: #252a26;
+  border-color: var(--app-control-border);
+}
+:global(.dark) .mount button:hover {
+  color: #172013;
+  background: #b9df7c;
+  border-color: #b9df7c;
+}
+:global(.dark) .mount output {
+  color: #b5da7e;
+  background: #1b221d;
+  border-color: #354039;
+}
+:global(.dark) .mount aside {
+  background: #20291d;
+  border-color: #40523b;
+}
+:global(.dark) .mount form {
+  border-color: #303a33;
+}
+:global(.dark) .previewMessage {
+  color: #939e96;
+}
+
+@media (max-width: 761px) {
+  .mount button {
+    margin-right: 8px;
+  }
+  .mount button + button {
+    margin-left: 0;
+  }
+}

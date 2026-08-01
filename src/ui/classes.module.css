@@ -1,0 +1,248 @@
+.iconButton {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  place-items: center;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+  background: var(--app-surface);
+  border: 1px solid var(--app-control-border);
+  border-radius: 5px;
+  box-shadow: var(--app-control-inset);
+  transition:
+    color 150ms,
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms,
+    transform 150ms;
+}
+
+.iconButton:hover {
+  color: #405c20;
+  background: #edf4e5;
+  border-color: var(--app-control-border-hover);
+  box-shadow: 0 4px 12px rgb(70 95 45 / 20%);
+  transform: translateY(-2px);
+}
+
+.iconButton:active {
+  box-shadow: none;
+  transform: scale(0.97);
+}
+
+.iconButton:focus-visible,
+.action:focus-visible {
+  outline: 0;
+  box-shadow: var(--app-control-focus-shadow) !important;
+}
+
+.primaryIconButton {
+  composes: iconButton;
+  color: #fff;
+  background: #222923;
+  border-color: #222923;
+}
+
+.primaryIconButton:hover {
+  color: #fff;
+  background: #506b22;
+  border-color: #506b22;
+}
+
+.mobileIconButton {
+  composes: iconButton;
+  display: none;
+}
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-weight: 600;
+  white-space: nowrap;
+  border: 1px solid;
+  border-radius: 4px;
+  transition:
+    color 150ms,
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms,
+    transform 150ms;
+}
+
+.action:hover {
+  transform: translateY(-2px);
+}
+
+.action:active {
+  transform: scale(0.98);
+}
+
+.primary {
+  composes: action;
+  min-height: 42px;
+  gap: 8px;
+  padding: 0 15px;
+  color: #fff;
+  font-size: 13px;
+  background: #222923;
+  border-color: #222923;
+}
+
+.primary:hover {
+  color: #fff;
+  background: #506b22;
+  border-color: #506b22;
+  box-shadow: 0 5px 14px rgb(57 78 36 / 26%);
+}
+
+.secondary {
+  composes: action;
+  min-height: 42px;
+  gap: 8px;
+  padding: 0 15px;
+  color: #4d5951;
+  font-size: 13px;
+  background: var(--app-surface);
+  border-color: var(--app-control-border);
+}
+
+.secondary:hover {
+  color: #405c20;
+  background: #edf4e5;
+  border-color: var(--app-control-border-hover);
+  box-shadow: 0 4px 12px rgb(70 95 45 / 16%);
+}
+
+.source {
+  composes: action;
+  gap: 6px;
+  padding: 8px 10px;
+  color: #42675f;
+  font-size: 12px;
+  background: #f4f8f6;
+  border-color: #c9d5cf;
+}
+
+.source:hover {
+  color: #315e55;
+  background: #e9f5f2;
+  border-color: #82b8ae;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+}
+
+.api {
+  composes: badge;
+  padding: 5px 8px;
+  color: #5c7e1b;
+  font-size: 11px;
+  font-weight: 500;
+  background: #f0f8e1;
+  border: 1px solid #a9d15e;
+  border-radius: 3px;
+}
+
+.internal,
+.deprecated,
+.parameter {
+  composes: badge;
+  border-radius: 3px;
+}
+
+.internal,
+.deprecated {
+  padding: 3px 6px;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.internal {
+  color: #805b1d;
+  background: #fff0c9;
+}
+
+.deprecated {
+  color: #9a3f32;
+  background: #fde2dc;
+}
+
+.parameter {
+  padding: 2px 5px;
+  color: #66705f;
+  font-size: 9px;
+  background: #edf1e9;
+}
+
+:global(.dark) .iconButton {
+  color: #dce4de;
+  background: var(--app-surface-dark);
+  border-color: var(--app-control-border);
+}
+
+:global(.dark) .iconButton:hover {
+  color: #dce8cf;
+  background: #293127;
+  border-color: var(--app-control-border-hover);
+}
+
+:global(.dark) .primaryIconButton,
+:global(.dark) .primary {
+  color: #172013;
+  background: #a5ce62;
+  border-color: #a5ce62;
+}
+
+:global(.dark) .primaryIconButton:hover,
+:global(.dark) .primary:hover {
+  color: #172013;
+  background: #d2f49d;
+  border-color: #d2f49d;
+}
+
+:global(.dark) .secondary {
+  color: #d4ddd6;
+  background: var(--app-surface-dark);
+  border-color: var(--app-control-border);
+}
+
+:global(.dark) .source {
+  color: #b8dc80;
+  background: #20241f;
+  border-color: #465149;
+}
+
+:global(.dark) .api {
+  color: #b2d67b;
+  background: #20261d;
+  border-color: #5e783c;
+}
+
+:global(.dark) .internal {
+  color: #e5c77f;
+  background: #3b301b;
+}
+
+:global(.dark) .deprecated {
+  color: #efa093;
+  background: #3b211e;
+}
+
+:global(.dark) .parameter {
+  color: #adb8b0;
+  background: #2b332d;
+}
+
+@media (max-width: 761px) {
+  .mobileIconButton {
+    display: grid;
+  }
+}

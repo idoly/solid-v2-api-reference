@@ -40,7 +40,6 @@ export function createController(input: Input, getMount: () => HTMLDivElement | 
   const invalidateExecution = () => {
     execution += 1;
     setRunning(false);
-    return execution;
   };
   onCleanup(() => {
     execution += 1;
@@ -83,14 +82,11 @@ export function createController(input: Input, getMount: () => HTMLDivElement | 
     () => demo(),
     (nextDemo) => {
       current = nextDemo;
-      const scheduledExecution = invalidateExecution();
+      invalidateExecution();
       setResult(undefined);
       setCopied(false);
       setSource(nextDemo.code);
       getMount()?.replaceChildren();
-      queueMicrotask(() => {
-        if (scheduledExecution === execution) void run(nextDemo, nextDemo.code);
-      });
     },
   );
 

@@ -1,4 +1,5 @@
 import {
+  ArrowUp as arrowUp,
   ArrowRight as arrowRight,
   Braces as braces,
   Check as check,
@@ -45,6 +46,7 @@ function createIcon(node: IconNode) {
 }
 
 export const ArrowRight = createIcon(arrowRight);
+export const ArrowUp = createIcon(arrowUp);
 export const Braces = createIcon(braces);
 export const Check = createIcon(check);
 export const ChevronRight = createIcon(chevronRight);

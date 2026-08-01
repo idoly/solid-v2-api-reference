@@ -3,9 +3,11 @@ import path from "node:path";
 import ts from "typescript";
 import { resolveApiContent as resolveEnContent } from "./locale-en.mjs";
 import { resolveApiContent as resolveZhContent } from "./locale-zh-cn.mjs";
-import { compileDemo } from "../demo/compile.mjs";
 import { demoOverrides } from "./demos.mjs";
 import { serverDemoIds } from "../demo/config.mjs";
+import { prepareExamples } from "./generator/examples.mjs";
+import { writeCatalog } from "./generator/output.mjs";
+import { relatedApisFor } from "./related-apis.mjs";
 
 const root = process.cwd();
 const tempDir = path.join(root, ".generated");
@@ -571,176 +573,21 @@ for (const { packageName, exports } of moduleEntries) {
   }
 }
 
-function completeExample(record, source, allRecords) {
-  const imported = new Set();
-  for (const match of source.matchAll(/import(?:\s+type)?\s*\{([^}]+)\}\s*from/g)) {
-    for (const item of match[1].split(",")) imported.add(item.trim().split(/\s+as\s+/)[0]);
-  }
-
-  const candidates = new Map();
-  for (const candidate of allRecords) {
-    if (!candidates.has(candidate.title) || candidate.packageName === "solid-js")
-      candidates.set(candidate.title, candidate);
-  }
-  candidates.set(record.title, record);
-
-  const identifiers = new Set();
-  const declared = new Set();
-  const parsed = ts.createSourceFile("demo.tsx", source, ts.ScriptTarget.ESNext, true, ts.ScriptKind.TSX);
-  const visit = (node) => {
-    if (ts.isIdentifier(node)) {
-      identifiers.add(node.text);
-      const parent = node.parent;
-      if (
-        (ts.isVariableDeclaration(parent) ||
-          ts.isFunctionDeclaration(parent) ||
-          ts.isClassDeclaration(parent) ||
-          ts.isParameter(parent)) &&
-        parent.name === node
-      )
-        declared.add(node.text);
-    }
-    ts.forEachChild(node, visit);
-  };
-  visit(parsed);
-
-  const additions = new Map();
-  for (const [name, candidate] of candidates) {
-    if (imported.has(name) || declared.has(name) || !identifiers.has(name)) continue;
-    const names = additions.get(candidate.packageName) ?? [];
-    names.push(name);
-    additions.set(candidate.packageName, names);
-  }
-
-  const imports = [...additions].map(
-    ([packageName, names]) => `import { ${names.sort().join(", ")} } from ${JSON.stringify(packageName)};`,
-  );
-  return imports.length ? `${imports.join("\n")}\n\n${source}` : source;
-}
-
-function normalizeDemoSource(source, id) {
-  if (/[\u3400-\u9fff]/u.test(source)) throw new Error(`Demo ${id} contains non-English text`);
-  return source.trim();
-}
-
-function isObservableDemo(source, record) {
-  const escapedName = record.title.replace(/[$]/g, "\\$");
-  const invokesCurrent =
-    new RegExp(`\\b${escapedName}\\s*\\(`).test(source) || new RegExp(`<${escapedName}(?:\\s|>|/)`).test(source);
-  const hasOutput =
-    /console\.(?:log|info|warn|error)\s*\(|\brender\s*\(|\bhydrate\s*\(|document\.(?:getElementById|createElement|body)/.test(
-      source,
-    );
-  const isServerDemo = serverDemoIds.has(record.id);
-  const hasTsxEntry =
-    /\b(?:function|const)\s+App\b/.test(source) && /\b(?:render|hydrate)\s*\(\s*\(\)\s*=>\s*<App\s*\/>/.test(source);
-  return invokesCurrent && hasOutput && (isServerDemo || hasTsxEntry);
-}
-
-function compileExample(source, id) {
-  try {
-    const server = serverDemoIds.has(id);
-    return compileDemo(source, {
-      filename: `${id.replace(/[^a-zA-Z0-9_-]/g, "_")}.tsx`,
-      generate: server ? "ssr" : "dom",
-    });
-  } catch (error) {
-    console.warn(`Skipping non-compilable example ${id}: ${error.message.split("\n")[0]}`);
-    return undefined;
-  }
-}
-
-records.sort((a, b) => {
-  const categoryDifference = preferredCategoryOrder.indexOf(a.category) - preferredCategoryOrder.indexOf(b.category);
-  if (categoryDifference) return categoryDifference;
-  if (a.packageName !== b.packageName) return a.packageName.localeCompare(b.packageName);
-  return a.title.localeCompare(b.title);
-});
+const availableIds = new Set(records.map((record) => record.id));
+const canonicalByTitle = new Map();
 for (const record of records) {
-  const hasOverride =
-    Object.prototype.hasOwnProperty.call(demoOverrides, record.id) ||
-    Object.prototype.hasOwnProperty.call(demoOverrides, record.title);
-  const override = demoOverrides[record.id] ?? demoOverrides[record.title];
-  const resolvedOverride =
-    typeof override === "string" ? override.replaceAll("__PACKAGE__", record.packageName) : undefined;
-  const rawSources = hasOverride
-    ? resolvedOverride
-      ? [resolvedOverride]
-      : []
-    : record.codes.map((code) => completeExample(record, code, records));
-  const sources = rawSources
-    .map((source) => normalizeDemoSource(source, record.id))
-    .filter((source) => isObservableDemo(source, record));
-  record.codes = sources.filter((source) => compileExample(source, record.id));
+  const current = canonicalByTitle.get(record.title);
+  if (!current || record.packageName === "solid-js") canonicalByTitle.set(record.title, record);
 }
+for (const record of records) {
+  const canonical = canonicalByTitle.get(record.title);
+  record.reExportOf = canonical && canonical.id !== record.id ? canonical.id : undefined;
+  record.relatedApis = relatedApisFor(record.id, availableIds);
+}
+
+prepareExamples(records, demoOverrides, preferredCategoryOrder);
 
 const categories = preferredCategoryOrder.filter((category) => records.some((record) => record.category === category));
 
-const locales = ["zh-CN", "en"];
-const localizedTexts = records.flatMap((record) => [
-  record.definition,
-  record.useCase,
-  ...record.overloads.flatMap((overload) => [
-    ...overload.parameters.map((parameter) => parameter.description),
-    overload.returns.description,
-  ]),
-  ...record.relatedTypes.map((relatedType) => relatedType.description),
-]);
-const localeProperty = { "zh-CN": "zh", en: "en" };
-const textKey = (value) => JSON.stringify(locales.map((locale) => value[localeProperty[locale]]));
-const textPool = [...new Map(localizedTexts.map((value) => [textKey(value), value])).values()];
-const textIndexes = new Map(textPool.map((value, index) => [textKey(value), index]));
-const poolText = (value) => textIndexes.get(textKey(value));
-
-const codePool = [...new Set(records.flatMap((record) => record.codes))];
-const codeIndexes = new Map(codePool.map((code, index) => [code, index]));
-const pooledRecords = records.map(({ overloads, relatedTypes, ...record }) => ({
-  ...record,
-  definition: poolText(record.definition),
-  useCase: poolText(record.useCase),
-  overloads: overloads.map(({ parameters, returns, ...overload }) => ({
-    ...overload,
-    parameters: parameters.map(({ description, ...parameter }) => ({
-      ...parameter,
-      description: poolText(description),
-    })),
-    returns: { ...returns, description: poolText(returns.description) },
-  })),
-  relatedTypes: relatedTypes.map(({ description, ...relatedType }) => ({
-    ...relatedType,
-    description: poolText(description),
-  })),
-  codes: record.codes.map((code) => codeIndexes.get(code)),
-}));
-
-const textPools = Object.fromEntries(
-  locales.map((locale) => [locale, textPool.map((value) => value[localeProperty[locale]])]),
-);
-const catalog = {
-  schemaVersion: 4,
-  sourceCommit,
-  categories,
-  textPools,
-  codePool,
-  records: pooledRecords,
-};
-const catalogIndex = {
-  schemaVersion: 1,
-  categories,
-  records: records.map(({ id, title, packageName, category, kind, internal, deprecated, definition, useCase }) => ({
-    id,
-    title,
-    packageName,
-    category,
-    kind,
-    internal,
-    deprecated,
-    definition: { "zh-CN": definition.zh, en: definition.en },
-    useCase: { "zh-CN": useCase.zh, en: useCase.en },
-  })),
-};
-fs.writeFileSync(path.join(root, "data", "catalog.json"), `${JSON.stringify(catalog)}\n`);
-fs.writeFileSync(path.join(root, "data", "catalog-index.json"), `${JSON.stringify(catalogIndex)}\n`);
-console.log(
-  `Generated ${records.length} public callable APIs across ${categories.length} categories and ${locales.length} locales.`,
-);
+writeCatalog({ root, sourceCommit, records, categories });
+console.log(`Generated ${records.length} public callable APIs across ${categories.length} categories and 2 locales.`);

@@ -1,0 +1,95 @@
+:root {
+  --app-canvas: #f1f4f0;
+  --app-surface: #fdfefd;
+  --app-surface-muted: #f1f4f1;
+  --app-sidebar: #f7f9f6;
+  --app-text: #202522;
+  --app-text-muted: #717a74;
+  --app-border: #d5ddd6;
+  --app-line: #dfe3df;
+  --app-code: #0e0e10;
+  --app-panel: #151517;
+  --app-surface-dark: #1d1d20;
+  --app-accent: #b8ef4a;
+  --app-accent-strong: #6f981d;
+  --app-focus: #6f981d;
+  --app-control-border: #c6d0c8;
+  --app-control-border-hover: #789b45;
+  --app-control-focus-shadow: 0 0 0 3px rgb(111 152 29 / 28%);
+  --app-control-inset: inset 0 1px 0 rgb(255 255 255 / 76%);
+  --app-header-height: 64px;
+  --app-sidebar-width: clamp(300px, 22vw, 320px);
+  --app-content-width: 1480px;
+  --font-sans: system-ui, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-display: system-ui, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+}
+
+.dark {
+  --app-canvas: #0e1210;
+  --app-surface: #1d1d20;
+  --app-text: #e3e8e4;
+  --app-text-muted: #a8b2ab;
+  --app-border: #46464f;
+  --app-line: #35353b;
+  --app-accent: #a9d85f;
+  --app-accent-strong: #b8dc80;
+  --app-focus: #a9d85f;
+  --app-control-border: #465149;
+  --app-control-border-hover: #75934b;
+  --app-control-focus-shadow: 0 0 0 3px rgb(169 216 95 / 30%);
+  --app-control-inset: inset 0 1px 0 rgb(255 255 255 / 6%);
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: 320px;
+  margin: 0;
+  background: var(--app-canvas);
+  font-family: var(--font-sans);
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+pre,
+code {
+  font-family: var(--font-mono);
+}
+
+.ads-tooltip.ads-tooltip-theme {
+  color: #fff !important;
+  background: #202522 !important;
+  border: 1px solid #3f4942;
+}
+.ads-tooltip.ads-tooltip-theme > * {
+  color: inherit !important;
+}
+.dark .ads-tooltip.ads-tooltip-theme {
+  color: #202522 !important;
+  background: #edf2ee !important;
+  border-color: #cbd4cd;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

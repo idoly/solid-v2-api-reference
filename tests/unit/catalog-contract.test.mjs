@@ -7,7 +7,7 @@ import { loadDemoCatalog } from "../../scripts/demo/load.mjs";
 const catalog = JSON.parse(await readFile(new URL("../../data/catalog.json", import.meta.url), "utf8"));
 
 test("generated catalog uses the current schema", () => {
-  assert.equal(catalog.schemaVersion, 4);
+  assert.equal(catalog.schemaVersion, 5);
 });
 
 test("demo loader preserves generated execution metadata", () => {

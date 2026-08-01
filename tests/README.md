@@ -12,11 +12,12 @@ npm test
 
 This command runs, in order:
 
-1. Catalog generation and TypeScript checks.
+1. Deterministic catalog generation and TypeScript checks.
 2. Generated demo source and repository formatting checks.
-3. Node unit tests for schema, execution metadata, request methods, validation, limits, and localization.
-4. All 116 browser and 5 SSR demo groups.
-5. Production build and Playwright end-to-end tests in Podman.
+3. Node unit tests for schema, re-exports, related APIs, content fallbacks, demo uniqueness, execution metadata, request methods, validation, limits, and localization.
+4. All 109 browser and 12 SSR demo groups, including targeted behavior scenarios.
+5. Production build and gzip bundle budgets.
+6. Playwright end-to-end tests in Podman.
 
 The generation-based commands are intentionally sequential because they share `.generated` and the two files under `data/`. The complete gate generates the catalog once, builds once, and then lets the Podman browser suite reuse `dist`; standalone commands retain their own preparation steps. GitHub Actions invokes this same command instead of maintaining a separate CI-only sequence.
 
@@ -28,7 +29,7 @@ Run the fast Node contract suite with:
 npm run test:unit
 ```
 
-`tests/unit/catalog-contract.test.mjs` verifies the catalog schema, loader projection, and generated browser/server execution metadata. `tests/unit/demo-http.test.mjs` verifies endpoint routing, HTTP methods, index validation, request limits, and localized protocol errors without starting a server. `tests/unit/server-app.test.mjs` runs the production server factory on a random port and covers health checks, static caching, HEAD responses, SPA fallback, missing assets, method restrictions, and rate limiting.
+`tests/unit/catalog-contract.test.mjs` verifies the catalog schema, loader projection, and generated browser/server execution metadata. `tests/unit/catalog-quality.test.mjs` protects re-export and Related API references, rejects generic prose fallbacks, and enforces distinct bounded demo programs. `tests/unit/demo-http.test.mjs` verifies endpoint routing, HTTP methods, index validation, request limits, and localized protocol errors without starting a server. `tests/unit/server-app.test.mjs` runs the production server factory on a random port and covers health checks, static caching, HEAD responses, SPA fallback, missing assets, method restrictions, and rate limiting.
 
 ## Playwright
 
@@ -53,10 +54,10 @@ npm run test:e2e
 
 `tests/e2e/application.spec.ts` verifies:
 
-- The generated API count, desktop search, API selection, and browser back navigation.
+- The generated API count, desktop content/sidebar proportions, search, API selection, and browser back navigation.
 - The initial route does not fetch the complete API chunk; opening an API fetches it on demand.
 - Locale and theme preferences survive a reload.
-- A browser demo compiles through the runtime endpoint and publishes DOM and console output.
+- A browser demo makes no runtime request before Run, then compiles through the runtime endpoint, publishes DOM and console output, and returns to its pre-execution state after Reset.
 - The mobile catalog opens, searches, navigates, and closes correctly.
 
 Use accessible roles and labels for locators. Add test-only selectors only when the user-facing semantics cannot identify an element reliably.

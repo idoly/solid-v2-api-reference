@@ -10,6 +10,7 @@ export type CatalogEntry = {
   kind: string;
   internal: boolean;
   deprecated: boolean;
+  reExportOf?: string;
   definition: Text;
   useCase: Text;
 };
@@ -37,3 +38,4 @@ export const groups = data.categories.map((category) => ({
 }));
 
 export const findDoc = (idOrTitle: string) => docsById.get(idOrTitle) ?? docsByTitle.get(idOrTitle);
+export const packageScope = (packageName: string) => (packageName === "solid-js" ? "core" : "web");

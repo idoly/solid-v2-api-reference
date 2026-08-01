@@ -1,0 +1,62 @@
+.examples {
+  position: relative;
+  padding: 54px 0;
+  scroll-margin-top: 80px;
+}
+.tabs {
+  width: fit-content;
+  max-width: 100%;
+  margin-bottom: 8px;
+  padding: 4px;
+  overflow-x: auto;
+  background: var(--app-surface-muted);
+  border: 1px solid #cfd7d1;
+  border-radius: 5px;
+  box-shadow: none;
+}
+.tabItem {
+  min-width: 94px;
+  min-height: 32px;
+  color: #5d6961;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+.empty {
+  min-height: 150px;
+  padding: 28px 0;
+  color: #7c847f;
+  background: #fafbfa;
+  border: 1px dashed #ccd2cd;
+}
+.emptyImage {
+  height: auto;
+  margin-bottom: 8px;
+  color: #829078;
+}
+.emptyDescription {
+  color: #7c847f;
+  font-size: 13px;
+}
+:global(.dark) .tabs {
+  background: var(--app-surface-dark);
+  border-color: var(--app-border);
+}
+:global(.dark) .tabItem {
+  color: #b8c1ba;
+}
+:global(.dark) .empty {
+  color: #aeb7b0;
+  background: var(--app-panel);
+  border-color: var(--app-border);
+}
+:global(.dark) .emptyImage {
+  color: #9aac8d;
+}
+:global(.dark) .emptyDescription {
+  color: #aeb7b0;
+}
+@media (max-width: 761px) {
+  .examples {
+    padding: 43px 0;
+  }
+}

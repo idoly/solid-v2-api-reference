@@ -1,0 +1,80 @@
+.editor,
+.dialogEditor {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--app-code);
+}
+.editor {
+  height: 380px;
+  min-height: 320px;
+  max-height: 620px;
+  flex: 1;
+  resize: vertical;
+}
+.editorLayer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 18px;
+  overflow-wrap: normal;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.75;
+  white-space: pre;
+  tab-size: 2;
+  border: 0;
+}
+.highlight,
+.dialogHighlight {
+  composes: editorLayer;
+  color: #dbe4de;
+  background: var(--app-code);
+  pointer-events: none;
+}
+.highlight {
+  z-index: 1;
+  overflow: hidden;
+}
+.textarea,
+.dialogTextarea {
+  composes: editorLayer;
+  color: transparent;
+  background: transparent;
+  caret-color: #f5faf7;
+  outline: 0;
+  resize: none;
+  -webkit-text-fill-color: transparent;
+}
+.textarea {
+  z-index: 2;
+  overflow: auto;
+}
+.textarea::selection,
+.dialogTextarea::selection {
+  background: rgb(121 163 82 / 34%);
+}
+.textarea:read-only,
+.dialogTextarea:read-only {
+  cursor: default;
+}
+.codeContent {
+  font: inherit;
+  white-space: inherit;
+}
+.dialogTextarea {
+  overflow: auto;
+}
+.dialogHighlight {
+  overflow: hidden;
+}
+
+@media (max-width: 761px) {
+  .editor {
+    height: 320px;
+    min-height: 260px;
+    max-height: 420px;
+  }
+}

@@ -2,24 +2,8 @@ import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { compileDemo } from "./compile.mjs";
 import { loadDemoCatalog } from "./load.mjs";
-const targetedScenarios = {
-  "solid-js/createSignal": {
-    run: runCreateSignalScenario,
-    expectedText: ["Accessor result: 7"],
-  },
-  "solid-js/createMemo": {
-    run: runCreateMemoScenario,
-    expectedText: ["Cached total: USD 45.20"],
-  },
-  "solid-js/createEffect": {
-    run: runCreateEffectScenario,
-    expectedText: ["Initial -> 0", "0 -> 1"],
-  },
-  "solid-js/createOptimistic": {
-    run: runCreateOptimisticScenario,
-    expectedText: ["Optimistic phase: 2", "After settlement: 1"],
-  },
-};
+import { exerciseInteractiveControls, hasInteractiveControls } from "./verify-interactions.mjs";
+import { assertTargetedResult, targetedScenarios } from "./verify-scenarios.mjs";
 const scriptPath = fileURLToPath(import.meta.url);
 const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
 const [mode = "--all", selectedId] = process.argv.slice(2);
@@ -178,7 +162,7 @@ async function verifyBrowser(onlyId) {
           throw new Error(`Framework console diagnostics: ${frameworkDiagnostics.join(" | ")}`);
 
         const targetedScenario = targetedScenarios[doc.id];
-        if (targetedScenario) {
+        if (targetedScenario?.run) {
           await targetedScenario.run({ document, window, Solid });
         } else if (hasInteractiveControls(doc.codes[index])) {
           await exerciseInteractiveControls(document, window, Solid);
@@ -186,7 +170,7 @@ async function verifyBrowser(onlyId) {
         assertNoRuntimeErrors(logs, frameworkDiagnostics, "after interaction");
         const renderedText = visibleText(document);
         if (!renderedText) throw new Error("Demo completed without producing visible page content");
-        assertTargetedResult(doc.id, renderedText);
+        assertTargetedResult(doc.id, renderedText, logs);
         passed++;
       } catch (error) {
         failures.push({
@@ -205,61 +189,6 @@ async function verifyBrowser(onlyId) {
   process.exit(failures.length ? 1 : 0);
 }
 
-function hasInteractiveControls(source) {
-  return /\bon(?:Click|Input|Change)=|\baddEvent(?:Listener)?\s*\(/.test(source);
-}
-
-async function exerciseInteractiveControls(document, window, Solid) {
-  const root = document.getElementById("root");
-  let previous = interactiveSnapshot(document);
-  let changed = false;
-  const trackChange = () => {
-    const next = interactiveSnapshot(document);
-    if (next !== previous) changed = true;
-    previous = next;
-  };
-
-  for (const input of root?.querySelectorAll("input, textarea") ?? []) {
-    if (input instanceof window.HTMLInputElement && ["checkbox", "radio"].includes(input.type)) {
-      input.checked = !input.checked;
-      input.dispatchEvent(new window.Event("change", { bubbles: true }));
-    } else if (input instanceof window.HTMLInputElement && input.type === "range") {
-      const min = Number(input.min || 0);
-      const max = Number(input.max || 100);
-      const midpoint = min + (max - min) / 2;
-      input.value = String(Number(input.value) === midpoint ? min : midpoint);
-      input.dispatchEvent(new window.Event("input", { bubbles: true }));
-    } else if (input instanceof window.HTMLInputElement && input.type === "number") {
-      input.value = String(Number(input.value || 0) + 1);
-      input.dispatchEvent(new window.Event("input", { bubbles: true }));
-    } else {
-      input.value = `${input.value} updated`.trim();
-      input.dispatchEvent(new window.Event("input", { bubbles: true }));
-    }
-    Solid.flush();
-    trackChange();
-  }
-
-  for (const select of root?.querySelectorAll("select") ?? []) {
-    if (select.options.length > 1) select.selectedIndex = (select.selectedIndex + 1) % select.options.length;
-    select.dispatchEvent(new window.Event("change", { bubbles: true }));
-    Solid.flush();
-    trackChange();
-  }
-
-  for (const button of root?.querySelectorAll("button") ?? []) {
-    if (!button.disabled) button.click();
-    Solid.flush();
-    await Promise.resolve();
-    trackChange();
-  }
-
-  await new Promise((resolve) => setTimeout(resolve, 0));
-  Solid.flush();
-  trackChange();
-  if (!changed) throw new Error("Interactive controls did not produce an observable update");
-}
-
 function assertNoRuntimeErrors(logs, frameworkDiagnostics, phase = "during execution") {
   if (frameworkDiagnostics.length)
     throw new Error(`Framework diagnostics ${phase}: ${frameworkDiagnostics.join(" | ")}`);
@@ -267,59 +196,8 @@ function assertNoRuntimeErrors(logs, frameworkDiagnostics, phase = "during execu
   if (loggedError) throw new Error(`Demo console.error ${phase}: ${loggedError.slice(1).map(String).join(" ")}`);
 }
 
-function runCreateSignalScenario({ document, window, Solid }) {
-  document.getElementById("signal-increase")?.click();
-  Solid.flush();
-  setInputValue(document.getElementById("count-input"), "7", window);
-  Solid.flush();
-}
-
-function runCreateMemoScenario({ document, window, Solid }) {
-  setInputValue(document.getElementById("price"), "40", window);
-  Solid.flush();
-}
-
-function runCreateEffectScenario({ document, Solid }) {
-  document.getElementById("effect-update")?.click();
-  Solid.flush();
-}
-
-async function runCreateOptimisticScenario({ document, Solid }) {
-  const buttons = [...document.querySelectorAll("button")];
-  buttons.find((button) => button.textContent?.includes("Start"))?.click();
-  Solid.flush();
-  await new Promise((resolve) => setTimeout(resolve, 0));
-  buttons.find((button) => button.textContent?.includes("Settle"))?.click();
-  await new Promise((resolve) => setTimeout(resolve, 0));
-  Solid.flush();
-}
-
-function setInputValue(input, value, window) {
-  if (!(input instanceof window.HTMLInputElement)) return;
-  input.value = value;
-  input.dispatchEvent(new window.Event("input", { bubbles: true }));
-}
-
 function visibleText(document) {
   return `${document.getElementById("root")?.textContent ?? ""}${document.getElementById("modal-root")?.textContent ?? ""}`.trim();
-}
-
-function assertTargetedResult(id, renderedText) {
-  const expectedText = targetedScenarios[id]?.expectedText;
-  if (expectedText?.some((text) => !renderedText.includes(text))) {
-    throw new Error(`${id} did not produce the expected interactive result: ${renderedText}`);
-  }
-}
-
-function interactiveSnapshot(document) {
-  const controls = [...document.querySelectorAll("input, textarea, select, button")].map((control) => ({
-    tag: control.tagName,
-    value: "value" in control ? control.value : undefined,
-    checked: "checked" in control ? control.checked : undefined,
-    disabled: "disabled" in control ? control.disabled : undefined,
-    className: control.className,
-  }));
-  return JSON.stringify({ body: document.body.innerHTML, controls });
 }
 
 function timeout(milliseconds) {

@@ -11,6 +11,7 @@ export type Doc = CatalogEntry & {
     returns: { type: string; description: Text };
   }>;
   relatedTypes: Array<{ name: string; description: Text; declaration: string; sourceUrl: string }>;
+  relatedApis: Array<{ id: string; reason: Text }>;
   codes: string[];
   sourceUrl: string;
 };
@@ -19,21 +20,24 @@ type TextRef = number;
 type Overload = Doc["overloads"][number];
 type Parameter = Overload["parameters"][number];
 type RelatedType = Doc["relatedTypes"][number];
+type RelatedApi = Doc["relatedApis"][number];
 type RawOverload = Omit<Overload, "parameters" | "returns"> & {
   parameters: Array<Omit<Parameter, "description"> & { description: TextRef }>;
   returns: Omit<Overload["returns"], "description"> & { description: TextRef };
 };
 type RawRelatedType = Omit<RelatedType, "description"> & { description: TextRef };
-type RawApi = Omit<Doc, "definition" | "useCase" | "overloads" | "relatedTypes" | "codes"> & {
+type RawRelatedApi = Omit<RelatedApi, "reason"> & { reason: TextRef };
+type RawApi = Omit<Doc, "definition" | "useCase" | "overloads" | "relatedTypes" | "relatedApis" | "codes"> & {
   definition: TextRef;
   useCase: TextRef;
   overloads: RawOverload[];
   relatedTypes: RawRelatedType[];
+  relatedApis: RawRelatedApi[];
   codes: number[];
 };
 
 type Catalog = {
-  schemaVersion: 4;
+  schemaVersion: 5;
   sourceCommit: string;
   categories: string[];
   textPools: { "zh-CN": string[]; en: string[] };
@@ -43,7 +47,7 @@ type Catalog = {
 
 const data = catalog as unknown as Catalog;
 
-if (data.schemaVersion !== 4) throw new Error(`Unsupported catalog schema: ${data.schemaVersion}`);
+if (data.schemaVersion !== 5) throw new Error(`Unsupported catalog schema: ${data.schemaVersion}`);
 if (data.textPools["zh-CN"].length !== data.textPools.en.length) {
   throw new Error("Catalog locale pools contain different numbers of text entries");
 }
@@ -60,7 +64,7 @@ const expandText = (index: TextRef): Text => ({
 });
 
 // Large prose and demo strings remain pooled; records materialize their references once at startup.
-export const docs: Doc[] = data.records.map(({ overloads, relatedTypes, ...record }) => ({
+export const docs: Doc[] = data.records.map(({ overloads, relatedTypes, relatedApis, ...record }) => ({
   ...record,
   definition: expandText(record.definition),
   useCase: expandText(record.useCase),
@@ -75,6 +79,10 @@ export const docs: Doc[] = data.records.map(({ overloads, relatedTypes, ...recor
   relatedTypes: relatedTypes.map(({ description, ...relatedType }) => ({
     ...relatedType,
     description: expandText(description),
+  })),
+  relatedApis: relatedApis.map(({ reason, ...relatedApi }) => ({
+    ...relatedApi,
+    reason: expandText(reason),
   })),
   codes: record.codes.map((index) => pooledValue(data.codePool, index, "demo source")),
 }));

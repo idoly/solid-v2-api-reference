@@ -1,3 +1,5 @@
+import { resolveFallbackUseCase } from "./generator/locale-resolver.mjs";
+
 // Complete zh-CN definitions and use cases for every catalog API.
 export const apiContent = {
   "solid-js/children": [
@@ -45,14 +47,17 @@ export const apiContent = {
     "用于 `for`、`aria-labelledby` 等要求 SSR 与客户端 ID 一致的属性。",
   ],
   "solid-js/enableHydration": [
-    "enableHydration 是 solid-js 对外提供的可调用 API。",
-    "用于源码声明所描述的响应式和组件场景。",
+    "为当前 Solid 运行时启用 hydration 感知行为。",
+    "自定义渲染器或集成需要在标准 Web 启动流程之外初始化 hydration 时使用。",
   ],
   "solid-js/flush": [
     "立即处理待执行的响应式队列，也可以在同步 flush 作用域内运行回调。",
     "测试或必须立即观察已提交响应式结果时使用；常规更新通常交给微任务批处理。",
   ],
-  "solid-js/isEqual": ["isEqual 是 solid-js 对外提供的可调用 API。", "用于源码声明所描述的响应式和组件场景。"],
+  "solid-js/isEqual": [
+    "按照 Solid 运行时内部的相等语义比较两个值。",
+    "自定义响应式原语需要做出与运行时一致的变更检测判断时使用。",
+  ],
   "solid-js/lazy": [
     "创建按需动态导入的代码分割组件。",
     "组件首次渲染时才加载模块，并通过最近的 `<Loading>` 边界显示等待状态；无人订阅时，仍在 pending 的惰性节点会在结算后自动释放。",
@@ -89,7 +94,10 @@ export const apiContent = {
     "返回 Store 的普通深拷贝，同时让当前追踪作用域订阅整个子树的变化。",
     "消费者需要普通对象，并希望任意深层写入都能使其失效时使用。",
   ],
-  "solid-js/isWrappable": ["isWrappable 是 solid-js 对外提供的可调用 API。", "用于源码声明所描述的响应式和组件场景。"],
+  "solid-js/isWrappable": [
+    "判断一个值是否可以由响应式 Store Proxy 包装。",
+    "对未知对象或集合应用 Store 专属行为前使用。",
+  ],
   "solid-js/merge": [
     "把多个 props 风格对象合并为保持响应性的代理，后面的来源覆盖前面的来源。",
     "组合默认 props、外部 props 和派生 props，同时保留 getter 与响应式读取时使用。",
@@ -155,27 +163,36 @@ export const apiContent = {
     "异步 Action 开始后需要标记哪些数据正在变化，但仍允许读取旧值时使用。",
   ],
   "solid-js/enableExternalSource": [
-    "enableExternalSource 是 solid-js 对外提供的可调用 API。",
-    "用于源码声明所描述的响应式和组件场景。",
+    "注册把外部响应式来源接入 Solid 运行时所需的订阅和清理 hooks。",
+    "适配其他响应式系统，并让 Solid computation 可以订阅和释放其来源时使用。",
   ],
   "solid-js/flatten": [
     "把 children 值解析为可渲染形式：展开访问器和嵌套数组，并可跳过空渲染值。",
     "自定义控制流或渲染器需要遍历和规范化 children 树时使用。",
   ],
-  "solid-js/isPending": ["isPending 是 solid-js 对外提供的可调用 API。", "用于源码声明所描述的响应式和组件场景。"],
-  "solid-js/latest": ["latest 是 solid-js 对外提供的可调用 API。", "用于源码声明所描述的响应式和组件场景。"],
+  "solid-js/isPending": [
+    "判断读取指定响应式表达式时是否遇到尚未完成的异步工作。",
+    "需要检查 pending 状态、但不希望取代外层 Loading 边界行为时使用。",
+  ],
+  "solid-js/latest": [
+    "读取异步响应式表达式，并在新值 pending 时继续保留最近一次已完成的值。",
+    "刷新期间希望继续显示旧数据，而不是立即切换到 fallback 时使用。",
+  ],
   "solid-js/resolve": [
     "等待响应式表达式首次完全稳定，并以 Promise 返回结果。",
     "表达式可能读取尚未就绪的异步 memo 或 signal，需要等待其可同步返回时使用。",
   ],
-  "@solidjs/web/Assets": ["Assets 是 @solidjs/web 对外提供的可调用 API。", "用于源码声明所描述的响应式和组件场景。"],
+  "@solidjs/web/Assets": [
+    "收集服务端渲染过程中注册的资源元素，并把它们放入文档输出。",
+    "SSR 文档 shell 需要输出渲染树注册的样式、链接和其他资源时使用。",
+  ],
   "@solidjs/web/Dynamic": [
     "渲染运行时指定的原生标签或自定义组件，并转发其他 props。",
     "组件类型由响应式数据决定，无法在 JSX 编写阶段固定时使用。",
   ],
   "@solidjs/web/Errored": [
     "捕获子树中未处理的错误，并渲染 fallback。",
-    "组件区域需要隔离错误，并通过 fallback 或 `reset()` 提供恢复入口时使用。",
+    "Fallback 回调会收到错误 accessor 和 `reset()`；需要显示当前错误并让用户重试受保护子树时使用。",
   ],
   "@solidjs/web/For": [
     "根据列表创建并复用元素。",
@@ -186,8 +203,8 @@ export const apiContent = {
     "外层区域跳过 hydration，但其中某个子树仍需要恢复交互时使用。",
   ],
   "@solidjs/web/HydrationScript": [
-    "HydrationScript 是 @solidjs/web 对外提供的可调用 API。",
-    "用于源码声明所描述的响应式和组件场景。",
+    "输出客户端 hydration 所需的启动脚本和事件元数据。",
+    "服务端 HTML 将在浏览器中 hydration 时，把它放入 SSR 文档中。",
   ],
   "@solidjs/web/Loading": [
     "在子树中的异步读取完成前渲染 fallback。",
@@ -220,7 +237,7 @@ export const apiContent = {
   ],
   "solid-js/Errored": [
     "捕获子树中未处理的错误，并渲染 fallback。",
-    "组件区域需要隔离错误，并通过 fallback 或 `reset()` 提供恢复入口时使用。",
+    "Fallback 回调会收到错误 accessor 和 `reset()`；需要显示当前错误并让用户重试受保护子树时使用。",
   ],
   "solid-js/For": [
     "根据列表创建并复用元素。",
@@ -253,7 +270,7 @@ export const apiContent = {
   ],
   "solid-js/Switch": ["在多个互斥条件中渲染第一个成立的 `<Match>`。", "条件分支超过两个，或需要统一 fallback 时使用。"],
   "@solidjs/web/generateHydrationScript": [
-    "generateHydrationScript 是 @solidjs/web 对外提供的可调用 API。",
+    "生成 hydration 启动脚本对应的 HTML 字符串。",
     "用于应用挂载、hydration 或服务端 HTML 输出。",
   ],
   "@solidjs/web/hydrate": [
@@ -277,8 +294,8 @@ export const apiContent = {
     "需要完全稳定的服务端 HTML 且可以接受等待全部异步任务时使用；该 API 已弃用。",
   ],
   "@solidjs/web/getRequestEvent": [
-    "getRequestEvent 是 @solidjs/web 对外提供的可调用 API。",
-    "用于源码声明所描述的响应式和组件场景。",
+    "读取当前服务端渲染作用域关联的请求事件。",
+    "SSR 组件需要访问当前请求、响应上下文或由服务器集成提供的事件数据时使用。",
   ],
   "@solidjs/web/httpHeader": [
     "在 SSR 期间为当前响应式作用域声明 HTTP 响应头；`append` 可追加值而不是覆盖响应头。",
@@ -309,19 +326,19 @@ export const apiContent = {
     "普通返回值不足以表达 HTTP 元数据，同时还要让脚本调用方透明取得业务值时使用。",
   ],
   "@solidjs/web/acquireAsset": [
-    "acquireAsset 是 @solidjs/web 对外提供的可调用 API。",
+    "获取一个带引用计数的 Web 资源，并返回释放该资源的函数。",
     "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
   ],
   "@solidjs/web/addEvent": [
-    "addEvent 是 @solidjs/web 对外提供的可调用 API。",
+    "为元素绑定直接事件处理器或委托事件处理器。",
     "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
   ],
   "@solidjs/web/applyRef": [
-    "applyRef 是 @solidjs/web 对外提供的可调用 API。",
+    "把一个 ref 回调或一组 ref 回调应用到指定元素。",
     "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
   ],
   "@solidjs/web/assign": [
-    "assign 是 @solidjs/web 对外提供的可调用 API。",
+    "把 props 对象应用到元素，并分别处理 children、ref、property、attribute、style 和 event。",
     "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
   ],
   "@solidjs/web/claimElement": [
@@ -332,8 +349,12 @@ export const apiContent = {
     "遍历并认领根节点内与导航相关的链接和表单元素。",
     "SSR 范围或流式内容直接进入 DOM、没有经过编译器创建流程时使用。",
   ],
+  "@solidjs/web/clientOnly": [
+    "包装动态导入的组件，使其只在浏览器环境中加载和渲染。",
+    "组件依赖浏览器 API、不能在服务端求值，同时仍需参与客户端代码分割时使用。",
+  ],
   "@solidjs/web/className": [
-    "className 是 @solidjs/web 对外提供的可调用 API。",
+    "更新元素的 class 值，并根据上一次 class 状态清理旧值。",
     "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
   ],
   "@solidjs/web/createComponent": [
@@ -341,7 +362,7 @@ export const apiContent = {
     "主要由 JSX 编译结果使用；编写自定义 JSX 工厂或渲染器时才需要手动调用。",
   ],
   "@solidjs/web/delegateEvents": [
-    "delegateEvents 是 @solidjs/web 对外提供的可调用 API。",
+    "为指定事件名注册 document 级委托监听器。",
     "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
   ],
   "@solidjs/web/dynamic": [
@@ -349,49 +370,49 @@ export const apiContent = {
     "组件类型会在运行时变化，同时还需要像普通组件一样接收 props 和 children 时使用。",
   ],
   "@solidjs/web/dynamicProperty": [
-    "dynamicProperty 是 @solidjs/web 对外提供的可调用 API。",
+    "把 props 对象上的指定属性标记为动态求值属性。",
     "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
   ],
   "@solidjs/web/effect": [
-    "effect 是 @solidjs/web 对外提供的可调用 API。",
+    "创建由计算回调和 DOM 副作用回调组成的渲染器 effect。",
     "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
   ],
   "@solidjs/web/getAssets": [
-    "getAssets 是 @solidjs/web 对外提供的可调用 API。",
+    "返回当前服务端渲染过程中收集到的资源 HTML。",
     "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
   ],
   "@solidjs/web/getDelegatedRoot": [
-    "getDelegatedRoot 是 @solidjs/web 对外提供的可调用 API。",
+    "返回与指定可挂载节点关联的事件委托根。",
     "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
   ],
   "@solidjs/web/getHydrationKey": [
-    "getHydrationKey 是 @solidjs/web 对外提供的可调用 API。",
+    "返回当前服务端渲染上下文中的下一个 hydration key。",
     "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
   ],
   "@solidjs/web/getNextElement": [
-    "getNextElement 是 @solidjs/web 对外提供的可调用 API。",
+    "认领并返回下一个可 hydration 元素；非 hydration 模式下可从模板创建元素。",
     "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
   ],
   "@solidjs/web/getNextMarker": [
-    "getNextMarker 是 @solidjs/web 对外提供的可调用 API。",
+    "查找 hydration marker 边界，并返回 marker 及其包围的节点。",
     "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
   ],
   "@solidjs/web/getNextMatch": [
-    "getNextMatch 是 @solidjs/web 对外提供的可调用 API。",
+    "查找并认领下一个与指定标签名匹配的可 hydration 元素。",
     "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
   ],
   "@solidjs/web/insert": [
-    "insert 是 @solidjs/web 对外提供的可调用 API。",
+    "向 DOM 父节点插入静态或响应式内容，并在值变化时更新受管理的节点范围。",
     "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
   ],
-  "@solidjs/web/memo": ["memo 是 @solidjs/web 对外提供的可调用 API。", "用于 DOM 绑定、事件、模板或 Web 渲染器集成。"],
-  "@solidjs/web/ref": ["ref 是 @solidjs/web 对外提供的可调用 API。", "用于 DOM 绑定、事件、模板或 Web 渲染器集成。"],
+  "@solidjs/web/memo": ["用渲染器 memo 包装函数，并返回响应式访问器。", "用于 DOM 绑定、事件、模板或 Web 渲染器集成。"],
+  "@solidjs/web/ref": ["求值 JSX ref 表达式，并把结果应用到指定元素。", "用于 DOM 绑定、事件、模板或 Web 渲染器集成。"],
   "@solidjs/web/registerDelegatedContainer": [
-    "registerDelegatedContainer 是 @solidjs/web 对外提供的可调用 API。",
+    "为事件委托注册容器及其可选逻辑 Owner。",
     "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
   ],
   "@solidjs/web/registerDelegatedRoot": [
-    "registerDelegatedRoot 是 @solidjs/web 对外提供的可调用 API。",
+    "把一个根节点注册为事件委托边界。",
     "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
   ],
   "@solidjs/web/registerElementClaim": [
@@ -399,47 +420,41 @@ export const apiContent = {
     "路由器或框架集成需要观察新建及属性更新后的链接、表单元素时使用。",
   ],
   "@solidjs/web/runHydrationEvents": [
-    "runHydrationEvents 是 @solidjs/web 对外提供的可调用 API。",
+    "重放应用等待 hydration 期间捕获的事件。",
     "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
   ],
   "@solidjs/web/scope": [
-    "scope 是 @solidjs/web 对外提供的可调用 API。",
+    "包装渲染器回调，使其在捕获到的响应式作用域中执行。",
     "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
   ],
   "@solidjs/web/setAttribute": [
-    "setAttribute 是 @solidjs/web 对外提供的可调用 API。",
+    "根据传入值设置或移除标准 DOM attribute。",
     "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
   ],
   "@solidjs/web/setAttributeNS": [
-    "setAttributeNS 是 @solidjs/web 对外提供的可调用 API。",
+    "设置或移除带命名空间的 DOM attribute。",
     "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
   ],
-  "@solidjs/web/setProperty": [
-    "setProperty 是 @solidjs/web 对外提供的可调用 API。",
-    "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
-  ],
+  "@solidjs/web/setProperty": ["把值直接写入 DOM 元素的 property。", "用于 DOM 绑定、事件、模板或 Web 渲染器集成。"],
   "@solidjs/web/setStyleProperty": [
-    "setStyleProperty 是 @solidjs/web 对外提供的可调用 API。",
+    "设置或移除元素内联样式声明中的一个 CSS property。",
     "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
   ],
-  "@solidjs/web/spread": [
-    "spread 是 @solidjs/web 对外提供的可调用 API。",
-    "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
-  ],
+  "@solidjs/web/spread": ["响应式地把 props 对象展开到指定元素。", "用于 DOM 绑定、事件、模板或 Web 渲染器集成。"],
   "@solidjs/web/style": [
-    "style 是 @solidjs/web 对外提供的可调用 API。",
+    "把 style 对象应用到元素，并移除下一次值中不再存在的属性。",
     "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
   ],
   "@solidjs/web/template": [
-    "template 是 @solidjs/web 对外提供的可调用 API。",
+    "根据静态 HTML 模板字符串创建 DOM 克隆工厂。",
     "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
   ],
   "@solidjs/web/unregisterDelegatedContainer": [
-    "unregisterDelegatedContainer 是 @solidjs/web 对外提供的可调用 API。",
+    "移除之前注册的事件委托容器。",
     "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
   ],
   "@solidjs/web/unregisterDelegatedRoot": [
-    "unregisterDelegatedRoot 是 @solidjs/web 对外提供的可调用 API。",
+    "移除之前注册的事件委托根。",
     "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
   ],
   "@solidjs/web/untrack": [
@@ -447,7 +462,7 @@ export const apiContent = {
     "只想读取当前值、不希望当前计算订阅该值时使用。",
   ],
   "@solidjs/web/useAssets": [
-    "useAssets 是 @solidjs/web 对外提供的可调用 API。",
+    "向当前服务端渲染上下文注册一个资源生成回调。",
     "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
   ],
 };
@@ -457,10 +472,12 @@ export function resolveApiContent(api) {
   if (existing) return existing;
 
   const definition = `${api.title} 是 ${api.packageName} 对外提供的可调用 API。`;
-  if (api.kind === "type") return [definition, "用于为库、组件和自定义原语建立准确的 TypeScript 契约。"];
-  if (api.category === "internal-compiler")
-    return [definition, "仅用于渲染器、编译器输出或框架集成；应用代码通常不应直接调用。"];
-  if (api.category === "dom-web-runtime") return [definition, "用于 DOM 绑定、事件、模板或 Web 渲染器集成。"];
-  if (api.category === "rendering-ssr") return [definition, "用于应用挂载、hydration 或服务端 HTML 输出。"];
-  return [definition, "用于源码声明所描述的响应式和组件场景。"];
+  const useCase = resolveFallbackUseCase(api, {
+    type: "用于为库、组件和自定义原语建立准确的 TypeScript 契约。",
+    internalCompiler: "仅用于渲染器、编译器输出或框架集成；应用代码通常不应直接调用。",
+    domRuntime: "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
+    rendering: "用于应用挂载、hydration 或服务端 HTML 输出。",
+    default: "用于源码声明所描述的响应式和组件场景。",
+  });
+  return [definition, useCase];
 }

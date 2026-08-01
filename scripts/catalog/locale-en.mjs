@@ -1,3 +1,5 @@
+import { resolveFallbackUseCase } from "./generator/locale-resolver.mjs";
+
 // Complete en definitions and use cases for every catalog API.
 export const apiContent = {
   "solid-js/children": [
@@ -22,11 +24,11 @@ export const apiContent = {
   ],
   "solid-js/createOptimistic": [
     "Creates an optimistic signal — a `Signal<T>` whose writes are tentative inside an `action` transition: they show up immediately, then auto-revert (or reconcile to the action's resolved value) once the transition settles.",
-    "Use this for single-value optimistic state.",
+    "Use it when one value should reflect an action immediately while retaining automatic confirmation or rollback when the asynchronous transition settles.",
   ],
   "solid-js/createReaction": [
     "Creates a reactive computation that runs after the render phase with flexible tracking.",
-    "Use it in the reactive and component scenarios described by its source declaration.",
+    "Use it when an external trigger should rerun a callback against an explicitly refreshed set of reactive dependencies.",
   ],
   "solid-js/createRenderEffect": [
     "Creates a reactive computation that runs during the render phase as DOM elements are created and updated but not necessarily connected.",
@@ -66,7 +68,7 @@ export const apiContent = {
   ],
   "solid-js/repeat": [
     "Reactively renders a callback `count` times, reusing previously-rendered entries when only the count changes.",
-    "Underlying helper for `<Repeat>`.",
+    "Use it to build count-driven rendering primitives; prefer `<Repeat>` when JSX control flow is sufficient.",
   ],
   "solid-js/untrack": [
     "Executes a function without collecting reactive dependencies and returns its result.",
@@ -102,7 +104,7 @@ export const apiContent = {
   ],
   "solid-js/omit": [
     "Returns a reactive proxy of `props` with the listed keys hidden.",
-    "Tracking on the remaining keys is preserved.",
+    "Use it to forward most reactive props while excluding fields consumed locally; tracking on the remaining keys is preserved.",
   ],
   "solid-js/reconcile": [
     "Returns a draft-mutating function that smart-merges `value` into a store, preserving fine-grained reactivity: only changed leaves trigger updates.",
@@ -117,16 +119,16 @@ export const apiContent = {
     "Call `storePath(...path, value)` to produce a draft-mutating function suitable for passing to `setStore`.",
   ],
   "solid-js/action": [
-    "The primitive for mutations: imperative async workflows whose *writes span an async gap* — optimistic write, server round-trip, reconciling write — where intermediate state must not leak and failure must revert cleanly (pair with `createOptimistic` / `createOptimisticStore`).",
-    "Navigation-shaped updates do not need an action.",
+    "Creates a transactional asynchronous mutation that coordinates writes across an async gap and rolls tentative state back when the operation fails.",
+    "Use it for optimistic writes followed by a server round trip and reconciliation. Prefer an ordinary async function when no reactive writes need transaction semantics.",
   ],
   "solid-js/onCleanup": [
     "Low-level reactive-cleanup primitive.",
     "Registers a callback that runs when the surrounding owner is disposed.",
   ],
   "solid-js/onSettled": [
-    "Schedules `callback` to run **once** after the reactive graph has fully settled — i.e.",
-    "once every pending async read inside the current owner has resolved and the queue has flushed.",
+    "Schedules a callback to run once after the reactive graph in the current Owner has fully settled.",
+    "Use it when follow-up work must wait for every pending async read to resolve and the reactive queue to flush.",
   ],
   "solid-js/refresh": [
     "Invalidates one reactive source, forcing it to re-execute even if its inputs haven't changed.",
@@ -157,8 +159,8 @@ export const apiContent = {
     "Any reactive primitives (`createSignal`, `createMemo`, `createEffect`, `onCleanup`, `cleanup`, etc.) created inside `fn` are attached to that owner, so they are disposed when the owner is disposed.",
   ],
   "solid-js/affects": [
-    "Declares that in-flight work will change the targeted data: the named slot(s) — and everything DERIVED from them — read as pending (`isPending` → `true`) from the declaration until the surrounding transaction settles or reverts.",
-    "A mark lives on its own channel — a refcount on the marked node plus dep-graph reachability in the verdict layer — so the marked values themselves stay readable (a mark is a promise of change, not an absence of value), no reader ever suspends on one, and completion/settlement accounting never sees one.",
+    "Marks the supplied reactive data and its derivations as affected by the current in-flight transaction, allowing `isPending` to observe that work.",
+    "Use it when an Action promises to change readable data later. The mark reports pending intent without hiding the current value or suspending readers.",
   ],
   "solid-js/enableExternalSource": [
     "Registers the runtime hooks used to integrate an external reactive source.",
@@ -190,7 +192,7 @@ export const apiContent = {
   ],
   "@solidjs/web/Errored": [
     "Catches uncaught errors inside its subtree and renders fallback content instead.",
-    "The `fallback` prop can be a JSX element, or a callback that receives the error and a `reset()` function for retry affordances.",
+    "The fallback callback receives an error accessor and `reset()` function, allowing it to display the current error and retry the protected subtree.",
   ],
   "@solidjs/web/For": [
     "Creates a list of elements from a list.",
@@ -230,7 +232,7 @@ export const apiContent = {
   ],
   "@solidjs/web/Show": [
     "Conditionally renders its children when `when` is truthy, otherwise renders the optional `fallback`.",
-    "The function-child form receives a narrowed value.",
+    "Use it for one conditional region. The function-child form receives the narrowed truthy value; use `<Switch>` when several branches compete.",
   ],
   "@solidjs/web/Switch": [
     "Switches between content based on mutually exclusive conditions.",
@@ -238,7 +240,7 @@ export const apiContent = {
   ],
   "solid-js/Errored": [
     "Catches uncaught errors inside its subtree and renders fallback content instead.",
-    "The `fallback` prop can be a JSX element, or a callback that receives the error and a `reset()` function for retry affordances.",
+    "The fallback callback receives an error accessor and `reset()` function, allowing it to display the current error and retry the protected subtree.",
   ],
   "solid-js/For": [
     "Creates a list of elements from a list.",
@@ -270,7 +272,7 @@ export const apiContent = {
   ],
   "solid-js/Show": [
     "Conditionally renders its children when `when` is truthy, otherwise renders the optional `fallback`.",
-    "The function-child form receives a narrowed value.",
+    "Use it for one conditional region. The function-child form receives the narrowed truthy value; use `<Switch>` when several branches compete.",
   ],
   "solid-js/Switch": [
     "Switches between content based on mutually exclusive conditions.",
@@ -290,7 +292,7 @@ export const apiContent = {
   ],
   "@solidjs/web/renderToStream": [
     "Streams an HTML response, flushing the synchronous shell first and then progressively emitting async-resolved fragments as their `<Loading>` boundaries settle.",
-    "Good for time-to-first-byte sensitive pages.",
+    "Use it when time to first byte matters and the synchronous shell should reach the client before every asynchronous boundary resolves.",
   ],
   "@solidjs/web/renderToString": [
     "Renders a component tree synchronously to an HTML string.",
@@ -354,7 +356,7 @@ export const apiContent = {
   ],
   "@solidjs/web/claimElementTree": [
     "Sweep-claim every navigation-relevant element (`a[href]`, `form[action]`) in `root` — the subtree equivalent of the per-element `claimElement` compiled output emits, for content that becomes live DOM without compiled creation code (frame streams, adopted SSR ranges).",
-    "Dormant without a registered consumer.",
+    "Use it after streamed or adopted DOM enters a registered navigation container; without a registered claim consumer it intentionally has no effect.",
   ],
   "@solidjs/web/className": [
     "Updates an element's class value and accounts for its previous class state.",
@@ -425,8 +427,8 @@ export const apiContent = {
     "Use it when creating a custom DOM root that must receive delegated events.",
   ],
   "@solidjs/web/registerElementClaim": [
-    "Register a consumer for compiler-emitted element claims.",
-    "Compiled DOM output claims navigation-relevant elements (`a[href]`, `form[action]`) at creation, and compiler-owned writes to `href`/`action` re-invoke the same handlers — so handlers must be idempotent and must check the element's relevance themselves (rechecks can fire for any element whose `href`/`action` is written, e.g.",
+    "Registers a consumer for element claims emitted by compiled DOM output.",
+    "Use it in router or framework integrations that observe created links and forms. Handlers must be idempotent because later `href` or `action` writes can claim the same element again.",
   ],
   "@solidjs/web/runHydrationEvents": [
     "Replays events that were captured while the application was waiting to hydrate.",
@@ -458,7 +460,7 @@ export const apiContent = {
   ],
   "@solidjs/web/style": [
     "Applies a style object to an element and removes properties no longer present in the next value.",
-    "Use it in renderer code for dynamic JSX style objects.",
+    "Use it for dynamic JSX style objects whose property set can change; use `setStyleProperty` when one CSS property updates independently.",
   ],
   "@solidjs/web/template": [
     "Creates a clone factory from a static HTML template string.",
@@ -487,15 +489,15 @@ export function resolveApiContent(api) {
   if (existing) return existing;
 
   const definition = api.sourceDefinition || `${api.title} is a callable API exported by ${api.packageName}.`;
-  let useCase = api.sourceUseCase;
-  if (!useCase && api.kind === "type")
-    useCase = "Use it to define precise TypeScript contracts for libraries, components, and custom primitives.";
-  if (!useCase && api.category === "internal-compiler")
-    useCase =
-      "Use it only for renderers, compiler output, or framework integrations; application code should not normally call it directly.";
-  if (!useCase && api.category === "dom-web-runtime")
-    useCase = "Use it for DOM bindings, events, templates, or Web renderer integrations.";
-  if (!useCase && api.category === "rendering-ssr")
-    useCase = "Use it for application mounting, hydration, or server-side HTML output.";
-  return [definition, useCase || "Use it in the reactive and component scenarios described by its source declaration."];
+  const useCase =
+    api.sourceUseCase ||
+    resolveFallbackUseCase(api, {
+      type: "Use it to define precise TypeScript contracts for libraries, components, and custom primitives.",
+      internalCompiler:
+        "Use it only for renderers, compiler output, or framework integrations; application code should not normally call it directly.",
+      domRuntime: "Use it for DOM bindings, events, templates, or Web renderer integrations.",
+      rendering: "Use it for application mounting, hydration, or server-side HTML output.",
+      default: "Use it in the reactive and component scenarios described by its source declaration.",
+    });
+  return [definition, useCase];
 }

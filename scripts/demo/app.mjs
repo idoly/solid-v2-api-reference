@@ -18,21 +18,23 @@ const mime = new Map([
   [".woff2", "font/woff2"],
 ]);
 
-export function createDemoServer({ root = path.resolve("dist"), rateLimit = 30 } = {}) {
+export function createDemoServer({ root = path.resolve("dist"), rateLimit = 30, trustProxy = false } = {}) {
   const staticRoot = path.resolve(root);
   const windows = new Map();
 
   const allowed = (request) => {
     const now = Date.now();
-    if (windows.size > 1000) {
+    if (windows.size >= 1000) {
       for (const [ip, window] of windows) {
         if (now - window.start >= 60_000) windows.delete(ip);
       }
     }
-    const ip = String(request.headers["x-forwarded-for"] ?? request.socket.remoteAddress ?? "unknown")
+    const forwarded = trustProxy ? request.headers["x-forwarded-for"] : undefined;
+    const ip = String(forwarded ?? request.socket.remoteAddress ?? "unknown")
       .split(",")[0]
       .trim();
     const current = windows.get(ip);
+    if (!current && windows.size >= 1000) return false;
     if (!current || now - current.start >= 60_000) {
       windows.set(ip, { start: now, count: 1 });
       return true;

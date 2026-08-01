@@ -11,7 +11,7 @@ export function loadDemoCatalog(file = "data/catalog.json") {
   const catalogPath = path.resolve(file);
   const catalog = JSON.parse(fs.readFileSync(catalogPath, "utf8"));
 
-  if (catalog.schemaVersion !== 4) throw new Error(`Unsupported catalog schema: ${catalog.schemaVersion}`);
+  if (catalog.schemaVersion !== 5) throw new Error(`Unsupported catalog schema: ${catalog.schemaVersion}`);
 
   return catalog.records.map((record) => ({
     id: record.id,

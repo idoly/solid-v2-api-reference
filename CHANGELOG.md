@@ -1,5 +1,54 @@
 # Change Log
 
+## 1.4-2.0.0-beta.29 - 2026-08-01
+
+保持 Solid `2.0.0-beta.29` 依赖基线，集中升级内容模型、Demo 体验、主题界面、工程门禁和部署交付流程。
+
+### Content and Catalog
+
+- 完整目录升级为 schema 5，新增结构化 Related APIs 和 `reExportOf` 元数据。
+- 标记 13 个跨包 re-export，避免为相同运行语义维护虚假的差异说明。
+- 44 个 API 页面新增 46 条双语选择建议，覆盖 effects、Context、Store、Owner、async、control flow、hydration、DOM renderer 和 response API。
+- 清理全部当前 API 的通用 fallback 文案，修复 `onSettled`、`registerElementClaim` 等错误断句，并统一 Definition 与 Use case 的内容边界。
+- 新增 `CONTENT_GUIDE.md`，约束中英文语义一致性、Demo 聚焦、交互选择、程序长度和行为验证标准。
+
+### Demo Experience
+
+- API 页面首次进入只加载源码，不再自动编译或执行；用户点击 Run 后才请求 runtime。
+- Reset 恢复原始源码、清除 Browser DOM 与 Console 日志，并回到未执行提示状态。
+- `Loading` 真实展示 idle、pending fallback 和 resolved 三阶段；`lazy` 展示模块请求生命周期；`Reveal` 验证后完成的边界不会越过前序边界提前显示。
+- `Errored` 按实际签名读取 error accessor，并提供可验证的恢复操作。
+- `createUniqueId`、`createMemo`、`isEqual`、`hydrate` 和 `getRequestEvent` 修正为可观察且符合当前 API 语义的 Demo。
+- `Assets`、`HydrationScript`、`Hydration`、`NoHydration` 和 `getRequestEvent` 改为真实 SSR 上下文执行。
+- 同模块 named imports 在生成阶段自动合并，避免 Web re-export Demo 出现重复 import。
+- 当前 121 个独立 Demo 分为 109 个浏览器组和 12 个 SSR 组，全部通过编译、执行与行为验证。
+
+### Frontend and Theme
+
+- 引入 `@idoly/ant-design-solid` 的 ConfigProvider、Drawer、Modal、Collapse、Input、Tooltip、Skeleton、Empty、Alert 和 Segmented 等交互组件。
+- 移除应用层 Tailwind 与构建插件，全部功能样式迁移到 CSS Modules；Ant Solid 继续使用预编译样式。
+- 保留绿色品牌色，统一浅色/深色 token、按钮边框、hover、focus、Tooltip、BackTop、Editor、Browser 和 Console 层次。
+- 桌面侧栏改为 `clamp(300px, 22vw, 320px)`，内容上限提升到 1480px；390px 移动端无水平溢出。
+- Demo Lab 拆分为编排、Editor 和 Output 组件及对应 CSS Module；移动端 BackTop 隐藏以避免遮挡表单与输出。
+- 移除远程 Google Fonts 依赖，改用系统字体栈，并提升导航、代码和面板小字号的清晰度。
+
+### Architecture and Delivery
+
+- Demo 注册表按领域和特殊场景拆分，嵌入 TSX formatter 可递归处理所有注册模块。
+- Catalog 生成器拆出示例准备、locale fallback 和文本/代码池输出阶段，并增加确定性产物检查。
+- 发布脚本改用 staging allowlist，独立执行 `npm ci --omit=dev`，生成约 9.4 MB 的生产依赖包。
+- 发布包会解压并启动真实服务器，检查 `/health`、首页和构建资源后才视为成功。
+- Runtime 限流默认不信任 `X-Forwarded-For`；仅显式设置 `TRUST_PROXY=1` 时读取可信代理地址。
+- 浏览器编辑代码的同源执行边界已明确记录；支持第三方共享源码前必须迁移到 opaque-origin sandbox iframe。
+
+### Verification
+
+- 16 个 Node 单元与契约测试通过。
+- 121/121 Demo 通过，其中包含 Loading、Reveal、Errored、hydration、identity 和 async 的专项行为场景。
+- Podman Chromium 端到端测试 4/4 通过，覆盖手动运行、Reset、主题、Tooltip、BackTop、移动 Drawer 和懒加载 chunk。
+- 新增确定性 catalog 检查和 gzip bundle budget；主入口与 API chunk 均在预算内。
+- 严格 TypeScript、Prettier、`git diff --check`、生产构建和发布包 smoke 全部通过。
+
 ## 1.3-2.0.0-beta.29 - 2026-07-31
 
 基线从 Solid `2.0.0-beta.27` 更新到 `2.0.0-beta.29`，并重新生成 API 目录。

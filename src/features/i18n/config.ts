@@ -3,9 +3,9 @@ export type Code = (typeof localeCodes)[number];
 
 export const defaultLocale: Code = "en";
 
-export const localeOptions: Record<Code, { shortLabel: string; nativeName: string }> = {
-  en: { shortLabel: "EN", nativeName: "English" },
-  "zh-CN": { shortLabel: "中", nativeName: "中文" },
+export const localeOptions: Record<Code, { shortLabel: string }> = {
+  en: { shortLabel: "EN" },
+  "zh-CN": { shortLabel: "中" },
 };
 
 export function resolveLocale(value: unknown): Code {

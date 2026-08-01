@@ -54,12 +54,7 @@ export function createNavigation(locale: Locale) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const toggleCategory = (category: string) =>
-    setExpanded((current) => {
-      const next = new Set(current);
-      if (!next.delete(category)) next.add(category);
-      return next;
-    });
+  const setExpandedCategories = (categories: readonly string[]) => setExpanded(new Set(categories));
 
   onSettled(() =>
     route.subscribe(() => {
@@ -83,7 +78,7 @@ export function createNavigation(locale: Locale) {
     setMenuOpen,
     expanded,
     openDoc,
-    toggleCategory,
+    setExpandedCategories,
   };
 }
 

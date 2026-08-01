@@ -37,7 +37,9 @@ npm run test:e2e:podman  # Run Playwright in the pinned browser container
 npm run verify:demos     # Verify all browser and SSR examples
 npm run format           # Format project source files with Prettier
 npm run format:check     # Check formatting without writing files
-npm run package:code     # Build and validate the deployable code.zip
+npm run check:generated  # Verify committed catalog artifacts are current
+npm run check:bundle     # Enforce production gzip budgets after a build
+npm run package:code     # Build, validate, and smoke-test deployable code.zip
 ```
 
 `predev`, `precheck`, and `prebuild` regenerate both API catalog artifacts automatically.
@@ -64,11 +66,15 @@ data/
 scripts/
   README.md                 Catalog and demo tooling documentation
   catalog/
-    demos.mjs              Per-API demo registry and source builders
+    check-generated.mjs   Deterministic committed-artifact check
+    demos.mjs              Stable demo registry entry point
+    demos/                 Domain demo registries and special overrides
     format.mjs             Embedded TSX formatter
-    generate.mjs           Catalog scanner and generator
+    generate.mjs           Catalog scanner and record assembler
+    generator/             Demo preparation and catalog output stages
     locale-en.mjs          English API prose and generation rules
     locale-zh-cn.mjs       Chinese API prose and generation rules
+    related-apis.mjs       Bilingual API selection comparisons
   demo/
     app.mjs                Testable production server factory
     compile.mjs            Shared TypeScript/JSX compiler
@@ -79,8 +85,13 @@ scripts/
     service.mjs            Shared compile and SSR service
     plugin.ts              Vite development endpoints
     server.mjs             Environment and process lifecycle entry
-    verify.mjs             Browser and SSR verification
-  release/package.sh       Reproducible deployment package builder
+    verify.mjs             Browser and SSR verification orchestration
+    verify-interactions.mjs Generic control exercise helpers
+    verify-scenarios.mjs   API-specific behavior contracts
+  release/
+    package.sh             Reproducible deployment package builder
+    smoke.mjs              Extracted package startup probe
+  test/bundle-budget.mjs   Production gzip budget check
 
 src/
   main.tsx                 Browser entry and application composition
@@ -93,8 +104,9 @@ src/
   features/navigation/     Controller, search, sidebar, and top bar
   features/theme/          Theme state
   lib/preferences.ts       Safe browser preference adapter
-  ui/                      Shared classes, highlighting, and icons
-  tailwind.css             CSS-first Tailwind design system
+  ui/                      Shared CSS modules, highlighting, and icons
+  styles/global.css        Global tokens, reset, and theme roots
+  **/*.module.css          Feature-scoped layout and component styles
 
 tests/
   README.md                Test architecture and troubleshooting
@@ -113,9 +125,9 @@ tests/
 3. Has at least one callable TypeScript signature.
 4. Is not marked `@internal`.
 
-The generator writes two artifacts. `data/catalog-index.json` contains only the bilingual summaries and identity fields needed by navigation and search. Schema 4 of `data/catalog.json` stores complete signatures, related types, localized prose pools, demo source, and the generated browser/server execution type. [src/data/catalog-index.ts](src/data/catalog-index.ts) loads the index eagerly, while [src/data/catalog.ts](src/data/catalog.ts) validates and expands the complete catalog only when an API page is opened. Do not edit or manually format either generated file.
+The generator writes two artifacts. `data/catalog-index.json` contains only the bilingual summaries and identity fields needed by navigation and search. Schema 5 of `data/catalog.json` stores complete signatures, related types and APIs, re-export ownership, localized prose pools, demo source, and the generated browser/server execution type. [src/data/catalog-index.ts](src/data/catalog-index.ts) loads the index eagerly, while [src/data/catalog.ts](src/data/catalog.ts) validates and expands the complete catalog only when an API page is opened. Do not edit or manually format either generated file.
 
-English and Chinese API prose is resolved by `scripts/catalog/locale-en.mjs` and `scripts/catalog/locale-zh-cn.mjs`. Each strategy contains the current API content and a resolver for APIs discovered in later package versions. Every API has its own language-neutral, complete demo program in `scripts/catalog/demos.mjs`.
+English and Chinese API prose is resolved by `scripts/catalog/locale-en.mjs` and `scripts/catalog/locale-zh-cn.mjs`. Each strategy contains the current API content and a resolver for APIs discovered in later package versions. Related API comparisons and package re-exports are generated as structured metadata. Complete demo programs are grouped by domain under `scripts/catalog/demos/` and exported through the stable `scripts/catalog/demos.mjs` entry point. Content and demo acceptance rules are documented in [CONTENT_GUIDE.md](CONTENT_GUIDE.md).
 
 ## Runtime
 
@@ -138,21 +150,23 @@ Pure static hosting is also supported for reading the reference. Without the Nod
 
 ## Demo Execution
 
-Browser examples are compiled through `scripts/demo/compile.mjs` and executed with a restricted module loader and scoped preview adapter. They may import only:
+Browser examples are compiled through `scripts/demo/compile.mjs` and executed with an import allowlist and scoped preview adapter. They may import only:
 
 - `solid-js`
 - `@solidjs/web`
 
-SSR examples are read-only and execute only trusted generated code. Source and request bodies are limited to 100 KB; SSR execution is limited to five registered API demos and times out after five seconds. Runtime endpoints enforce their HTTP methods and validate demo indexes before execution.
+The scoped adapter is an isolation aid, not a security sandbox: user-edited browser code executes in the current page origin and can reach browser globals. Do not load or auto-run demo source supplied by an untrusted third party. Moving execution to an opaque-origin sandbox iframe is the required design before shared or remotely supplied programs are supported.
 
-Browser demos publish console and DOM updates incrementally and discard stale execution results. The verifier compiles and runs every example, exercises interactive controls, applies targeted scenarios where ordering matters, and validates SSR through the production service.
+SSR examples are read-only and execute only trusted generated code. Source and request bodies are limited to 100 KB; SSR execution is restricted to the registered catalog allowlist and times out after five seconds. Runtime endpoints enforce their HTTP methods and validate demo indexes before execution.
+
+Browser demos do not execute when an API page opens. Run compiles and executes the current source; Reset restores the generated source, clears Browser and Console results, and returns both panels to their pre-execution prompts. During execution, demos publish console and DOM updates incrementally and discard stale results. The verifier compiles and runs every example, exercises interactive controls, applies targeted scenarios where ordering matters, and validates SSR through the production service.
 
 Current verified surface:
 
 - 121 callable APIs
 - 121 unique complete demo programs
-- 116 browser API groups
-- 5 SSR API groups
+- 109 browser API groups
+- 12 SSR API groups
 - 121/121 passing
 
 ## Frontend Architecture
@@ -164,12 +178,15 @@ The application is a Solid single-page interface with hash-based API selection. 
 - Demo execution stays in the feature controller; inline and fullscreen editors share one implementation.
 - The browser runtime is dynamically imported only when an example executes; service transport, scoped DOM access, value formatting, and execution orchestration have separate modules.
 - Browser/server execution metadata is generated from the Node allowlist and contract-tested, eliminating duplicate frontend API lists.
-- Tailwind CSS v4 provides the CSS-first design system and utility styles.
+- Application styles use global tokens and feature-scoped CSS Modules; Ant Solid consumes its precompiled stylesheet.
+- Ant Solid provides accessible interactive controls, overlays, feedback, and loading states.
 - Prism provides TypeScript/TSX highlighting.
 - Lucide provides interface icons.
 - Theme and locale preferences persist in `localStorage`.
 
 ## Source Baseline
+
+- Project release: `1.4-2.0.0-beta.29`
 
 - `solid-js`: `2.0.0-beta.29`
 - `@solidjs/web`: `2.0.0-beta.29`

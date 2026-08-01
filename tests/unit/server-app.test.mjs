@@ -65,7 +65,9 @@ test("enforces static and runtime endpoint methods", async () => {
   assert.equal(runtimeResponse.status, 405);
   assert.deepEqual(await runtimeResponse.json(), { error: "Method not allowed" });
 
-  const limitedResponse = await fetch(`${baseUrl}/__solid_api_compile`);
+  const limitedResponse = await fetch(`${baseUrl}/__solid_api_compile`, {
+    headers: { "X-Forwarded-For": "203.0.113.42" },
+  });
   assert.equal(limitedResponse.status, 429);
   assert.equal(limitedResponse.headers.get("retry-after"), "60");
 });

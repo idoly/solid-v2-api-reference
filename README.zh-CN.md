@@ -37,7 +37,9 @@ npm run test:e2e:podman  # 在固定版本浏览器容器中运行 Playwright
 npm run verify:demos     # 验证全部浏览器与 SSR 示例
 npm run format           # 使用 Prettier 格式化项目源码
 npm run format:check     # 仅检查格式，不写入文件
-npm run package:code     # 构建并校验可部署的 code.zip
+npm run check:generated  # 校验已提交目录产物与生成结果一致
+npm run check:bundle     # 构建后校验生产资源 gzip 预算
+npm run package:code     # 构建、校验并冒烟测试可部署的 code.zip
 ```
 
 `predev`、`precheck` 和 `prebuild` 会自动重新生成两个 API 目录产物。
@@ -64,11 +66,15 @@ data/
 scripts/
   README.md                 目录和示例工具文档
   catalog/
-    demos.mjs              按 API 组织的示例注册表与源码构建器
+    check-generated.mjs   确定性生成产物检查
+    demos.mjs              稳定的示例注册表入口
+    demos/                 按领域组织的示例注册表与特殊覆盖
     format.mjs             嵌入式 TSX 格式化器
-    generate.mjs           目录扫描与生成器
+    generate.mjs           目录扫描与记录组装器
+    generator/             示例处理与目录输出阶段
     locale-en.mjs          英文 API 内容与生成规则
     locale-zh-cn.mjs       中文 API 内容与生成规则
+    related-apis.mjs       双语 API 选择建议
   demo/
     app.mjs                可测试的生产服务器工厂
     compile.mjs            共享 TypeScript/JSX 编译器
@@ -79,8 +85,13 @@ scripts/
     service.mjs            共享编译与 SSR 服务
     plugin.ts              Vite 开发接口
     server.mjs             环境配置与进程生命周期入口
-    verify.mjs             浏览器与 SSR 验证器
-  release/package.sh       可重复执行的部署包构建器
+    verify.mjs             浏览器与 SSR 验证编排
+    verify-interactions.mjs 通用控件交互辅助
+    verify-scenarios.mjs   API 专项行为契约
+  release/
+    package.sh             可重复执行的部署包构建器
+    smoke.mjs              解压后启动探测
+  test/bundle-budget.mjs   生产 gzip 预算检查
 
 src/
   main.tsx                 浏览器入口与应用组合
@@ -93,8 +104,9 @@ src/
   features/navigation/     导航、搜索、侧边栏与顶部栏
   features/theme/          主题状态
   lib/preferences.ts       安全的浏览器偏好适配器
-  ui/                      共享样式、代码高亮与图标
-  tailwind.css             Tailwind CSS 设计系统
+  ui/                      共享 CSS Modules、代码高亮与图标
+  styles/global.css        全局 token、reset 与主题根样式
+  **/*.module.css          功能局部布局与组件样式
 
 tests/
   README.md                测试架构与问题排查
@@ -113,9 +125,9 @@ tests/
 3. 至少有一个可调用的 TypeScript 签名。
 4. 没有标记为 `@internal`。
 
-生成器会写入两个产物。`data/catalog-index.json` 只包含导航和搜索所需的双语摘要与标识字段；schema 4 的 `data/catalog.json` 保存完整签名、关联类型、本地化文本池、示例源码以及生成的浏览器/服务端执行类型。[src/data/catalog-index.ts](src/data/catalog-index.ts) 在首屏加载轻量索引，[src/data/catalog.ts](src/data/catalog.ts) 仅在打开 API 页面时验证并展开完整目录。不要编辑或手动格式化这两个生成文件。
+生成器会写入两个产物。`data/catalog-index.json` 只包含导航和搜索所需的双语摘要与标识字段；schema 5 的 `data/catalog.json` 保存完整签名、关联类型和 API、re-export 归属、本地化文本池、示例源码以及生成的浏览器/服务端执行类型。[src/data/catalog-index.ts](src/data/catalog-index.ts) 在首屏加载轻量索引，[src/data/catalog.ts](src/data/catalog.ts) 仅在打开 API 页面时验证并展开完整目录。不要编辑或手动格式化这两个生成文件。
 
-中英文 API 内容分别由 `scripts/catalog/locale-en.mjs` 和 `scripts/catalog/locale-zh-cn.mjs` 解析。每种策略包含当前 API 内容，以及用于处理未来新增 API 的回退解析器。每个 API 都在 `scripts/catalog/demos.mjs` 中拥有独立、完整且与语言无关的示例程序。
+中英文 API 内容分别由 `scripts/catalog/locale-en.mjs` 和 `scripts/catalog/locale-zh-cn.mjs` 解析。每种策略包含当前 API 内容，以及用于处理未来新增 API 的回退解析器。相关 API 对比和跨包 re-export 以结构化元数据生成。完整示例按领域存放在 `scripts/catalog/demos/`，并通过稳定入口 `scripts/catalog/demos.mjs` 导出。内容与示例验收规则见 [CONTENT_GUIDE.md](CONTENT_GUIDE.md)。
 
 ## 运行时
 
@@ -138,21 +150,23 @@ npm start
 
 ## 示例执行
 
-浏览器示例通过 `scripts/demo/compile.mjs` 编译，并使用受限模块加载器和预览适配器执行。示例仅允许导入：
+浏览器示例通过 `scripts/demo/compile.mjs` 编译，并使用 import allowlist 和预览 DOM 适配器执行。示例仅允许导入：
 
 - `solid-js`
 - `@solidjs/web`
 
-SSR 示例为只读，只执行可信的生成源码。源码和请求正文上限均为 100 KB；SSR 仅允许执行五个已注册的 API 示例，并在五秒后超时。运行时端点会校验 HTTP 方法和示例索引后再执行。
+预览适配器用于减少意外影响，但不是安全沙箱：用户编辑的浏览器代码仍在当前页面 origin 中执行，可以访问浏览器全局对象。不得加载或自动运行第三方提供的不可信示例源码；在支持共享或远程示例前，必须把执行迁移到 opaque-origin sandbox iframe。
 
-浏览器示例会增量发布控制台与 DOM 结果，并丢弃过期执行。验证器会编译并运行全部示例、操作交互控件、对顺序敏感的 API 执行专项场景，并通过生产服务验证 SSR。
+SSR 示例为只读，只执行可信的生成源码。源码和请求正文上限均为 100 KB；SSR 仅允许执行目录 allowlist 中登记的示例，并在五秒后超时。运行时端点会校验 HTTP 方法和示例索引后再执行。
+
+浏览器示例在打开 API 页面时不会自动执行。点击 Run 后才编译并执行当前源码；Reset 会恢复生成源码、清除 Browser 和 Console 结果，并让两个面板回到未执行提示状态。执行期间，Demo 会增量发布控制台和 DOM 结果，并丢弃过期执行。验证器会编译并运行全部示例、操作交互控件、对顺序敏感的 API 执行专项场景，并通过生产服务验证 SSR。
 
 当前验证范围：
 
 - 121 个可调用 API
 - 121 个独立完整示例
-- 116 个浏览器 API 示例组
-- 5 个 SSR API 示例组
+- 109 个浏览器 API 示例组
+- 12 个 SSR API 示例组
 - 121/121 通过
 
 ## 前端架构
@@ -164,12 +178,15 @@ SSR 示例为只读，只执行可信的生成源码。源码和请求正文上�
 - 示例执行由功能控制器负责，内嵌与全屏编辑器复用同一实现。
 - 浏览器运行时仅在执行示例时动态导入；服务通信、DOM 作用域、值格式化和执行编排分别归属独立模块。
 - 浏览器/服务端执行类型由 Node 允许列表生成并接受契约测试，不再维护重复的前端 API 名单。
-- Tailwind CSS v4 提供 CSS-first 设计系统和工具类。
+- 应用样式使用全局 token 和 feature-scoped CSS Modules；Ant Solid 使用其预编译样式。
+- Ant Solid 提供可访问的交互控件、浮层、反馈与加载状态。
 - Prism 提供 TypeScript/TSX 代码高亮。
 - Lucide 提供界面图标。
 - 主题和语言偏好保存在 `localStorage` 中。
 
 ## 版本基线
+
+- 项目版本：`1.4-2.0.0-beta.29`
 
 - `solid-js`：`2.0.0-beta.29`
 - `@solidjs/web`：`2.0.0-beta.29`

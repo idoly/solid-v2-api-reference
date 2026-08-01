@@ -1,0 +1,46 @@
+.syntax :global(.token.comment),
+.syntax :global(.token.prolog),
+.syntax :global(.token.doctype),
+.syntax :global(.token.cdata) {
+  color: #7f9186;
+}
+.syntax :global(.token.punctuation) {
+  color: #aebbb3;
+}
+.syntax :global(.token.namespace) {
+  opacity: 0.75;
+}
+.syntax :global(.token.property),
+.syntax :global(.token.tag),
+.syntax :global(.token.boolean),
+.syntax :global(.token.number),
+.syntax :global(.token.constant),
+.syntax :global(.token.symbol) {
+  color: #efaa7c;
+}
+.syntax :global(.token.selector),
+.syntax :global(.token.attr-name),
+.syntax :global(.token.string),
+.syntax :global(.token.char),
+.syntax :global(.token.builtin) {
+  color: #acd77c;
+}
+.syntax :global(.token.operator),
+.syntax :global(.token.entity),
+.syntax :global(.token.url) {
+  color: #8fc7bd;
+}
+.syntax :global(.token.atrule),
+.syntax :global(.token.attr-value),
+.syntax :global(.token.keyword) {
+  color: #d1a7df;
+}
+.syntax :global(.token.function),
+.syntax :global(.token.class-name) {
+  color: #83b9e8;
+}
+.syntax :global(.token.regex),
+.syntax :global(.token.important),
+.syntax :global(.token.variable) {
+  color: #e7c46b;
+}
