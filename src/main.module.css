@@ -54,9 +54,7 @@
 }
 
 .backTop {
-  width: 42px;
-  height: 42px;
-  flex-basis: 42px;
+  --app-icon-button-size: 42px;
   border-radius: 6px;
 }
 

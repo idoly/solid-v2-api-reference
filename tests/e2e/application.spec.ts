@@ -209,10 +209,13 @@ test("runs a browser demo through the production runtime", async ({ page }) => {
   const editorDialog = page.getByRole("dialog");
   await expect(editorDialog).toBeVisible();
   await expect(editorDialog.getByRole("textbox", { name: "Code editor" })).toBeVisible();
-  await expect(editorDialog.getByRole("button", { name: "Run code" })).toHaveCSS(
-    "background-color",
-    "rgb(111, 152, 29)",
-  );
+  const expandedRunButton = editorDialog.getByRole("button", { name: "Run code" });
+  await expect(expandedRunButton).toHaveCSS("width", "34px");
+  await expect(expandedRunButton).toHaveCSS("height", "34px");
+  await expect(expandedRunButton).toHaveCSS("padding", "0px");
+  await expect(expandedRunButton).toHaveCSS("background-color", "rgb(111, 152, 29)");
+  await expect(expandedRunButton).toHaveCSS("border-color", "rgb(111, 152, 29)");
+  await expect(expandedRunButton).toHaveCSS("box-shadow", "none");
   await editorDialog.getByRole("button", { name: "Close editor" }).click();
   await expect(editorDialog).toBeHidden();
   await expect(page.getByText("Click “Run code” to view console logs.", { exact: true })).toBeVisible();

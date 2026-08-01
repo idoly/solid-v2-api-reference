@@ -120,8 +120,7 @@
     min-height: 56px;
   }
   .controls button {
-    width: 40px;
-    height: 40px;
+    --app-icon-button-size: 40px;
   }
   .modalContainer {
     width: 100vw !important;

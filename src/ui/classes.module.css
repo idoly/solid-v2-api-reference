@@ -1,10 +1,11 @@
 .iconButton {
+  --app-icon-button-size: 34px;
   display: grid;
-  width: 34px;
-  height: 34px;
-  flex: 0 0 34px;
+  width: var(--app-icon-button-size);
+  height: var(--app-icon-button-size) !important;
+  flex: 0 0 var(--app-icon-button-size);
   place-items: center;
-  padding: 0;
+  padding: 0 !important;
   cursor: pointer;
   color: #536058 !important;
   background: var(--app-surface) !important;
@@ -43,6 +44,7 @@
   color: #fff !important;
   background: var(--ads-color-primary) !important;
   border-color: var(--ads-color-primary) !important;
+  box-shadow: none !important;
 }
 
 .primaryIconButton:hover {

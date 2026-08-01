@@ -11,6 +11,7 @@
 ### Interaction and Accessibility
 
 - 统一 Editor、TopBar、Drawer 与 BackTop 图标按钮的默认、hover、active、鼠标 focus、键盘 focus-visible 和暗色交互状态。
+- 图标按钮使用统一尺寸变量并强制清除 Button inline padding；primary Run 去除浅色 inset shadow，保证背景与同色边框之间没有亮缝。
 - Button 与 FloatButton 通过 ConfigProvider component tokens 共享颜色、边框、focus ring、shadow 和 active transform；展开编辑器的 Run 保留主题 primary 层级。
 - TopBar 与 Editor Tooltip 使用 `triggerRender` 直接绑定实际控件，修复 `display: contents` 零尺寸锚点导致的左上角错位和工具栏布局异常。
 - BackTop 不再重复设置 fixed root；Tooltip 保持在按钮左侧，鼠标点击后不残留键盘焦点环，移动端继续隐藏。
