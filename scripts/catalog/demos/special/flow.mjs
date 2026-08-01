@@ -1,5 +1,5 @@
 export const flowOverrides = {
-  "solid-js/lazy": `import { Show, createSignal, lazy } from "solid-js";
+  "solid-js/lazy": `import { createSignal, lazy } from "solid-js";
 import { Loading, render } from "@solidjs/web";
 
 let resolveModule: (() => void) | undefined;
@@ -21,11 +21,13 @@ function App() {
       <button type="button" disabled={!mounted()} onClick={() => resolveModule?.()}>
         Release module
       </button>
-      <Show when={mounted()} fallback={<p>Module not requested</p>}>
+      {mounted() ? (
         <Loading fallback={<p>Module request pending</p>}>
           <LazyMessage />
         </Loading>
-      </Show>
+      ) : (
+        <p>Module not requested</p>
+      )}
     </main>
   );
 }
@@ -80,7 +82,7 @@ const html = renderToString(() => (
 ));
 console.log(html);`,
   Loading: `import { Loading } from "__PACKAGE__";
-import { Show, createSignal, lazy } from "solid-js";
+import { createSignal, lazy } from "solid-js";
 import { render } from "@solidjs/web";
 
 let resolveContent: (() => void) | undefined;
@@ -102,11 +104,13 @@ function App() {
       <button type="button" disabled={!started()} onClick={() => resolveContent?.()}>
         Resolve content
       </button>
-      <Show when={started()} fallback={<p>State: idle</p>}>
+      {started() ? (
         <Loading fallback={<p>State: loading</p>}>
           <AsyncContent />
         </Loading>
-      </Show>
+      ) : (
+        <p>State: idle</p>
+      )}
     </main>
   );
 }

@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
+import ts from "typescript";
 
 const catalog = JSON.parse(await readFile(new URL("../../data/catalog.json", import.meta.url), "utf8"));
 const records = new Map(catalog.records.map((record) => [record.id, record]));
@@ -48,6 +49,26 @@ test("catalog prose contains no generic fallback descriptions", () => {
         false,
         `${record.id}: ${value}`,
       );
+    }
+  }
+});
+
+test("demos explain their contract without a single-use App shell", () => {
+  for (const record of catalog.records) {
+    for (const codeReference of record.codes) {
+      const source = catalog.codePool[codeReference];
+      const scanner = ts.createScanner(ts.ScriptTarget.ESNext, false, ts.LanguageVariant.JSX, source);
+      let hasComment = false;
+      for (let token = scanner.scan(); token !== ts.SyntaxKind.EndOfFileToken; token = scanner.scan()) {
+        if (token === ts.SyntaxKind.SingleLineCommentTrivia || token === ts.SyntaxKind.MultiLineCommentTrivia) {
+          hasComment = true;
+          break;
+        }
+      }
+      assert.equal(hasComment, true, `${record.id} has no contract comment`);
+      if (record.execution === "browser") {
+        assert.doesNotMatch(source, /\b(?:function|const)\s+App\b/, `${record.id} retains an App entry shell`);
+      }
     }
   }
 });

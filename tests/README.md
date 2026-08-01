@@ -29,7 +29,7 @@ Run the fast Node contract suite with:
 npm run test:unit
 ```
 
-`tests/unit/catalog-contract.test.mjs` verifies the catalog schema, loader projection, and generated browser/server execution metadata. `tests/unit/catalog-quality.test.mjs` protects re-export and Related API references, rejects generic prose fallbacks, and enforces distinct bounded demo programs. `tests/unit/demo-http.test.mjs` verifies endpoint routing, HTTP methods, index validation, request limits, and localized protocol errors without starting a server. `tests/unit/server-app.test.mjs` runs the production server factory on a random port and covers health checks, static caching, HEAD responses, SPA fallback, missing assets, method restrictions, and rate limiting.
+`tests/unit/catalog-contract.test.mjs` verifies the catalog schema, loader projection, and generated browser/server execution metadata. `tests/unit/catalog-quality.test.mjs` protects re-export and Related API references, rejects generic prose fallbacks, enforces distinct bounded demo programs, requires meaningful code comments, and rejects generated single-use browser `App` shells. `tests/unit/demo-http.test.mjs` verifies endpoint routing, HTTP methods, index validation, request limits, and localized protocol errors without starting a server. `tests/unit/server-app.test.mjs` runs the production server factory on a random port and covers health checks, static caching, HEAD responses, SPA fallback, missing assets, method restrictions, and rate limiting.
 
 ## Playwright
 

@@ -13,6 +13,10 @@ test("loads the generated reference and opens an API from search", async ({ page
 
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1, name: "Solid v2 API Reference" })).toBeVisible();
+  const brand = page.getByRole("button", { name: /Solid v2/ });
+  await brand.click();
+  await page.waitForTimeout(180);
+  await expect(brand).toHaveCSS("box-shadow", "none");
   await expect(page.getByText("121 / 121", { exact: true })).toBeVisible();
   const sidebarBox = await page.getByRole("complementary").boundingBox();
   const homeBox = await page.locator("main article").boundingBox();

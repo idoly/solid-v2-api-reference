@@ -19,7 +19,7 @@ function App() {
 
 render(() => <App />, document.getElementById("root")!);`;
 
-const optimisticDemo = `import { action, createOptimistic, flush, untrack } from "solid-js";
+const optimisticDemo = `import { action, createOptimistic, flush } from "solid-js";
 import { render } from "@solidjs/web";
 
 const [value, setValue] = createOptimistic(1);
@@ -36,13 +36,13 @@ let pending: Promise<unknown> | undefined;
 const start = () => {
   pending = update();
   flush();
-  history.insertAdjacentHTML("beforeend", \`<li>Optimistic phase: \${untrack(() => value())}</li>\`);
+  history.insertAdjacentHTML("beforeend", \`<li>Optimistic phase: \${value()}</li>\`);
 };
 const settle = async () => {
   release();
   await pending;
   flush();
-  history.insertAdjacentHTML("beforeend", \`<li>After settlement: \${untrack(() => value())}</li>\`);
+  history.insertAdjacentHTML("beforeend", \`<li>After settlement: \${value()}</li>\`);
 };
 
 function App() {

@@ -50,7 +50,7 @@ npm run generate
 2. Keep runtime values with at least one callable signature and exclude symbols marked `@internal`.
 3. Derive overloads, parameter types, return types, related definitions and APIs, re-export ownership, source ownership, examples, deprecation state, and browser/server execution type.
 4. Resolve English and Chinese prose through the locale strategies.
-5. Apply registered demo overrides, normalize them, and reject demos that do not compile, do not produce observable output, duplicate another program, or exceed the hard line limit.
+5. Apply registered demo overrides, inline single-use browser `App` entry shells, add missing contract notes, normalize imports, and reject demos that do not compile, do not produce observable output, use an unused or excessive supporting API set, duplicate another program, or exceed the hard line limit.
 6. Deduplicate localized prose and demo source into indexed pools.
 7. Write the lightweight `data/catalog-index.json` discovery index and the complete, versioned `data/catalog.json` artifact.
 
@@ -69,7 +69,7 @@ The generator supplies the API ID, title, package, category, kind, and upstream 
 
 ## Demo Registry
 
-`catalog/demos.mjs` is the stable entry point. Registries under `catalog/demos/` group complete TSX programs by API domain; `builders.mjs` keeps imports and render boilerplate consistent, `special/` groups full-program cases, and `overrides.mjs` combines both sets in precedence order. Key comments explain non-obvious parameters, ownership restrictions, hydration context, and cleanup ordering. The embedded formatter formats complete program templates directly; builder `setup`, `view`, and `after` fragments are formatted as part of the outer MJS module. Source is formatted with:
+`catalog/demos.mjs` is the stable entry point. Registries under `catalog/demos/` group complete TSX programs by API domain; `builders.mjs` keeps imports and render boilerplate consistent, `notes.mjs` supplies one-line contract guidance only when source has no natural comment, `special/` groups full-program cases, and `overrides.mjs` combines both sets in precedence order. Ordinary setup runs directly inside the `render` Owner; named components remain only when the behavior depends on a real component or lifecycle boundary. Key comments explain non-obvious parameters, ownership restrictions, hydration context, and cleanup ordering. The embedded formatter formats complete program templates directly; builder `setup`, `view`, and `after` fragments are formatted as part of the outer MJS module. Source is formatted with:
 
 ```sh
 npm run format

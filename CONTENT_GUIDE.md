@@ -24,7 +24,9 @@ Rules:
 Every demo teaches one primary contract of the current API.
 
 - Invoke the current API directly and make its distinctive behavior observable in DOM output or console output.
-- Use supporting APIs only to establish the condition being observed.
+- Use supporting APIs only to establish the condition being observed. Generated demos reject unused imports and more than four supporting APIs; reaching that limit requires a contract that cannot be isolated further.
+- Run ordinary browser setup directly inside the `render` callback Owner. Add a named component only when a component, Owner, error, lazy, or mount boundary is part of the behavior.
+- Include a concise code comment that explains a non-obvious parameter, timing, tracking, identity, cleanup, hydration, or server-context contract. Do not narrate self-explanatory assignments or JSX.
 - Prefer 15-35 lines. More than 45 lines requires a behavior that cannot be shown clearly in a smaller program.
 - Do not use timers or animation to imitate reactive behavior.
 - Do not repeat a counter when mount/unmount, identity, ordering, pending state, rollback, or request metadata is the real contract.

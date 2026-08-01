@@ -1,12 +1,12 @@
-// Builds a complete browser program while keeping each API example focused on its own contract.
-// Setup runs inside the component Owner; `after` is reserved for work that needs the mounted DOM.
+// Builds a complete browser program while keeping setup inside the render Owner.
+// `after` is reserved for work that needs the mounted DOM.
 export function browserDemo({ title, solid = [], web = [], setup, view, after = "", renderId }) {
   const solidImport = solid.length ? `import { ${solid.join(", ")} } from "solid-js";\n` : "";
   const webNames = [...new Set([...web, "render"])];
   const renderOptions = renderId ? `, undefined, { renderId: "${renderId}" }` : "";
   return `${solidImport}import { ${webNames.join(", ")} } from "@solidjs/web";
 
-function App() {
+render(() => {
 ${setup
   .trim()
   .split("\n")
@@ -23,7 +23,5 @@ ${view
   .join("\n")}
     </main>
   );
-}
-
-render(() => <App />, document.getElementById("root")!${renderOptions});${after ? `\n${after.trim()}` : ""}`;
+}, document.getElementById("root")!${renderOptions});${after ? `\n${after.trim()}` : ""}`;
 }

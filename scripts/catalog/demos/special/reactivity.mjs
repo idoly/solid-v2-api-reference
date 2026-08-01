@@ -216,14 +216,14 @@ function App() {
 }
 
 render(() => <App />, document.getElementById("root")!);`,
-  "solid-js/reconcile": `import { createSignal, createStore, reconcile, untrack } from "solid-js";
+  "solid-js/reconcile": `import { createSignal, createStore, reconcile } from "solid-js";
 import { render } from "@solidjs/web";
 
 const [rows, setRows] = createStore([
   { id: 1, name: "Ada" },
   { id: 2, name: "Grace" },
 ]);
-const firstRow = untrack(() => rows[0]);
+const firstRow = rows[0];
 const [alternate, setAlternate] = createSignal(false);
 const updateRows = () => {
   const next = !alternate();

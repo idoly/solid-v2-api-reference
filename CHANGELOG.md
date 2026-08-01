@@ -21,6 +21,9 @@
 - `createUniqueId`、`createMemo`、`isEqual`、`hydrate` 和 `getRequestEvent` 修正为可观察且符合当前 API 语义的 Demo。
 - `Assets`、`HydrationScript`、`Hydration`、`NoHydration` 和 `getRequestEvent` 改为真实 SSR 上下文执行。
 - 同模块 named imports 在生成阶段自动合并，避免 Web re-export Demo 出现重复 import。
+- 109 个浏览器 Demo 默认直接在 `render` Owner 中执行 setup，生成器用 AST 移除只调用一次的 `App` 入口壳；只有真实组件与生命周期边界保留命名组件。
+- 121 个 Demo 均包含针对当前 API 的契约注释；生成器拒绝 unused import，并将 supporting API 限制为最多 4 个。
+- 精简 Loading、lazy、Reveal、Portal、Errored、deep、respond、createOptimistic 和 reconcile 的辅助 API，同时增强 render Demo 的 mount/dispose 生命周期展示。
 - 当前 121 个独立 Demo 分为 109 个浏览器组和 12 个 SSR 组，全部通过编译、执行与行为验证。
 
 ### Frontend and Theme
@@ -43,7 +46,7 @@
 
 ### Verification
 
-- 16 个 Node 单元与契约测试通过。
+- 17 个 Node 单元与契约测试通过。
 - 121/121 Demo 通过，其中包含 Loading、Reveal、Errored、hydration、identity 和 async 的专项行为场景。
 - Podman Chromium 端到端测试 4/4 通过，覆盖手动运行、Reset、主题、Tooltip、BackTop、移动 Drawer 和懒加载 chunk。
 - 新增确定性 catalog 检查和 gzip bundle budget；主入口与 API chunk 均在预算内。

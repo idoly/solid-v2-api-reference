@@ -1,6 +1,6 @@
 export const webOverrides = {
   Reveal: `import { Reveal } from "__PACKAGE__";
-import { Loading, Show, createSignal, lazy } from "solid-js";
+import { Loading, createSignal, lazy } from "solid-js";
 import { render } from "@solidjs/web";
 
 let resolveFirst: (() => void) | undefined;
@@ -32,7 +32,7 @@ function App() {
       <button type="button" disabled={!started()} onClick={() => resolveFirst?.()}>
         Resolve first
       </button>
-      <Show when={started()} fallback={<p>Sections idle</p>}>
+      {started() ? (
         <Reveal order="sequential">
           <Loading fallback={<p>First section pending</p>}>
             <FirstSection />
@@ -41,7 +41,9 @@ function App() {
             <SecondSection />
           </Loading>
         </Reveal>
-      </Show>
+      ) : (
+        <p>Sections idle</p>
+      )}
     </main>
   );
 }
@@ -67,7 +69,7 @@ function App() {
 }
 
 render(() => <App />, document.getElementById("root")!);`,
-  "@solidjs/web/Portal": `import { Show, createSignal } from "solid-js";
+  "@solidjs/web/Portal": `import { createSignal } from "solid-js";
 import { Portal, render } from "@solidjs/web";
 
 function App() {
@@ -80,13 +82,13 @@ function App() {
         Toggle portal
       </button>
       <p>Content is mounted in the target container.</p>
-      <Show when={open()}>
+      {open() && (
         <Portal mount={modalRoot}>
           <aside>
             <strong>Portal content</strong>
           </aside>
         </Portal>
-      </Show>
+      )}
     </main>
   );
 }
@@ -94,16 +96,26 @@ function App() {
 render(() => <App />, document.getElementById("root")!);`,
   "@solidjs/web/render": `import { render } from "@solidjs/web";
 
-function App() {
-  return (
+const root = document.getElementById("root")!;
+const mount = document.createElement("section");
+const status = document.createElement("output");
+root.append(mount, status);
+
+// render returns the disposer for the Owner and DOM tree it mounts.
+const dispose = render(
+  () => (
     <main>
       <h1>Client render complete</h1>
-      <p>This JSX is mounted on the page.</p>
+      <p>This JSX is mounted in the nested target.</p>
+      <button type="button">Dispose rendered tree</button>
     </main>
-  );
-}
-
-render(() => <App />, document.getElementById("root")!);`,
+  ),
+  mount,
+);
+mount.querySelector("button")!.addEventListener("click", () => {
+  dispose();
+  status.textContent = "Disposed: " + String(mount.childNodes.length === 0);
+});`,
   "@solidjs/web/clientOnly": `import { clientOnly, render } from "@solidjs/web";
 
 const ClientGreeting = clientOnly(

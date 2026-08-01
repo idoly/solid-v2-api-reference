@@ -1,16 +1,11 @@
 export const collectionsOverrides = {
-  "solid-js/deep": `import { createEffect, createSignal, createStore, deep } from "solid-js";
+  "solid-js/deep": `import { createStore, deep } from "solid-js";
 import { render } from "@solidjs/web";
 
 function App() {
   const [state, setState] = createStore({ profile: { name: "Ada", score: 1 } });
-  const [view, setView] = createSignal({ name: "", score: 0 });
-  createEffect(
-    () => deep(state),
-    (plain) => {
-      setView(plain.profile);
-    },
-  );
+  // deep traverses the whole store, so this read reacts to either nested field.
+  const snapshot = () => deep(state);
   return (
     <main>
       <h3>Deep snapshot</h3>
@@ -35,7 +30,7 @@ function App() {
         Add point
       </button>
       <p>
-        {view().name} | {view().score} points
+        {snapshot().profile.name} | {snapshot().profile.score} points
       </p>
     </main>
   );

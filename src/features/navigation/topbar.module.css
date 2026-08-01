@@ -41,7 +41,9 @@
 }
 .brand:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgb(111 152 29 / 28%) !important;
+}
+.brand:focus-visible .mark {
+  box-shadow: var(--app-control-focus-shadow);
 }
 
 .mark {
@@ -179,8 +181,8 @@
 :global(.dark) .brand:hover {
   color: #d1f09d;
 }
-:global(.dark) .brand:focus {
-  box-shadow: 0 0 0 3px rgb(169 216 95 / 30%) !important;
+:global(.dark) .brand:focus-visible .mark {
+  box-shadow: var(--app-control-focus-shadow);
 }
 :global(.dark) .subtitle {
   border-color: #3b443e;

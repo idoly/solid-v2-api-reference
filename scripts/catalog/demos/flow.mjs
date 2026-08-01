@@ -12,7 +12,7 @@ function flowDemo(packageName, name) {
       : name === "Switch"
         ? ["Match", "Switch"]
         : name === "Errored"
-          ? ["Errored", "Show"]
+          ? ["Errored"]
           : [name],
   );
   if (name === "Show")
@@ -78,9 +78,11 @@ const fallback = (error: () => unknown, reset: () => void) => (
 );
 function BrokenContent() { throw new Error("Triggered from the demo"); }`,
     view: `<button type="button" onClick={() => setFail((value) => !value)}>Toggle error</button>
-<Show when={!fail()} fallback={<Errored fallback={fallback}><BrokenContent /></Errored>}>
+{fail() ? (
+  <Errored fallback={fallback}><BrokenContent /></Errored>
+) : (
   <p>Protected content rendered successfully</p>
-</Show>`,
+)}`,
   });
 }
 

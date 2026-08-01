@@ -69,7 +69,7 @@ const response = () => reload({ status: status(), headers: { "x-refresh": "profi
   "@solidjs/web/respond": browserDemo({
     title: "respond",
     solid: ["createSignal"],
-    web: ["isResponseEnvelope", "respond"],
+    web: ["respond"],
     setup: `const [name, setName] = createSignal("Ada");
 const [status, setStatus] = createSignal(201);
 const envelope = () => respond({ id: 7, name: name() }, { status: status(), headers: { location: "/users/7" } });`,
@@ -79,6 +79,6 @@ const envelope = () => respond({ id: 7, name: name() }, { status: status(), head
 <select id="respond-status" value={status()} onChange={(event) => setStatus(Number(event.currentTarget.value))}>
   <option value="200">200</option><option value="201">201</option><option value="202">202</option>
 </select>
-<output>Envelope: {String(isResponseEnvelope(envelope()))} | Status: {envelope().response.status}</output>`,
+<output>Name: {envelope().value.name} | Status: {envelope().response.status} | Location: {envelope().response.headers.get("location")}</output>`,
   }),
 };
