@@ -1,4 +1,7 @@
-import { Collapse, Drawer, Input } from "@idoly/ant-design-solid";
+import Button from "@idoly/ant-design-solid/button";
+import Collapse from "@idoly/ant-design-solid/collapse";
+import Drawer from "@idoly/ant-design-solid/drawer";
+import Input from "@idoly/ant-design-solid/input";
 import { For, Show } from "solid-js";
 import {
   ArrowRight,
@@ -104,6 +107,7 @@ function CatalogContent(props: { nav: Navigation; locale: Locale }) {
                     <button
                       type="button"
                       class={`${styles.link} ${nav.activeId() === doc.id && !nav.isHome() ? styles.activeLink : ""}`}
+                      aria-current={nav.activeId() === doc.id && !nav.isHome() ? "page" : undefined}
                       onClick={() => nav.openDoc(doc.id)}
                     >
                       <span class={styles.linkName}>{doc.title}</span>
@@ -145,14 +149,12 @@ export function Sidebar(props: { nav: Navigation; locale: Locale }) {
         keyboard
         zIndex={70}
         extra={
-          <button
-            type="button"
+          <Button
             class={iconButton}
+            icon={<X size={17} />}
             onClick={() => props.nav.setMenuOpen(false)}
             aria-label={props.locale.t("closeCatalog")}
-          >
-            <X size={17} />
-          </button>
+          />
         }
         onClose={() => props.nav.setMenuOpen(false)}
       >

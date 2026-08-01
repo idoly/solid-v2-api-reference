@@ -1,4 +1,4 @@
-import { Input } from "@idoly/ant-design-solid";
+import Input from "@idoly/ant-design-solid/input";
 import { For, Show, createSignal } from "solid-js";
 import { docs, docsByTitle, packageScope } from "../../data/catalog-index";
 import { ChevronRight, SearchIcon } from "../../ui/icons";

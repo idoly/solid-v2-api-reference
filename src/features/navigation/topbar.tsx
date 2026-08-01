@@ -1,4 +1,5 @@
-import { Button, Tooltip } from "@idoly/ant-design-solid";
+import Button from "@idoly/ant-design-solid/button";
+import Tooltip from "@idoly/ant-design-solid/tooltip";
 import { Show } from "solid-js";
 import { ExternalLink, Github, Languages, Menu, Moon, Sparkles, Sun } from "../../ui/icons";
 import { iconButton, mobileIconButton } from "../../ui/classes";
@@ -16,7 +17,7 @@ export function TopBar(props: Props) {
   return (
     <header class={styles.root}>
       <Button
-        class={`${mobileIconButton} ${styles.control}`}
+        class={mobileIconButton}
         icon={<Menu size={19} />}
         onClick={() => props.nav.setMenuOpen(true)}
         title={props.locale.t("openCatalog")}
@@ -58,30 +59,36 @@ export function TopBar(props: Props) {
         <Tooltip
           title={props.theme.isDark() ? props.locale.t("lightTheme") : props.locale.t("darkTheme")}
           placement="bottom"
-          class={styles.contents}
-        >
-          <Button
-            class={`${iconButton} ${styles.control}`}
-            icon={
-              <Show when={props.theme.isDark()} fallback={<Moon size={17} />}>
-                <Sun size={17} />
-              </Show>
-            }
-            onClick={props.theme.toggle}
-            aria-label={props.theme.isDark() ? props.locale.t("lightTheme") : props.locale.t("darkTheme")}
-          />
-        </Tooltip>
-        <Tooltip title="Solid GitHub" placement="bottom" class={styles.contents}>
-          <a
-            class={`${iconButton} ${styles.control}`}
-            href="https://github.com/solidjs/solid"
-            target="_blank"
-            rel="noreferrer"
-            aria-label="Solid GitHub"
-          >
-            <Github size={17} />
-          </a>
-        </Tooltip>
+          triggerRender={(triggerProps) => (
+            <Button
+              {...triggerProps}
+              class={`${triggerProps.class ?? ""} ${iconButton}`}
+              icon={
+                <Show when={props.theme.isDark()} fallback={<Moon size={17} />}>
+                  <Sun size={17} />
+                </Show>
+              }
+              onClick={props.theme.toggle}
+              aria-label={props.theme.isDark() ? props.locale.t("lightTheme") : props.locale.t("darkTheme")}
+            />
+          )}
+        />
+        <Tooltip
+          title="Solid GitHub"
+          placement="bottom"
+          triggerRender={(triggerProps) => (
+            <a
+              {...triggerProps}
+              class={`${triggerProps.class ?? ""} ${iconButton}`}
+              href="https://github.com/solidjs/solid"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Solid GitHub"
+            >
+              <Github size={17} />
+            </a>
+          )}
+        />
       </div>
     </header>
   );

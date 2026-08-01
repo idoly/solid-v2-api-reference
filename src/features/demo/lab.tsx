@@ -1,4 +1,6 @@
-import { Button, Modal, Tooltip, type ButtonProps } from "@idoly/ant-design-solid";
+import Button, { type ButtonProps } from "@idoly/ant-design-solid/button";
+import Modal from "@idoly/ant-design-solid/modal";
+import Tooltip from "@idoly/ant-design-solid/tooltip";
 import type { JSX } from "@solidjs/web";
 import { Show, createSignal } from "solid-js";
 import type { Doc } from "../../data/catalog";
@@ -29,17 +31,22 @@ type ToolButtonProps = {
 
 function ToolButton(props: ToolButtonProps) {
   return (
-    <Tooltip title={props.label} placement="top" class={styles.contents}>
-      <Button
-        type={props.type}
-        class={props.class}
-        icon={props.icon}
-        loading={props.loading}
-        disabled={props.disabled}
-        onClick={props.onClick}
-        aria-label={props.label}
-      />
-    </Tooltip>
+    <Tooltip
+      title={props.label}
+      placement="top"
+      triggerRender={(triggerProps) => (
+        <Button
+          {...(triggerProps as JSX.ButtonHTMLAttributes<HTMLButtonElement>)}
+          type={props.type}
+          class={`${triggerProps.class ?? ""} ${props.class}`}
+          icon={props.icon}
+          loading={props.loading}
+          disabled={props.disabled}
+          onClick={props.onClick}
+          aria-label={props.label}
+        />
+      )}
+    />
   );
 }
 

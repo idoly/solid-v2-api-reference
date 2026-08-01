@@ -1,4 +1,5 @@
-import { Alert, Button } from "@idoly/ant-design-solid";
+import Alert from "@idoly/ant-design-solid/alert";
+import Button from "@idoly/ant-design-solid/button";
 import { ArrowRight, Check, ExternalLink, Sparkles } from "../../ui/icons";
 import { actionButton } from "../../ui/classes";
 import { highlightTsx, syntaxClasses } from "../../ui/highlight";

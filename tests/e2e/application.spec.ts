@@ -58,13 +58,57 @@ test("loads the generated reference and opens an API from search", async ({ page
   const lightTooltip = page.getByRole("tooltip");
   await expect(lightTooltip).toHaveCSS("color", "rgb(255, 255, 255)");
   await expect(lightTooltip).toHaveCSS("background-color", "rgb(32, 37, 34)");
+  const [lightBackTopBox, lightTooltipBox] = await Promise.all([
+    lightBackTop.boundingBox(),
+    lightTooltip.boundingBox(),
+  ]);
+  expect(lightBackTopBox).not.toBeNull();
+  expect(lightTooltipBox).not.toBeNull();
+  expect(lightTooltipBox!.x + lightTooltipBox!.width).toBeLessThan(lightBackTopBox!.x);
+  expect(
+    Math.abs(lightTooltipBox!.y + lightTooltipBox!.height / 2 - (lightBackTopBox!.y + lightBackTopBox!.height / 2)),
+  ).toBeLessThanOrEqual(2);
+  const interactionStyle = (element: Element) => {
+    const style = getComputedStyle(element);
+    return {
+      color: style.color,
+      backgroundColor: style.backgroundColor,
+      borderColor: style.borderColor,
+      boxShadow: style.boxShadow,
+      transform: style.transform,
+    };
+  };
+  const lightBackHover = await lightBackTop.evaluate(interactionStyle);
+  const lightThemeButton = page.getByRole("button", { name: "Switch to dark mode" });
+  await lightThemeButton.hover();
+  await page.waitForTimeout(180);
+  expect(await lightThemeButton.evaluate(interactionStyle)).toEqual(lightBackHover);
+  await page.mouse.move(0, 200);
+  await page.keyboard.press("Tab");
   await lightBackTop.focus();
   await page.waitForTimeout(180);
   const lightBackFocus = await lightBackTop.evaluate((element) => getComputedStyle(element).boxShadow);
-  const lightThemeButton = page.getByRole("button", { name: "Switch to dark mode" });
+  await page.keyboard.press("Tab");
   await lightThemeButton.focus();
   await page.waitForTimeout(180);
   expect(lightBackFocus).toBe(await lightThemeButton.evaluate((element) => getComputedStyle(element).boxShadow));
+  await lightBackTop.evaluate((element) => {
+    element.addEventListener(
+      "click",
+      (event) => {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      },
+      { capture: true, once: true },
+    );
+  });
+  await lightBackTop.click();
+  await page.mouse.move(0, 200);
+  await page.waitForTimeout(180);
+  await expect(lightBackTop).toBeFocused();
+  expect(await lightBackTop.evaluate((element) => getComputedStyle(element).boxShadow)).not.toBe(lightBackFocus);
+  await lightBackTop.click();
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
   expect(errors).toEqual([]);
 });
 
@@ -75,12 +119,30 @@ test("persists locale and theme preferences across reloads", async ({ page }) =>
   const themeButton = page.getByRole("button", { name: "Switch to dark mode" });
   const githubLink = page.getByRole("link", { name: "Solid GitHub" });
   const focusShadow = async (locator: typeof localeButton) => {
+    await page.keyboard.press("Tab");
     await locator.focus();
     await page.waitForTimeout(180);
     return locator.evaluate((element) => getComputedStyle(element).boxShadow);
   };
-  expect(await focusShadow(themeButton)).toBe(await focusShadow(localeButton));
-  expect(await focusShadow(githubLink)).toBe(await focusShadow(localeButton));
+  const keyboardFocusShadow = await focusShadow(themeButton);
+  expect(await focusShadow(localeButton)).toBe(keyboardFocusShadow);
+  expect(await focusShadow(githubLink)).toBe(keyboardFocusShadow);
+
+  await localeButton.evaluate((element) => {
+    element.addEventListener(
+      "click",
+      (event) => {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      },
+      { capture: true, once: true },
+    );
+  });
+  await localeButton.click();
+  await page.mouse.move(0, 200);
+  await page.waitForTimeout(180);
+  await expect(localeButton).toBeFocused();
+  expect(await localeButton.evaluate((element) => getComputedStyle(element).boxShadow)).not.toBe(keyboardFocusShadow);
 
   await localeButton.click();
   await expect(page.locator("html")).toHaveAttribute("lang", "zh-CN");
@@ -109,10 +171,27 @@ test("persists locale and theme preferences across reloads", async ({ page }) =>
   const darkTooltip = page.getByRole("tooltip");
   await expect(darkTooltip).toHaveCSS("color", "rgb(32, 37, 34)");
   await expect(darkTooltip).toHaveCSS("background-color", "rgb(237, 242, 238)");
+  const interactionStyle = (element: Element) => {
+    const style = getComputedStyle(element);
+    return {
+      color: style.color,
+      backgroundColor: style.backgroundColor,
+      borderColor: style.borderColor,
+      boxShadow: style.boxShadow,
+      transform: style.transform,
+    };
+  };
+  const darkBackHover = await darkBackTop.evaluate(interactionStyle);
+  const darkThemeButton = page.getByRole("button", { name: "切换到浅色模式" });
+  await darkThemeButton.hover();
+  await page.waitForTimeout(180);
+  expect(await darkThemeButton.evaluate(interactionStyle)).toEqual(darkBackHover);
+  await page.mouse.move(0, 200);
+  await page.keyboard.press("Tab");
   await darkBackTop.focus();
   await page.waitForTimeout(180);
   const darkBackFocus = await darkBackTop.evaluate((element) => getComputedStyle(element).boxShadow);
-  const darkThemeButton = page.getByRole("button", { name: "切换到浅色模式" });
+  await page.keyboard.press("Tab");
   await darkThemeButton.focus();
   await page.waitForTimeout(180);
   expect(darkBackFocus).toBe(await darkThemeButton.evaluate((element) => getComputedStyle(element).boxShadow));
@@ -130,12 +209,58 @@ test("runs a browser demo through the production runtime", async ({ page }) => {
   const editorDialog = page.getByRole("dialog");
   await expect(editorDialog).toBeVisible();
   await expect(editorDialog.getByRole("textbox", { name: "Code editor" })).toBeVisible();
+  await expect(editorDialog.getByRole("button", { name: "Run code" })).toHaveCSS(
+    "background-color",
+    "rgb(111, 152, 29)",
+  );
   await editorDialog.getByRole("button", { name: "Close editor" }).click();
   await expect(editorDialog).toBeHidden();
   await expect(page.getByText("Click “Run code” to view console logs.", { exact: true })).toBeVisible();
   expect(runtimeRequests).toEqual([]);
 
-  await page.getByRole("button", { name: "Run code" }).click();
+  const interactionStyle = (element: Element) => {
+    const style = getComputedStyle(element);
+    return {
+      color: style.color,
+      backgroundColor: style.backgroundColor,
+      borderColor: style.borderColor,
+      boxShadow: style.boxShadow,
+      transform: style.transform,
+    };
+  };
+  const runButton = page.getByRole("button", { name: "Run code" });
+  await runButton.hover();
+  await page.waitForTimeout(180);
+  const editorButtonHover = await runButton.evaluate(interactionStyle);
+  const editorTooltip = page.getByRole("tooltip", { name: "Run code" });
+  const [runButtonBox, editorTooltipBox, editorToolbarBox] = await Promise.all([
+    runButton.boundingBox(),
+    editorTooltip.boundingBox(),
+    runButton.locator("xpath=ancestor::div[contains(@class, 'controls')][1]").boundingBox(),
+  ]);
+  expect(runButtonBox).not.toBeNull();
+  expect(editorTooltipBox).not.toBeNull();
+  expect(editorToolbarBox).not.toBeNull();
+  expect(editorTooltipBox!.y + editorTooltipBox!.height).toBeLessThan(runButtonBox!.y);
+  expect(
+    Math.abs(editorTooltipBox!.x + editorTooltipBox!.width / 2 - (runButtonBox!.x + runButtonBox!.width / 2)),
+  ).toBeLessThanOrEqual(2);
+  expect(runButtonBox!.y).toBeGreaterThanOrEqual(editorToolbarBox!.y);
+  expect(runButtonBox!.y + runButtonBox!.height).toBeLessThanOrEqual(editorToolbarBox!.y + editorToolbarBox!.height);
+  const topBarThemeButton = page.getByRole("button", { name: "Switch to dark mode" });
+  await topBarThemeButton.hover();
+  await page.waitForTimeout(180);
+  expect(await topBarThemeButton.evaluate(interactionStyle)).toEqual(editorButtonHover);
+  const topBarTooltip = page.getByRole("tooltip", { name: "Switch to dark mode" });
+  const [topBarButtonBox, topBarTooltipBox] = await Promise.all([
+    topBarThemeButton.boundingBox(),
+    topBarTooltip.boundingBox(),
+  ]);
+  expect(topBarButtonBox).not.toBeNull();
+  expect(topBarTooltipBox).not.toBeNull();
+  expect(topBarTooltipBox!.y).toBeGreaterThan(topBarButtonBox!.y + topBarButtonBox!.height);
+
+  await runButton.click();
   await expect.poll(() => runtimeRequests.length).toBeGreaterThan(0);
 
   await expect(page.getByText("Editor", { exact: true })).toBeVisible();

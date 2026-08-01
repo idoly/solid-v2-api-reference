@@ -6,11 +6,11 @@
   place-items: center;
   padding: 0;
   cursor: pointer;
-  color: inherit;
-  background: var(--app-surface);
-  border: 1px solid var(--app-control-border);
+  color: #536058 !important;
+  background: var(--app-surface) !important;
+  border: 1px solid var(--app-control-border) !important;
   border-radius: 5px;
-  box-shadow: var(--app-control-inset);
+  box-shadow: var(--app-control-inset) !important;
   transition:
     color 150ms,
     background-color 150ms,
@@ -20,15 +20,15 @@
 }
 
 .iconButton:hover {
-  color: #405c20;
-  background: #edf4e5;
-  border-color: var(--app-control-border-hover);
-  box-shadow: 0 4px 12px rgb(70 95 45 / 20%);
+  color: #405c20 !important;
+  background: #edf4e5 !important;
+  border-color: var(--app-control-border-hover) !important;
+  box-shadow: 0 4px 12px rgb(70 95 45 / 20%) !important;
   transform: translateY(-2px);
 }
 
 .iconButton:active {
-  box-shadow: none;
+  box-shadow: none !important;
   transform: scale(0.97);
 }
 
@@ -40,15 +40,15 @@
 
 .primaryIconButton {
   composes: iconButton;
-  color: #fff;
-  background: #222923;
-  border-color: #222923;
+  color: #fff !important;
+  background: var(--ads-color-primary) !important;
+  border-color: var(--ads-color-primary) !important;
 }
 
 .primaryIconButton:hover {
-  color: #fff;
-  background: #506b22;
-  border-color: #506b22;
+  color: #fff !important;
+  background: var(--ads-color-primary-hover) !important;
+  border-color: var(--ads-color-primary-hover) !important;
 }
 
 .mobileIconButton {
@@ -183,29 +183,30 @@
 }
 
 :global(.dark) .iconButton {
-  color: #dce4de;
-  background: var(--app-surface-dark);
-  border-color: var(--app-control-border);
+  color: #dce4de !important;
+  background: var(--app-surface-dark) !important;
+  border-color: var(--app-control-border) !important;
 }
 
 :global(.dark) .iconButton:hover {
-  color: #dce8cf;
-  background: #293127;
-  border-color: var(--app-control-border-hover);
+  color: #dce8cf !important;
+  background: #293127 !important;
+  border-color: var(--app-control-border-hover) !important;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 42%) !important;
 }
 
 :global(.dark) .primaryIconButton,
 :global(.dark) .primary {
-  color: #172013;
-  background: #a5ce62;
-  border-color: #a5ce62;
+  color: #172013 !important;
+  background: var(--ads-color-primary) !important;
+  border-color: var(--ads-color-primary) !important;
 }
 
 :global(.dark) .primaryIconButton:hover,
 :global(.dark) .primary:hover {
-  color: #172013;
-  background: #d2f49d;
-  border-color: #d2f49d;
+  color: #172013 !important;
+  background: var(--ads-color-primary-hover) !important;
+  border-color: var(--ads-color-primary-hover) !important;
 }
 
 :global(.dark) .secondary {

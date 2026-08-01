@@ -1,5 +1,25 @@
 # Change Log
 
+## Unreleased
+
+### Dependency and Components
+
+- 将 `@idoly/ant-design-solid` 从 `0.1.0` 升级到 `0.2.4`，迁移到 `base.css` 与组件级 CSS 导出。
+- JavaScript 全部改用组件子路径导入；组件样式集中到全局与 API 懒加载两个 CSS 入口，继续保留页面级 CSS code splitting。
+- 使用 BackTop 替换手写滚动监听和回顶逻辑，使用 Button 替换移动 Drawer 关闭按钮，并为当前侧栏文档增加 `aria-current="page"`。
+
+### Interaction and Accessibility
+
+- 统一 Editor、TopBar、Drawer 与 BackTop 图标按钮的默认、hover、active、鼠标 focus、键盘 focus-visible 和暗色交互状态。
+- Button 与 FloatButton 通过 ConfigProvider component tokens 共享颜色、边框、focus ring、shadow 和 active transform；展开编辑器的 Run 保留主题 primary 层级。
+- TopBar 与 Editor Tooltip 使用 `triggerRender` 直接绑定实际控件，修复 `display: contents` 零尺寸锚点导致的左上角错位和工具栏布局异常。
+- BackTop 不再重复设置 fixed root；Tooltip 保持在按钮左侧，鼠标点击后不残留键盘焦点环，移动端继续隐藏。
+
+### Verification
+
+- TypeScript、Prettier、生产构建、gzip bundle budget 和 17 项 Node 单元测试通过。
+- Podman Chromium 端到端测试 4/4 通过，覆盖三处图标按钮计算样式、Tooltip 几何位置、编辑器 toolbar 边界、primary Run、BackTop 点击和移动端布局。
+
 ## 1.4-2.0.0-beta.29 - 2026-08-01
 
 保持 Solid `2.0.0-beta.29` 依赖基线，集中升级内容模型、Demo 体验、主题界面、工程门禁和部署交付流程。

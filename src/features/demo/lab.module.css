@@ -26,9 +26,6 @@
   align-items: center;
   gap: 8px;
 }
-.contents {
-  display: contents;
-}
 .codePane {
   display: flex;
   min-width: 0;

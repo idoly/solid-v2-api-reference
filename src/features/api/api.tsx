@@ -1,4 +1,6 @@
-import { Empty, Segmented } from "@idoly/ant-design-solid";
+import "./ant-design.css";
+import Empty from "@idoly/ant-design-solid/empty";
+import Segmented from "@idoly/ant-design-solid/segmented";
 import { Show, createEffect, createMemo, createSignal } from "solid-js";
 import { docs, docsById } from "../../data/catalog";
 import { Code2 } from "../../ui/icons";

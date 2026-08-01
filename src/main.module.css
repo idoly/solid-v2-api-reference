@@ -53,23 +53,11 @@
   color: #274b43;
 }
 
-.backTopSlot {
-  position: fixed;
-  right: 24px;
-  bottom: 24px;
-  z-index: 990;
-}
-
 .backTop {
   width: 42px;
   height: 42px;
   flex-basis: 42px;
   border-radius: 6px;
-}
-
-.backTop:focus {
-  outline: 0;
-  box-shadow: var(--app-control-focus-shadow) !important;
 }
 
 :global(.dark) .content {

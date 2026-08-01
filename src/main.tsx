@@ -1,5 +1,8 @@
-import { ConfigProvider, Skeleton, Tooltip } from "@idoly/ant-design-solid";
-import "@idoly/ant-design-solid/styles.css";
+import "./styles/ant-design.css";
+import "./styles/global.css";
+import BackTop from "@idoly/ant-design-solid/back-top";
+import ConfigProvider from "@idoly/ant-design-solid/config-provider";
+import Skeleton from "@idoly/ant-design-solid/skeleton";
 import { render } from "@solidjs/web";
 import { Loading, Show, lazy } from "solid-js";
 import { Home } from "./features/home/home";
@@ -11,32 +14,19 @@ import { createTheme } from "./features/theme";
 import { iconButton } from "./ui/classes";
 import { ArrowUp, Github } from "./ui/icons";
 import styles from "./main.module.css";
-import "./styles/global.css";
 
 const Api = lazy(async () => ({ default: (await import("./features/api/api")).Api }));
 
 function BackToTop(props: { label: string }) {
-  const setupVisibility = (element: HTMLDivElement) => {
-    const update = () => {
-      element.hidden = window.scrollY <= 420;
-    };
-    update();
-    window.addEventListener("scroll", update, { passive: true });
-  };
-
   return (
-    <div ref={setupVisibility} class={styles.backTopSlot} hidden>
-      <Tooltip title={props.label} placement="left">
-        <button
-          type="button"
-          class={`${iconButton} ${styles.backTop}`}
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          aria-label={props.label}
-        >
-          <ArrowUp size={17} />
-        </button>
-      </Tooltip>
-    </div>
+    <BackTop
+      class={`${iconButton} ${styles.backTop}`}
+      classNames={{ root: styles.backTopSlot }}
+      visibilityHeight={420}
+      tooltip={props.label}
+      icon={<ArrowUp size={17} />}
+      aria-label={props.label}
+    />
   );
 }
 

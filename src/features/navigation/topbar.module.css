@@ -135,7 +135,7 @@
   box-shadow: none !important;
   transform: scale(0.97);
 }
-.control:focus {
+.control:focus-visible {
   outline: none !important;
   box-shadow: var(--app-control-focus-shadow) !important;
 }
@@ -170,10 +170,6 @@
   cursor: pointer;
 }
 
-.contents {
-  display: contents;
-}
-
 :global(.dark) .root {
   background: rgb(21 21 23 / 97%);
   border-color: var(--app-line);
@@ -203,7 +199,7 @@
   border-color: var(--app-control-border-hover) !important;
   box-shadow: 0 4px 14px rgb(0 0 0 / 42%) !important;
 }
-:global(.dark) .control:focus {
+:global(.dark) .control:focus-visible {
   box-shadow: var(--app-control-focus-shadow) !important;
 }
 
