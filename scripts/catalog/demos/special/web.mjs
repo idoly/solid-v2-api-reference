@@ -177,16 +177,23 @@ const html = renderToString(() => {
 
 delete (globalThis as any)[RequestContext];
 console.log(html);`,
-  "@solidjs/web/renderToString": `import { renderToString } from "@solidjs/web";
+  "@solidjs/web/renderToString": `import { renderToString, useHead } from "@solidjs/web";
 
-const App = () => (
-  <main>
-    <h1>Server-rendered HTML</h1>
-    <p>renderToString completed</p>
-  </main>
+let head = "";
+// onHead returns head-bound output when the host owns the outer document template.
+const body = renderToString(
+  () => {
+    useHead({ tag: "title", props: { children: "Embedded Solid page" } });
+    return (
+      <main>
+        <h1>Server-rendered HTML</h1>
+        <p>renderToString completed</p>
+      </main>
+    );
+  },
+  { onHead: (value) => (head = value) },
 );
-const html = renderToString(() => <App />);
-console.log(html);`,
+console.log(\`<html><head>\${head}</head><body>\${body}</body></html>\`);`,
   "@solidjs/web/renderToStringAsync": `import { renderToStringAsync } from "@solidjs/web";
 
 const App = () => (
@@ -197,15 +204,22 @@ const App = () => (
 );
 const html = await renderToStringAsync(() => <App />);
 console.log(html);`,
-  "@solidjs/web/renderToStream": `import { renderToStream } from "@solidjs/web";
+  "@solidjs/web/renderToStream": `import { renderToStream, useHead } from "@solidjs/web";
 
-const App = () => (
-  <main>
-    <h1>Streaming server rendering</h1>
-    <p>The server stream is complete</p>
-  </main>
+let head = "";
+// onHead exposes first-flush head output before an embedded body stream is consumed.
+const stream = renderToStream(
+  () => {
+    useHead({ tag: "title", props: { children: "Streamed Solid page" } });
+    return (
+      <main>
+        <h1>Streaming server rendering</h1>
+        <p>The server stream is complete</p>
+      </main>
+    );
+  },
+  { onHead: (value) => (head = value) },
 );
-const stream = renderToStream(() => <App />);
-const html = await new Promise<string>((resolve) => stream.then(resolve));
-console.log(html);`,
+const body = await new Promise<string>((resolve) => stream.then(resolve));
+console.log(\`<html><head>\${head}</head><body>\${body}</body></html>\`);`,
 };

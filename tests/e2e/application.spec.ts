@@ -17,7 +17,7 @@ test("loads the generated reference and opens an API from search", async ({ page
   await brand.click();
   await page.waitForTimeout(180);
   await expect(brand).toHaveCSS("box-shadow", "none");
-  await expect(page.getByText("121 / 121", { exact: true })).toBeVisible();
+  await expect(page.getByText("122 / 122", { exact: true })).toBeVisible();
   const sidebarBox = await page.getByRole("complementary").boundingBox();
   const homeBox = await page.locator("main article").boundingBox();
   expect(sidebarBox?.width).toBeGreaterThanOrEqual(299);
@@ -26,7 +26,7 @@ test("loads the generated reference and opens an API from search", async ({ page
   expect(await page.evaluate(() => document.body.scrollWidth)).toBe(1280);
   expect(scripts.some((path) => /\/assets\/api-[^/]+\.js$/i.test(path))).toBe(false);
 
-  const version = page.getByRole("link", { name: /2.0.0-beta.29/ });
+  const version = page.getByRole("link", { name: /2.0.0-beta.30/ });
   await expect(version).toHaveCSS("white-space", "nowrap");
   const category = page.getByRole("button", { name: "Reactivity", exact: true });
   const catalogLink = page.getByRole("button", { name: /createSignal core/ });

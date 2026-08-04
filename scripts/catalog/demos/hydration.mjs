@@ -115,4 +115,26 @@ useAssets(() => <link rel="preload" href="/api-demo.js" as="script" />);
 const registered = (getAssets() ?? "").includes("api-demo.js");`,
     view: `<p>Preload registered: {String(registered)}</p>`,
   }),
+  "@solidjs/web/useHead": `import { renderToString, useHead } from "@solidjs/web";
+
+function Document() {
+  // The descriptor group is resolved into the document head during SSR.
+  useHead([
+    { tag: "title", props: { children: "useHead reference" } },
+    { tag: "meta", props: { name: "description", content: "Head management API" } },
+    { tag: "link", props: { rel: "canonical", href: "https://example.com/docs/use-head" } },
+  ]);
+  return (
+    <html>
+      <head></head>
+      <body>
+        <main>Head tags registered during render.</main>
+      </body>
+    </html>
+  );
+}
+
+const html = renderToString(() => <Document />);
+console.log("Registered head tags: title, description, canonical");
+console.log(html);`,
 };

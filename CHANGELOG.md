@@ -4,6 +4,13 @@
 
 ### Dependency and Components
 
+- 将 `solid-js`、`@solidjs/web` 与 `babel-preset-solid` 从 `2.0.0-beta.29` 升级到 `2.0.0-beta.30`。
+- 间接依赖 `@solidjs/signals` 同步升级到 `2.0.0-beta.30`，DOM Expressions Babel 插件升级到 `0.50.0-next.35`。
+- 新增 `@solidjs/web/useHead` 的 SSR 分类、双语说明、关联 API 和可执行 Demo，并更新固定上游源码提交。
+- `renderToString` 与 `renderToStream` 新增 `onHead` option，并在 Demo 中覆盖宿主文档收集 head 输出的流程。
+- `clientOnly` 新增编译器注入参数 `_moduleUrl`，用于提前输出资源提示；`useAssets` 与 `getAssets` 标记弃用，分别迁移到 `useHead` 与 `onHead`。
+- `@solidjs/web/frames` 增加 live props 更新、frame rebind/rebase 和组件 handoff 类型契约；根入口的既有 `solid-js` API 签名没有变化。
+- 通过 npm override 让尚未发布 beta.30 peer 范围的 `@idoly/ant-design-solid@0.2.4` 复用项目 Solid 版本，保证全新 `npm ci` 可解析一致的依赖树。
 - 将 `@idoly/ant-design-solid` 从 `0.1.0` 升级到 `0.2.4`，迁移到 `base.css` 与组件级 CSS 导出。
 - JavaScript 全部改用组件子路径导入；组件样式集中到全局与 API 懒加载两个 CSS 入口，继续保留页面级 CSS code splitting。
 - 使用 BackTop 替换手写滚动监听和回顶逻辑，使用 Button 替换移动 Drawer 关闭按钮，并为当前侧栏文档增加 `aria-current="page"`。

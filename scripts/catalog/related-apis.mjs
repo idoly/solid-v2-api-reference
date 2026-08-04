@@ -264,9 +264,21 @@ const comparisons = {
     ],
   },
   "@solidjs/web/Assets": {
+    "@solidjs/web/useHead": [
+      "Use `useHead` for descriptor-based head management; use `<Assets>` only when rendering legacy assets collected by `useAssets`.",
+      "基于描述符管理 head 时使用 `useHead`；只有输出由旧版 `useAssets` 收集的资源时才使用 `<Assets>`。",
+    ],
+  },
+  "@solidjs/web/useAssets": {
+    "@solidjs/web/useHead": [
+      "Prefer `useHead`; `useAssets` is deprecated and does not participate in the new replacement and deduplication model.",
+      "优先使用 `useHead`；`useAssets` 已弃用，且不参与新的替换与去重模型。",
+    ],
+  },
+  "@solidjs/web/useHead": {
     "@solidjs/web/useAssets": [
-      "Use `useAssets` in a primitive that registers assets; place `<Assets>` in the SSR document where collected output belongs.",
-      "原语内部注册资源时使用 `useAssets`；在 SSR 文档输出位置放置 `<Assets>`。",
+      "Use legacy `useAssets` only when an existing integration still consumes its asset callback registry.",
+      "仅在现有集成仍依赖旧资源回调注册表时使用 `useAssets`。",
     ],
   },
   "@solidjs/web/style": {

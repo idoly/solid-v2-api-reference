@@ -15,7 +15,7 @@ This command runs, in order:
 1. Deterministic catalog generation and TypeScript checks.
 2. Generated demo source and repository formatting checks.
 3. Node unit tests for schema, re-exports, related APIs, content fallbacks, demo uniqueness, execution metadata, request methods, validation, limits, and localization.
-4. All 109 browser and 12 SSR demo groups, including targeted behavior scenarios.
+4. All 109 browser and 13 SSR demo groups, including targeted behavior scenarios.
 5. Production build and gzip bundle budgets.
 6. Playwright end-to-end tests in Podman.
 

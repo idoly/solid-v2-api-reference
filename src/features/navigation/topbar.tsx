@@ -43,7 +43,7 @@ export function TopBar(props: Props) {
           target="_blank"
           rel="noreferrer"
         >
-          <span>2.0.0-beta.29</span>
+          <span>2.0.0-beta.30</span>
           <ExternalLink size={12} />
         </a>
         <Button

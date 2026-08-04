@@ -6,6 +6,7 @@ export const serverDemoIds = new Set([
   "@solidjs/web/Hydration",
   "@solidjs/web/HydrationScript",
   "@solidjs/web/NoHydration",
+  "@solidjs/web/useHead",
   "solid-js/Hydration",
   "solid-js/NoHydration",
   "@solidjs/web/getRequestEvent",

@@ -103,18 +103,18 @@ The verifier keeps process and environment orchestration in `demo/verify.mjs`, g
 Current generated surface:
 
 - `solid-js`: 54 callable APIs
-- `@solidjs/web`: 67 callable APIs
-- Total: 121 APIs across 9 categories
+- `@solidjs/web`: 68 callable APIs
+- Total: 122 APIs across 9 categories
 - Browser groups: 109
-- SSR groups: 12
-- Unique complete demo programs: 121
+- SSR groups: 13
+- Unique complete demo programs: 122
 
 ## Baseline
 
-- Project release: `1.4-2.0.0-beta.29`
+- Project release: `1.4-2.0.0-beta.30`
 
-- Runtime packages: `solid-js@2.0.0-beta.29` and `@solidjs/web@2.0.0-beta.29`
-- Source commit: `4bc0be0bae7870071f30c79c6b70f95b7eddc303`
+- Runtime packages: `solid-js@2.0.0-beta.30` and `@solidjs/web@2.0.0-beta.30`
+- Source commit: `2bb02e029611c349d7865bf7cc4d54527fd7cd41`
 - Generated artifacts: `data/catalog-index.json` and `data/catalog.json`
 - Runtime adapters: `src/data/catalog-index.ts` and `src/data/catalog.ts`
 

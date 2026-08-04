@@ -283,11 +283,11 @@ export const apiContent = {
   ],
   "@solidjs/web/renderToStream": [
     "流式输出 HTML：先发送同步 shell，再随着异步 `<Loading>` 边界完成逐步输出片段。",
-    "服务端渲染对首字节时间敏感，并希望渐进传输异步内容时使用。",
+    "对首字节时间敏感时使用。嵌入式渲染没有自己的 `</head>` 时，`onHead` 会在 shell 输出前返回首次 flush 的 head 内容。",
   ],
   "@solidjs/web/renderToString": [
     "同步把组件树渲染为 HTML 字符串。",
-    "服务端只需要同步结果，异步区域允许输出 `<Loading>` fallback 时使用。",
+    "用于同步 SSR。嵌入式渲染没有自己的 `</head>` 时，`onHead` 会把收集到的 head 内容交给宿主文档。",
   ],
   "@solidjs/web/renderToStringAsync": [
     "等待组件子树中的异步读取全部完成后，返回完整 HTML 字符串。",
@@ -379,7 +379,7 @@ export const apiContent = {
   ],
   "@solidjs/web/getAssets": [
     "返回当前服务端渲染过程中收集到的资源 HTML。",
-    "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
+    "beta.30 已弃用，因为它读取环境中的渲染状态；宿主文档使用 `onHead` 接收 head 内容，注册 head 标签使用 `useHead`。",
   ],
   "@solidjs/web/getDelegatedRoot": [
     "返回与指定可挂载节点关联的事件委托根。",
@@ -463,7 +463,11 @@ export const apiContent = {
   ],
   "@solidjs/web/useAssets": [
     "向当前服务端渲染上下文注册一个资源生成回调。",
-    "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
+    "该 API 在 beta.30 中已弃用；请使用 `useHead` 注册文档 head 标签。",
+  ],
+  "@solidjs/web/useHead": [
+    "向文档 head 注册标签，并随当前响应式作用域自动同步。标签冲突时，最后提交的注册生效。",
+    "用于在路由、页面或组件中设置标题、元信息、canonical link、样式、脚本和资源提示。",
   ],
 };
 

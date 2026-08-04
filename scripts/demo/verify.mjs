@@ -3,7 +3,7 @@ import { fileURLToPath } from "node:url";
 import { compileDemo } from "./compile.mjs";
 import { loadDemoCatalog } from "./load.mjs";
 import { exerciseInteractiveControls, hasInteractiveControls } from "./verify-interactions.mjs";
-import { assertTargetedResult, targetedScenarios } from "./verify-scenarios.mjs";
+import { assertServerResult, assertTargetedResult, targetedScenarios } from "./verify-scenarios.mjs";
 const scriptPath = fileURLToPath(import.meta.url);
 const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
 const [mode = "--all", selectedId] = process.argv.slice(2);
@@ -81,6 +81,7 @@ async function verifyServer(id) {
       const loggedError = result.logs.find((entry) => entry.level === "error");
       if (loggedError) throw new Error(loggedError.text);
       if (!result.html) throw new Error("Demo completed without producing SSR HTML");
+      assertServerResult(id, result.html, result.logs);
       passed++;
     } catch (error) {
       failures.push({ example: index + 1, error: error instanceof Error ? error.message : String(error) });

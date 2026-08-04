@@ -69,6 +69,14 @@ export const targetedScenarios = {
     run: runErroredScenario,
     expectedText: ["Protected content rendered successfully"],
   },
+  "@solidjs/web/useHead": {
+    expectedHtml: [
+      '<title data-dh="title">useHead reference</title>',
+      'content="Head management API"',
+      'href="https://example.com/docs/use-head"',
+    ],
+    expectedLogs: ["Registered head tags: title, description, canonical", "<html><head>"],
+  },
 };
 
 function runCreateSignalScenario({ document, window, Solid }) {
@@ -191,6 +199,17 @@ function setInputValue(input, value, window) {
   if (!(input instanceof window.HTMLInputElement)) return;
   input.value = value;
   input.dispatchEvent(new window.Event("input", { bubbles: true }));
+}
+
+export function assertServerResult(id, html, logs) {
+  const scenario = targetedScenarios[id];
+  if (scenario?.expectedHtml?.some((text) => !html.includes(text))) {
+    throw new Error(`${id} did not produce the expected SSR HTML: ${html}`);
+  }
+  const serializedLogs = JSON.stringify(logs);
+  if (scenario?.expectedLogs?.some((text) => !serializedLogs.includes(text))) {
+    throw new Error(`${id} did not produce the expected SSR log evidence: ${serializedLogs}`);
+  }
 }
 
 export function assertTargetedResult(id, renderedText, logs) {

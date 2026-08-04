@@ -44,7 +44,7 @@ export async function execute(id, index) {
   const result = await withTimeout(run(requireModule, module, module.exports, demoConsole));
   if (result !== undefined) logs.push({ level: "result", text: format(result) });
   const htmlIndex = logs.findLastIndex((entry) => /^\s*</.test(entry.text));
-  return { logs, html: htmlIndex >= 0 ? logs.splice(htmlIndex, 1)[0].text : "" };
+  return { logs, html: htmlIndex >= 0 ? logs[htmlIndex].text : "" };
 }
 
 async function withTimeout(promise) {

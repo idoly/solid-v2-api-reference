@@ -292,11 +292,11 @@ export const apiContent = {
   ],
   "@solidjs/web/renderToStream": [
     "Streams an HTML response, flushing the synchronous shell first and then progressively emitting async-resolved fragments as their `<Loading>` boundaries settle.",
-    "Use it when time to first byte matters and the synchronous shell should reach the client before every asynchronous boundary resolves.",
+    "Use it when time to first byte matters. For an embedded render without its own `</head>`, `onHead` returns first-flush head output before the shell is emitted.",
   ],
   "@solidjs/web/renderToString": [
     "Renders a component tree synchronously to an HTML string.",
-    "Async reads inside `<Loading>` boundaries emit their `fallback` content; for full-graph resolution use `renderToStringAsync` instead.",
+    "Use it for synchronous SSR. For an embedded render without its own `</head>`, `onHead` returns the collected head output for the host document.",
   ],
   "@solidjs/web/renderToStringAsync": [
     "Renders a component tree to an HTML string and awaits all async reads in the subtree before resolving.",
@@ -384,7 +384,7 @@ export const apiContent = {
   ],
   "@solidjs/web/getAssets": [
     "Returns the HTML for assets collected during the current server render.",
-    "Use it in a custom SSR document pipeline when assembling the final asset output manually.",
+    "Deprecated in beta.30 because it reads ambient render state; use the render option `onHead` for host-owned documents and `useHead` to register head tags.",
   ],
   "@solidjs/web/getDelegatedRoot": [
     "Returns the delegated-event root associated with a mountable node.",
@@ -480,7 +480,11 @@ export const apiContent = {
   ],
   "@solidjs/web/useAssets": [
     "Registers an asset-producing callback with the current server rendering context.",
-    "Use it from SSR integrations that need to contribute dynamic elements to the document assets.",
+    "This API is deprecated in beta.30; use `useHead` to register document head tags.",
+  ],
+  "@solidjs/web/useHead": [
+    "Registers tags in the document head and keeps them synchronized with the current reactive scope. When tags conflict, the last committed registration wins.",
+    "Use it in routes, pages, or components to set titles, metadata, canonical links, styles, scripts, and resource hints.",
   ],
 };
 

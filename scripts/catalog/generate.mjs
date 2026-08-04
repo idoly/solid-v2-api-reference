@@ -12,10 +12,14 @@ import { relatedApisFor } from "./related-apis.mjs";
 const root = process.cwd();
 const tempDir = path.join(root, ".generated");
 const entryFile = path.join(tempDir, "api-entries.ts");
-const sourceCommit = "4bc0be0bae7870071f30c79c6b70f95b7eddc303";
+const sourceCommit = "2bb02e029611c349d7865bf7cc4d54527fd7cd41";
+const domExpressionsCommit = "10221bbad15618f6c2f3cc14d54fdf176180fb0e";
 
 fs.mkdirSync(tempDir, { recursive: true });
-fs.writeFileSync(entryFile, 'import * as Solid from "solid-js";\nimport * as Web from "@solidjs/web";\n');
+fs.writeFileSync(
+  entryFile,
+  'import * as Solid from "solid-js";\nimport * as Web from "@solidjs/web";\nimport * as WebServer from "../node_modules/@solidjs/web/types/server.js";\n',
+);
 
 const program = ts.createProgram([entryFile], {
   target: ts.ScriptTarget.ESNext,
@@ -91,7 +95,9 @@ const ssrNames = new Set([
   "ssrHydrationKey",
   "resolveSSRNode",
   "generateHydrationScript",
+  "useHead",
 ]);
+const serverDeclarationNames = new Set(["renderToString", "renderToStringAsync", "renderToStream", "useHead"]);
 const responseNames = new Set([
   "redirect",
   "reload",
@@ -137,6 +143,14 @@ function text(parts) {
     .trim();
 }
 
+function cleanTypeText(value) {
+  return value
+    .replace(/\/\*\*[\s\S]*?\*\//g, "")
+    .replace(/\n\s*\n/g, "\n")
+    .replace(/[ \t]+\n/g, "\n")
+    .trim();
+}
+
 function tagText(value) {
   if (typeof value === "string") return value.trim();
   if (!value) return "";
@@ -168,6 +182,14 @@ function sourcePathFor(declaration, packageName, name) {
     return `packages/solid-web/src/${web[1]}.ts`;
   }
   return packageName === "solid-js" ? "packages/solid/src/index.ts" : "packages/solid-web/src/index.ts";
+}
+
+function sourceUrlFor(declaration, packageName, name) {
+  if (packageName === "@solidjs/web" && (name === "useHead" || name === "HeadTag")) {
+    const file = name === "useHead" ? "server.js" : "client.d.ts";
+    return `https://github.com/ryansolid/dom-expressions/blob/${domExpressionsCommit}/packages/runtime/src/${file}`;
+  }
+  return `https://github.com/solidjs/solid/blob/${sourceCommit}/${sourcePathFor(declaration, packageName, name)}`;
 }
 
 function categoryFor(name, packageName, typeOnly, internal) {
@@ -210,6 +232,8 @@ function parameterFallback(name) {
     path: "Store 中要访问或更新的属性路径。",
     fallback: "主内容不可用时显示的后备内容。",
     init: "初始值或初始化配置。",
+    tag: "要注册的 head 标签描述符；数组表示一个共同参与替换解析的标签组。",
+    _moduleUrl: "编译器注入的模块 URL，用于提前输出资源提示；应用代码应省略该参数。",
   };
   const en = {
     compute: "The reactive computation function; reactive reads inside it become dependencies.",
@@ -228,6 +252,8 @@ function parameterFallback(name) {
     path: "The property path to access or update in a Store.",
     fallback: "The fallback content shown when the primary content is unavailable.",
     init: "The initial value or initialization settings.",
+    tag: "The head tag descriptor to register; an array forms one replacement group.",
+    _moduleUrl: "The compiler-injected module URL used to emit early resource hints; application code should omit it.",
   };
   return {
     zh: zh[name] ?? `传给该调用的 \`${name}\` 参数；具体约束由其类型定义。`,
@@ -279,13 +305,14 @@ function callableDetails(runtimeType, declaration) {
       const name = sourceParameter?.name?.getText() ?? parameter.name;
       return {
         name,
-        type:
+        type: cleanTypeText(
           sourceParameter?.type?.getText() ??
-          checker.typeToString(
-            parameterType,
-            parameterDeclaration,
-            ts.TypeFormatFlags.NoTruncation | ts.TypeFormatFlags.UseAliasDefinedOutsideCurrentScope,
-          ),
+            checker.typeToString(
+              parameterType,
+              parameterDeclaration,
+              ts.TypeFormatFlags.NoTruncation | ts.TypeFormatFlags.UseAliasDefinedOutsideCurrentScope,
+            ),
+        ),
         optional:
           Boolean(sourceParameter?.questionToken || sourceParameter?.initializer) ||
           parameterIndex >= signature.minArgumentCount,
@@ -300,11 +327,14 @@ function callableDetails(runtimeType, declaration) {
       declaration,
       ts.TypeFormatFlags.NoTruncation | ts.TypeFormatFlags.UseAliasDefinedOutsideCurrentScope,
     );
-    const returnType = signatureDeclaration?.type?.getText() ?? checkedReturnType;
+    const rawReturnType = signatureDeclaration?.type?.getText() ?? checkedReturnType;
+    const returnType = cleanTypeText(rawReturnType);
     const typeParameters = signatureDeclaration?.typeParameters?.length
       ? `<${[...signatureDeclaration.typeParameters].map((parameter) => parameter.getText()).join(", ")}>`
       : "";
-    const sourceSignature = `${typeParameters}(${sourceParameters.map((parameter) => parameter.getText()).join(", ")}): ${returnType}`;
+    const sourceSignature = cleanTypeText(
+      `${typeParameters}(${sourceParameters.map((parameter) => parameter.getText()).join(", ")}): ${returnType}`,
+    );
     const returnTag = signature.getJsDocTags().find((tag) => tag.name === "returns" || tag.name === "return");
     const sourceReturnDescription = tagText(returnTag?.text);
     return {
@@ -349,12 +379,20 @@ function firstSentence(value) {
   );
 }
 
-const moduleEntries = sourceFile.statements.filter(ts.isImportDeclaration).map((statement) => {
-  const packageName = statement.moduleSpecifier.text;
-  const moduleSymbol = checker.getSymbolAtLocation(statement.moduleSpecifier);
-  const exports = checker.getExportsOfModule(moduleSymbol).sort((a, b) => a.name.localeCompare(b.name));
-  return { packageName, exports };
-});
+const importDeclarations = sourceFile.statements.filter(ts.isImportDeclaration);
+const moduleEntries = importDeclarations
+  .filter((statement) => ["solid-js", "@solidjs/web"].includes(statement.moduleSpecifier.text))
+  .map((statement) => {
+    const packageName = statement.moduleSpecifier.text;
+    const moduleSymbol = checker.getSymbolAtLocation(statement.moduleSpecifier);
+    const exports = checker.getExportsOfModule(moduleSymbol).sort((a, b) => a.name.localeCompare(b.name));
+    return { packageName, exports };
+  });
+const serverModuleDeclaration = importDeclarations.find((statement) =>
+  statement.moduleSpecifier.text.endsWith("@solidjs/web/types/server.js"),
+);
+const serverModuleSymbol = checker.getSymbolAtLocation(serverModuleDeclaration.moduleSpecifier);
+const serverExports = new Map(checker.getExportsOfModule(serverModuleSymbol).map((symbol) => [symbol.name, symbol]));
 
 const publicTypes = new Map();
 for (const moduleEntry of moduleEntries) {
@@ -429,6 +467,8 @@ function relatedTypeDescription(name, apiTitle) {
     Accessor: "表示无参数调用并返回当前响应式值的读取函数。",
     Setter: "表示接受新值或更新函数的响应式写入函数。",
     NoInfer: "阻止该位置参与泛型推断，同时保留已经推断出的类型约束。",
+    HeadTag:
+      "描述一个可注册的 head 标签：`tag` 选择元素，`props` 提供属性或正文，`key` 可覆盖除 title 外的默认去重 identity。",
   };
   const en = {
     ComputeFunction:
@@ -446,6 +486,8 @@ function relatedTypeDescription(name, apiTitle) {
     Accessor: "A zero-argument function that reads the current reactive value.",
     Setter: "A reactive writer that accepts a new value or updater function.",
     NoInfer: "Prevents this position from participating in generic inference while retaining the inferred constraint.",
+    HeadTag:
+      "Describes a registrable head tag: `tag` selects the element, `props` supplies attributes or body text, and `key` can override the default dedupe identity except for title.",
   };
   return {
     zh: zh[name] ?? `定义 \`${apiTitle}\` 调用签名中 \`${name}\` 的结构和类型约束。`,
@@ -492,7 +534,7 @@ function relatedTypeDetails(overloads, packageName, apiTitle) {
         name,
         description: relatedTypeDescription(name, apiTitle),
         declaration: declarationText,
-        sourceUrl: `https://github.com/solidjs/solid/blob/${sourceCommit}/${sourcePathFor(declaration, ownerPackage, name)}`,
+        sourceUrl: sourceUrlFor(declaration, ownerPackage, name),
       });
       pending.push(declarationText);
       if (results.length >= 12) break;
@@ -504,9 +546,13 @@ function relatedTypeDetails(overloads, packageName, apiTitle) {
 const records = [];
 for (const { packageName, exports } of moduleEntries) {
   for (const exported of exports) {
-    let target = exported;
-    if (exported.flags & ts.SymbolFlags.Alias) target = checker.getAliasedSymbol(exported);
-    const declarations = target.getDeclarations() ?? exported.getDeclarations() ?? [];
+    const declarationExport =
+      packageName === "@solidjs/web" && serverDeclarationNames.has(exported.name)
+        ? (serverExports.get(exported.name) ?? exported)
+        : exported;
+    let target = declarationExport;
+    if (declarationExport.flags & ts.SymbolFlags.Alias) target = checker.getAliasedSymbol(declarationExport);
+    const declarations = target.getDeclarations() ?? declarationExport.getDeclarations() ?? [];
     const valueFlags = target.flags & ts.SymbolFlags.Value;
     const typeOnly = !valueFlags;
     const symbolTags = target.getJsDocTags(checker);
@@ -568,7 +614,7 @@ for (const { packageName, exports } of moduleEntries) {
       overloads,
       relatedTypes,
       codes: examples,
-      sourceUrl: `https://github.com/solidjs/solid/blob/${sourceCommit}/${sourcePathFor(declarations[0], packageName, exported.name)}`,
+      sourceUrl: sourceUrlFor(declarations[0], packageName, exported.name),
     });
   }
 }
