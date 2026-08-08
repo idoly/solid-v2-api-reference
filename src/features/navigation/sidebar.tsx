@@ -97,7 +97,9 @@ function CatalogContent(props: { nav: Navigation; locale: Locale }) {
                   <span class={styles.categoryIcon}>
                     <Icon size={16} />
                   </span>
-                  <span class={styles.categoryName}>{props.locale.category(group.category)}</span>
+                  <span class={styles.categoryName} title={props.locale.category(group.category)}>
+                    {props.locale.category(group.category)}
+                  </span>
                 </span>
               ),
               extra: <small class={styles.categoryCount}>{group.docs.length}</small>,
@@ -108,6 +110,7 @@ function CatalogContent(props: { nav: Navigation; locale: Locale }) {
                       type="button"
                       class={`${styles.link} ${nav.activeId() === doc.id && !nav.isHome() ? styles.activeLink : ""}`}
                       aria-current={nav.activeId() === doc.id && !nav.isHome() ? "page" : undefined}
+                      title={doc.title}
                       onClick={() => nav.openDoc(doc.id)}
                     >
                       <span class={styles.linkName}>{doc.title}</span>

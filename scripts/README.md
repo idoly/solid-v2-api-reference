@@ -100,21 +100,23 @@ Unit and browser automation details, contract ownership, and failure artifact in
 
 The verifier keeps process and environment orchestration in `demo/verify.mjs`, generic DOM control exercise in `demo/verify-interactions.mjs`, and API-specific assertions in `demo/verify-scenarios.mjs`. It runs browser API groups in isolated DOM processes and executes SSR groups separately. Event-driven source is exercised through generic input, select, and button interactions. API contracts requiring exact values or ordered asynchronous work use a scenario registry containing both the runner and expected text. SSR groups call the production `service.execute` path instead of maintaining a second executor. Verification fails on compilation errors, runtime exceptions, timeouts, framework diagnostics, `console.error`, missing DOM output, or missing SSR HTML.
 
+The Podman Playwright layer additionally runs every generated demo through the production UI in real Chromium, observes Browser and Console output, rejects browser diagnostics and error-level demo logs, and exercises rendered controls. The isolated verifier remains responsible for exact API semantics; Chromium verifies the complete browser integration path.
+
 Current generated surface:
 
 - `solid-js`: 54 callable APIs
-- `@solidjs/web`: 68 callable APIs
-- Total: 122 APIs across 9 categories
-- Browser groups: 109
-- SSR groups: 13
-- Unique complete demo programs: 122
+- `@solidjs/web`: 37 callable APIs
+- Total: 91 APIs across 9 categories
+- Browser groups: 74
+- SSR groups: 17
+- Unique complete demo programs: 91
 
 ## Baseline
 
-- Project release: `1.4-2.0.0-beta.30`
+- Project release: `1.4-2.0.0-beta.32`
 
-- Runtime packages: `solid-js@2.0.0-beta.30` and `@solidjs/web@2.0.0-beta.30`
-- Source commit: `2bb02e029611c349d7865bf7cc4d54527fd7cd41`
+- Runtime packages: `solid-js@2.0.0-beta.32` and `@solidjs/web@2.0.0-beta.32`
+- Source commit: `3194631aeeb2b2e360817dc887ab5cbce7548359`
 - Generated artifacts: `data/catalog-index.json` and `data/catalog.json`
 - Runtime adapters: `src/data/catalog-index.ts` and `src/data/catalog.ts`
 

@@ -15,7 +15,7 @@ This command runs, in order:
 1. Deterministic catalog generation and TypeScript checks.
 2. Generated demo source and repository formatting checks.
 3. Node unit tests for schema, re-exports, related APIs, content fallbacks, demo uniqueness, execution metadata, request methods, validation, limits, and localization.
-4. All 109 browser and 13 SSR demo groups, including targeted behavior scenarios.
+4. All 74 browser and 17 SSR demo groups, including targeted behavior scenarios.
 5. Production build and gzip bundle budgets.
 6. Playwright end-to-end tests in Podman.
 
@@ -59,6 +59,8 @@ npm run test:e2e
 - Locale and theme preferences survive a reload.
 - A browser demo makes no runtime request before Run, then compiles through the runtime endpoint, publishes DOM and console output, and returns to its pre-execution state after Reset.
 - The mobile catalog opens, searches, navigates, and closes correctly.
+
+`tests/e2e/demo-catalog.spec.ts` runs every generated API demo through the production runtime in real Chromium. For all 91 API pages it checks rendered Browser output, observes Console output or its explicit empty state, rejects runtime error rows and browser diagnostics, and exercises rendered form controls and buttons when present. This complements the stricter isolated verifier: Playwright proves browser integration, while `verify:demos` owns API-specific expected values, asynchronous ordering, and SSR contract assertions.
 
 Use accessible roles and labels for locators. Add test-only selectors only when the user-facing semantics cannot identify an element reliably.
 

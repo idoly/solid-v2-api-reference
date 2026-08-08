@@ -182,9 +182,29 @@ export const apiContent = {
     "Awaits a reactive expression and returns its first fully-settled value as a `Promise`.",
     "Pending async reads (`createMemo` returning a promise, etc.) are waited on; once the expression returns synchronously without `NotReadyError` the promise resolves with that value.",
   ],
-  "@solidjs/web/Assets": [
-    "Collects server-rendered asset elements for placement in the document output.",
-    "Use it in an SSR document shell to emit styles, links, and other assets registered by the rendered tree.",
+  "@solidjs/web/composeMiddleware": [
+    "Composes fetch-style middleware into one dispatcher that delegates to a terminal request handler.",
+    "Use it in server integrations that need ordered request interception, request substitution, and response post-processing.",
+  ],
+  "@solidjs/web/commitEventResponse": [
+    "Merges an event's uncommitted response-stub headers into an outgoing `Response`, then commits the stub.",
+    "Use it at framework handler boundaries for non-page responses; existing response headers and status remain authoritative.",
+  ],
+  "@solidjs/web/createRequestEvent": [
+    "Creates a canonical request event with locals and a fresh mutable response stub, optionally extended by integration state.",
+    "Use it at the start of a server handler to establish the request-scoped object consumed by Solid's HTTP helpers.",
+  ],
+  "@solidjs/web/createResponseStub": [
+    "Creates an uncommitted mutable response head containing status, status text, headers, and commit state.",
+    "Use it when a server integration needs to collect response metadata before materializing the final `Response`.",
+  ],
+  "@solidjs/web/createSSRResponse": [
+    "Converts string or streamed SSR output into a `Response` while applying and committing request-event response metadata.",
+    "Use it at an SSR handler boundary to produce the final HTML response, including redirects and stream-aware head behavior.",
+  ],
+  "@solidjs/web/getExpectedRedirectStatus": [
+    "Returns the response stub's redirect status when valid, or 302 when its current status is not a redirect.",
+    "Use it when an integration must turn a collected `Location` header into a valid outgoing redirect response.",
   ],
   "@solidjs/web/Dynamic": [
     "Renders an arbitrary custom or native component and forwards the other props.",
@@ -286,6 +306,14 @@ export const apiContent = {
     "Resumes a server-rendered tree on the client, attaching event listeners and reactive bindings without reconstructing the DOM.",
     "Returns a `dispose` function that tears down reactive scopes (DOM nodes are left in place).",
   ],
+  "@solidjs/web/isSafeError": [
+    "Checks whether an error was explicitly branded as safe for verbatim client serialization.",
+    "Use it in server-function infrastructure to distinguish intentional client-facing errors from details that require sanitization.",
+  ],
+  "@solidjs/web/markSafeError": [
+    "Brands and returns an error whose message and properties are intentionally safe to serialize to clients.",
+    "Use it only for deliberate client-facing failures that must retain their details outside development builds.",
+  ],
   "@solidjs/web/render": [
     "Renders a component tree into a DOM element.",
     "Returns a dispose function that tears the tree down and cleans up reactive scopes when called.",
@@ -297,10 +325,6 @@ export const apiContent = {
   "@solidjs/web/renderToString": [
     "Renders a component tree synchronously to an HTML string.",
     "Use it for synchronous SSR. For an embedded render without its own `</head>`, `onHead` returns the collected head output for the host document.",
-  ],
-  "@solidjs/web/renderToStringAsync": [
-    "Renders a component tree to an HTML string and awaits all async reads in the subtree before resolving.",
-    "The returned HTML reflects the fully-settled state — no `<Loading>` fallbacks appear in the output.",
   ],
   "@solidjs/web/getRequestEvent": [
     "Returns the request event associated with the current server execution context, when one exists.",
@@ -333,10 +357,6 @@ export const apiContent = {
   "@solidjs/web/respond": [
     "A value paired with response metadata (status, headers, `revalidate`) — for the things a naked return can't express.",
     "Scripted callers receive `value` transparently (the transport unwraps the envelope), and progressive enhancement stays invisible: the carried response holds a plain JSON body so consumers without the client runtime (no-JS form posts, direct HTTP) get real JSON.",
-  ],
-  "@solidjs/web/acquireAsset": [
-    "Acquires a reference-counted web asset and returns a function that releases it.",
-    "Use it in renderer integrations that must retain shared assets only while consumers are mounted.",
   ],
   "@solidjs/web/addEvent": [
     "Attaches either a direct or delegated event handler to an element.",
@@ -381,10 +401,6 @@ export const apiContent = {
   "@solidjs/web/effect": [
     "Creates a renderer effect with separate computation and DOM side-effect callbacks.",
     "Use it in custom DOM primitives that must track values before applying imperative updates.",
-  ],
-  "@solidjs/web/getAssets": [
-    "Returns the HTML for assets collected during the current server render.",
-    "Deprecated in beta.30 because it reads ambient render state; use the render option `onHead` for host-owned documents and `useHead` to register head tags.",
   ],
   "@solidjs/web/getDelegatedRoot": [
     "Returns the delegated-event root associated with a mountable node.",
@@ -477,10 +493,6 @@ export const apiContent = {
   "@solidjs/web/untrack": [
     "Executes a function without collecting reactive dependencies and returns its result.",
     "Use it to read current reactive values without subscribing the active computation.",
-  ],
-  "@solidjs/web/useAssets": [
-    "Registers an asset-producing callback with the current server rendering context.",
-    "This API is deprecated in beta.30; use `useHead` to register document head tags.",
   ],
   "@solidjs/web/useHead": [
     "Registers tags in the document head and keeps them synchronized with the current reactive scope. When tags conflict, the last committed registration wins.",

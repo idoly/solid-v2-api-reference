@@ -182,9 +182,29 @@ export const apiContent = {
     "等待响应式表达式首次完全稳定，并以 Promise 返回结果。",
     "表达式可能读取尚未就绪的异步 memo 或 signal，需要等待其可同步返回时使用。",
   ],
-  "@solidjs/web/Assets": [
-    "收集服务端渲染过程中注册的资源元素，并把它们放入文档输出。",
-    "SSR 文档 shell 需要输出渲染树注册的样式、链接和其他资源时使用。",
+  "@solidjs/web/composeMiddleware": [
+    "把 Fetch 风格的中间件组合成一个最终委托到请求 handler 的调度函数。",
+    "服务端集成需要按顺序拦截请求、替换传递给下游的请求或后处理响应时使用。",
+  ],
+  "@solidjs/web/commitEventResponse": [
+    "把事件中尚未提交的 response stub 响应头合并到实际 `Response`，然后提交并冻结 stub。",
+    "框架在非页面响应离开 handler 边界时使用；实际响应已有的状态和响应头保持优先。",
+  ],
+  "@solidjs/web/createRequestEvent": [
+    "创建标准请求事件，包含 locals 和新的可变 response stub，并可附加集成层状态。",
+    "服务端 handler 开始时需要建立供 Solid HTTP helpers 使用的请求作用域对象时使用。",
+  ],
+  "@solidjs/web/createResponseStub": [
+    "创建尚未提交的可变响应头对象，包含状态码、状态文本、headers 和提交状态。",
+    "服务端集成需要先收集响应元数据、再生成最终 `Response` 时使用。",
+  ],
+  "@solidjs/web/createSSRResponse": [
+    "把字符串或流式 SSR 输出转换成 `Response`，同时应用并提交请求事件中的响应元数据。",
+    "SSR handler 边界需要生成最终 HTML 响应，并处理重定向和流式 head 行为时使用。",
+  ],
+  "@solidjs/web/getExpectedRedirectStatus": [
+    "当前 response stub 状态是有效重定向时原样返回，否则返回默认状态 302。",
+    "集成层需要把已收集的 `Location` 响应头转换成有效重定向响应时使用。",
   ],
   "@solidjs/web/Dynamic": [
     "渲染运行时指定的原生标签或自定义组件，并转发其他 props。",
@@ -277,6 +297,14 @@ export const apiContent = {
     "接管服务端已经生成的 DOM，附加事件和响应式绑定而不重新创建节点。",
     "客户端启动 SSR 应用，并需要保留现有 DOM 与服务端状态时使用。",
   ],
+  "@solidjs/web/isSafeError": [
+    "判断错误是否已显式标记为可以原样序列化给客户端。",
+    "server function 基础设施需要区分有意公开的错误和必须脱敏的内部细节时使用。",
+  ],
+  "@solidjs/web/markSafeError": [
+    "标记并原样返回一个允许向客户端序列化其消息和属性的错误。",
+    "仅用于生产构建中也必须保留详细信息、且确认可面向客户端公开的失败。",
+  ],
   "@solidjs/web/render": [
     "把组件树渲染到指定 DOM 容器，并返回销毁函数。",
     "纯客户端应用挂载根组件，或独立挂载一棵组件子树时使用。",
@@ -288,10 +316,6 @@ export const apiContent = {
   "@solidjs/web/renderToString": [
     "同步把组件树渲染为 HTML 字符串。",
     "用于同步 SSR。嵌入式渲染没有自己的 `</head>` 时，`onHead` 会把收集到的 head 内容交给宿主文档。",
-  ],
-  "@solidjs/web/renderToStringAsync": [
-    "等待组件子树中的异步读取全部完成后，返回完整 HTML 字符串。",
-    "需要完全稳定的服务端 HTML 且可以接受等待全部异步任务时使用；该 API 已弃用。",
   ],
   "@solidjs/web/getRequestEvent": [
     "读取当前服务端渲染作用域关联的请求事件。",
@@ -324,10 +348,6 @@ export const apiContent = {
   "@solidjs/web/respond": [
     "把业务值与状态码、响应头和 revalidate 信息组合为响应信封。",
     "普通返回值不足以表达 HTTP 元数据，同时还要让脚本调用方透明取得业务值时使用。",
-  ],
-  "@solidjs/web/acquireAsset": [
-    "获取一个带引用计数的 Web 资源，并返回释放该资源的函数。",
-    "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
   ],
   "@solidjs/web/addEvent": [
     "为元素绑定直接事件处理器或委托事件处理器。",
@@ -376,10 +396,6 @@ export const apiContent = {
   "@solidjs/web/effect": [
     "创建由计算回调和 DOM 副作用回调组成的渲染器 effect。",
     "用于 DOM 绑定、事件、模板或 Web 渲染器集成。",
-  ],
-  "@solidjs/web/getAssets": [
-    "返回当前服务端渲染过程中收集到的资源 HTML。",
-    "beta.30 已弃用，因为它读取环境中的渲染状态；宿主文档使用 `onHead` 接收 head 内容，注册 head 标签使用 `useHead`。",
   ],
   "@solidjs/web/getDelegatedRoot": [
     "返回与指定可挂载节点关联的事件委托根。",
@@ -460,10 +476,6 @@ export const apiContent = {
   "@solidjs/web/untrack": [
     "在不收集响应式依赖的情况下执行函数，并返回函数结果。",
     "只想读取当前值、不希望当前计算订阅该值时使用。",
-  ],
-  "@solidjs/web/useAssets": [
-    "向当前服务端渲染上下文注册一个资源生成回调。",
-    "该 API 在 beta.30 中已弃用；请使用 `useHead` 注册文档 head 标签。",
   ],
   "@solidjs/web/useHead": [
     "向文档 head 注册标签，并随当前响应式作用域自动同步。标签冲突时，最后提交的注册生效。",

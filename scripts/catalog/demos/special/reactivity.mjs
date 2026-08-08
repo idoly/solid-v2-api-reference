@@ -171,7 +171,9 @@ function App() {
     const text = todoInput.value.trim();
     if (!text) return;
     // The setter receives a draft that can be mutated in place.
-    setState((draft) => draft.todos.push({ id: crypto.randomUUID(), text }));
+    setState((draft) => {
+      draft.todos.push({ id: crypto.randomUUID(), text });
+    });
     todoInput.value = "";
   };
 

@@ -56,10 +56,6 @@ const comparisons = {
     ],
   },
   "@solidjs/web/renderToString": {
-    "@solidjs/web/renderToStringAsync": [
-      "Choose the async variant when the complete HTML must wait for asynchronous boundaries.",
-      "完整 HTML 必须等待异步边界完成时选择异步版本。",
-    ],
     "@solidjs/web/renderToStream": [
       "Choose streaming when the synchronous shell should reach the client before all async content resolves.",
       "需要在异步内容全部完成前先向客户端发送同步 shell 时选择流式输出。",
@@ -263,22 +259,10 @@ const comparisons = {
       "运行时选择的组件可以直接写在 JSX 调用位置时使用 `<Dynamic>`。",
     ],
   },
-  "@solidjs/web/Assets": {
-    "@solidjs/web/useHead": [
-      "Use `useHead` for descriptor-based head management; use `<Assets>` only when rendering legacy assets collected by `useAssets`.",
-      "基于描述符管理 head 时使用 `useHead`；只有输出由旧版 `useAssets` 收集的资源时才使用 `<Assets>`。",
-    ],
-  },
-  "@solidjs/web/useAssets": {
-    "@solidjs/web/useHead": [
-      "Prefer `useHead`; `useAssets` is deprecated and does not participate in the new replacement and deduplication model.",
-      "优先使用 `useHead`；`useAssets` 已弃用，且不参与新的替换与去重模型。",
-    ],
-  },
   "@solidjs/web/useHead": {
-    "@solidjs/web/useAssets": [
-      "Use legacy `useAssets` only when an existing integration still consumes its asset callback registry.",
-      "仅在现有集成仍依赖旧资源回调注册表时使用 `useAssets`。",
+    "@solidjs/web/renderToString": [
+      "Use `renderToString` with `onHead` when a host document needs the head tags registered by `useHead`.",
+      "宿主文档需要获取 `useHead` 注册的 head 标签时，使用带 `onHead` 的 `renderToString`。",
     ],
   },
   "@solidjs/web/style": {

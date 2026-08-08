@@ -223,7 +223,7 @@ export function prepareExamples(records, demoOverrides, preferredCategoryOrder) 
 
 function validateImports(source, record) {
   const parsed = ts.createSourceFile("demo.tsx", source, ts.ScriptTarget.ESNext, true, ts.ScriptKind.TSX);
-  const entrypoints = new Set(["render", "hydrate", "renderToString", "renderToStringAsync", "renderToStream"]);
+  const entrypoints = new Set(["render", "hydrate", "renderToString", "renderToStream"]);
   const supporting = [];
 
   for (const statement of parsed.statements) {

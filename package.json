@@ -1,6 +1,6 @@
 {
   "name": "solid-v2-api-reference",
-  "version": "1.4-2.0.0-beta.30",
+  "version": "1.4-2.0.0-beta.32",
   "private": true,
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
@@ -36,9 +36,9 @@
   },
   "dependencies": {
     "@babel/core": "^7.29.7",
-    "@solidjs/web": "2.0.0-beta.30",
-    "babel-preset-solid": "2.0.0-beta.30",
-    "solid-js": "2.0.0-beta.30",
+    "@solidjs/web": "2.0.0-beta.32",
+    "babel-preset-solid": "2.0.0-beta.32",
+    "solid-js": "2.0.0-beta.32",
     "typescript": "^5.7.2"
   },
   "devDependencies": {

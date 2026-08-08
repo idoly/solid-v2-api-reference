@@ -194,16 +194,6 @@ const body = renderToString(
   { onHead: (value) => (head = value) },
 );
 console.log(\`<html><head>\${head}</head><body>\${body}</body></html>\`);`,
-  "@solidjs/web/renderToStringAsync": `import { renderToStringAsync } from "@solidjs/web";
-
-const App = () => (
-  <main>
-    <h1>Async server rendering</h1>
-    <p>All content is ready</p>
-  </main>
-);
-const html = await renderToStringAsync(() => <App />);
-console.log(html);`,
   "@solidjs/web/renderToStream": `import { renderToStream, useHead } from "@solidjs/web";
 
 let head = "";

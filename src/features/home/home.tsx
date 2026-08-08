@@ -89,7 +89,7 @@ export function Home(props: { nav: Navigation; locale: Locale }) {
           <dl class={styles.facts}>
             <div class={styles.fact}>
               <dt class={styles.factLabel}>{props.locale.t("baseline")}</dt>
-              <dd class={styles.factValue}>2.0.0-beta.30</dd>
+              <dd class={styles.factValue}>2.0.0-beta.32</dd>
             </div>
             <div class={styles.fact}>
               <dt class={styles.factLabel}>{props.locale.t("coverage")}</dt>

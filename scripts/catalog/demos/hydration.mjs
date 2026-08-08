@@ -1,21 +1,6 @@
 import { browserDemo } from "./builders.mjs";
 
 export const hydrationDemos = {
-  "@solidjs/web/Assets": `import { Assets, renderToString } from "@solidjs/web";
-
-const html = renderToString(() => (
-  <>
-    <Assets>
-      <meta name="demo-asset" content="registered" />
-      <link rel="preload" href="/api-demo.js" as="script" />
-    </Assets>
-    <main>
-      <h1>Collected SSR assets</h1>
-      <p>The document contains metadata and a preload link registered by Assets.</p>
-    </main>
-  </>
-));
-console.log(html);`,
   "@solidjs/web/HydrationScript": `import { HydrationScript, renderToString } from "@solidjs/web";
 
 const html = renderToString(() => (
@@ -34,28 +19,6 @@ const generated = generateHydrationScript({ nonce: "api-nonce", eventNames: ["cl
 const script = generated ?? "No script outside an SSR request";`,
     view: `<p>Generated characters: {script.length}</p>
 <pre>{script.slice(0, 120)}</pre>`,
-  }),
-  "@solidjs/web/acquireAsset": browserDemo({
-    title: "acquireAsset",
-    web: ["acquireAsset", "getAssets"],
-    setup: `// The returned function releases this descriptor from the current asset registry.
-const release = acquireAsset({
-  type: "inline-style",
-  id: "api-acquired-style",
-  content: ".acquired{color:green}",
-});
-const registered = (getAssets() ?? "").includes("api-acquired-style");
-queueMicrotask(release);`,
-    view: `<p>Asset acquired: {String(registered)}</p>`,
-  }),
-  "@solidjs/web/getAssets": browserDemo({
-    title: "getAssets",
-    web: ["getAssets", "useAssets"],
-    setup: `useAssets(() => <meta name="api-assets" content="ready" />);
-// getAssets serializes everything registered in the active asset context.
-const serialized = getAssets() ?? "No active SSR asset registry";`,
-    view: `<p>Serialized assets: {String(serialized.includes("api-assets"))}</p>
-<pre>{serialized}</pre>`,
   }),
   "@solidjs/web/getHydrationKey": browserDemo({
     title: "getHydrationKey",
@@ -106,14 +69,6 @@ const match = getNextMatch(host.firstChild!, "span");`,
 runHydrationEvents();
 const replayed = true;`,
     view: `<p>Hydration event queue processed: {String(replayed)}</p>`,
-  }),
-  "@solidjs/web/useAssets": browserDemo({
-    title: "useAssets",
-    web: ["getAssets", "useAssets"],
-    setup: `// The callback is evaluated by the active asset registry rather than rendered into this component.
-useAssets(() => <link rel="preload" href="/api-demo.js" as="script" />);
-const registered = (getAssets() ?? "").includes("api-demo.js");`,
-    view: `<p>Preload registered: {String(registered)}</p>`,
   }),
   "@solidjs/web/useHead": `import { renderToString, useHead } from "@solidjs/web";
 

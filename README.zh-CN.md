@@ -2,7 +2,7 @@
 
 [English](./README.md) | [简体中文](./README.zh-CN.md)
 
-基于源码生成、可直接运行的 `solid-js@2.0.0-beta.30` 与 `@solidjs/web@2.0.0-beta.30` 中英文 API 参考。
+基于源码生成、可直接运行的 `solid-js@2.0.0-beta.32` 与 `@solidjs/web@2.0.0-beta.32` 中英文 API 参考。
 
 目录直接从当前仓库安装的依赖包生成，包含真实公开导出、TypeScript 签名、相关类型、固定版本源码链接和可编辑示例。浏览器示例使用受控的预览挂载点；SSR 示例通过受限的 Node 执行器运行。
 
@@ -46,7 +46,7 @@ npm run package:code     # 构建、校验并冒烟测试可部署的 code.zip
 
 ## 浏览器测试
 
-端到端测试使用 Playwright 和 Podman 镜像 `mcr.microsoft.com/playwright:v1.62.0-noble`。Chromium 及其系统依赖均由镜像提供，宿主机无需安装浏览器。测试会在临时容器中构建生产版本、启动 Vite 预览服务，并覆盖桌面端搜索与浏览器历史、语言和主题持久化、可执行示例、移动端目录以及 API chunk 懒加载边界。
+端到端测试使用 Playwright 和 Podman 镜像 `mcr.microsoft.com/playwright:v1.62.0-noble`。Chromium 及其系统依赖均由镜像提供，宿主机无需安装浏览器。测试会在临时容器中构建生产版本、启动 Vite 预览服务，并覆盖桌面端搜索与浏览器历史、语言和主题持久化、移动端目录、API chunk 懒加载边界，以及全部生成 API Demo 在真实 Chromium 中的 Browser 与 Console 输出。
 
 ```bash
 npm run test:e2e:podman
@@ -163,11 +163,11 @@ SSR 示例为只读，只执行可信的生成源码。源码和请求正文上�
 
 当前验证范围：
 
-- 122 个可调用 API
-- 122 个独立完整示例
-- 109 个浏览器 API 示例组
-- 13 个 SSR API 示例组
-- 122/122 通过
+- 91 个可调用 API
+- 91 个独立完整示例
+- 74 个浏览器 API 示例组
+- 17 个 SSR API 示例组
+- 契约验证器 91/91 通过，并全部在容器 Chromium 中执行
 
 ## 前端架构
 
@@ -186,11 +186,11 @@ SSR 示例为只读，只执行可信的生成源码。源码和请求正文上�
 
 ## 版本基线
 
-- 项目版本：`1.4-2.0.0-beta.30`
+- 项目版本：`1.4-2.0.0-beta.32`
 
-- `solid-js`：`2.0.0-beta.30`
-- `@solidjs/web`：`2.0.0-beta.30`
-- 固定源码提交：`2bb02e029611c349d7865bf7cc4d54527fd7cd41`
+- `solid-js`：`2.0.0-beta.32`
+- `@solidjs/web`：`2.0.0-beta.32`
+- 固定源码提交：`3194631aeeb2b2e360817dc887ab5cbce7548359`
 
 详细维护文档：
 

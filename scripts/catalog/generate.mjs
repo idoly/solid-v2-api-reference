@@ -12,8 +12,8 @@ import { relatedApisFor } from "./related-apis.mjs";
 const root = process.cwd();
 const tempDir = path.join(root, ".generated");
 const entryFile = path.join(tempDir, "api-entries.ts");
-const sourceCommit = "2bb02e029611c349d7865bf7cc4d54527fd7cd41";
-const domExpressionsCommit = "10221bbad15618f6c2f3cc14d54fdf176180fb0e";
+const sourceCommit = "3194631aeeb2b2e360817dc887ab5cbce7548359";
+const domExpressionsCommit = "1a08a9d3eecb7244c2e58466491cbc74e1e3c4d7";
 
 fs.mkdirSync(tempDir, { recursive: true });
 fs.writeFileSync(
@@ -44,7 +44,6 @@ const componentNames = new Set([
   "NoHydration",
   "Portal",
   "Dynamic",
-  "Assets",
   "HydrationScript",
 ]);
 const storeNames = new Set([
@@ -82,7 +81,6 @@ const ssrNames = new Set([
   "render",
   "hydrate",
   "renderToString",
-  "renderToStringAsync",
   "renderToStream",
   "isServer",
   "isDev",
@@ -97,18 +95,26 @@ const ssrNames = new Set([
   "generateHydrationScript",
   "useHead",
 ]);
-const serverDeclarationNames = new Set(["renderToString", "renderToStringAsync", "renderToStream", "useHead"]);
+const serverDeclarationNames = new Set(["renderToString", "renderToStream", "useHead"]);
 const responseNames = new Set([
   "redirect",
   "reload",
   "respond",
   "isHref",
   "isResponseEnvelope",
+  "isSafeError",
+  "markSafeError",
+  "commitEventResponse",
+  "composeMiddleware",
+  "createRequestEvent",
+  "createResponseStub",
+  "createSSRResponse",
+  "getExpectedRedirectStatus",
   "getRequestEvent",
   "httpHeader",
   "httpStatus",
 ]);
-const deprecatedNames = new Set(["@solidjs/web/renderToStringAsync"]);
+const deprecatedNames = new Set();
 const CATEGORY = {
   reactivity: "reactivity",
   stores: "stores",

@@ -2,7 +2,7 @@
 
 [English](./README.md) | [简体中文](./README.zh-CN.md)
 
-A source-derived, executable Chinese and English API reference for `solid-js@2.0.0-beta.30` and `@solidjs/web@2.0.0-beta.30`.
+A source-derived, executable Chinese and English API reference for `solid-js@2.0.0-beta.32` and `@solidjs/web@2.0.0-beta.32`.
 
 The catalog is generated from the packages installed in this repository. It exposes the real callable exports, TypeScript signatures, related types, pinned source links, and editable examples. Browser examples use a scoped preview mount; SSR examples run through a restricted Node executor.
 
@@ -46,7 +46,7 @@ npm run package:code     # Build, validate, and smoke-test deployable code.zip
 
 ## Browser Tests
 
-The end-to-end suite uses Playwright and the `mcr.microsoft.com/playwright:v1.62.0-noble` Podman image. The image owns Chromium and its system libraries, so no browser is installed on the host. The suite builds the production app, starts a Vite preview server inside the temporary container, and covers desktop search and browser history, persisted locale and theme preferences, executable demos, the mobile catalog, and the lazy API chunk boundary.
+The end-to-end suite uses Playwright and the `mcr.microsoft.com/playwright:v1.62.0-noble` Podman image. The image owns Chromium and its system libraries, so no browser is installed on the host. The suite builds the production app, starts a Vite preview server inside the temporary container, and covers desktop search and browser history, persisted locale and theme preferences, the mobile catalog, the lazy API chunk boundary, and a real-Chromium run of every generated API demo with Browser and Console output checks.
 
 ```bash
 npm run test:e2e:podman
@@ -163,11 +163,11 @@ Browser demos do not execute when an API page opens. Run compiles and executes t
 
 Current verified surface:
 
-- 122 callable APIs
-- 122 unique complete demo programs
-- 109 browser API groups
-- 13 SSR API groups
-- 122/122 passing
+- 91 callable APIs
+- 91 unique complete demo programs
+- 74 browser API groups
+- 17 SSR API groups
+- 91/91 passing in the contract verifier and exercised in containerized Chromium
 
 ## Frontend Architecture
 
@@ -186,11 +186,11 @@ The application is a Solid single-page interface with hash-based API selection. 
 
 ## Source Baseline
 
-- Project release: `1.4-2.0.0-beta.30`
+- Project release: `1.4-2.0.0-beta.32`
 
-- `solid-js`: `2.0.0-beta.30`
-- `@solidjs/web`: `2.0.0-beta.30`
-- Pinned source commit: `2bb02e029611c349d7865bf7cc4d54527fd7cd41`
+- `solid-js`: `2.0.0-beta.32`
+- `@solidjs/web`: `2.0.0-beta.32`
+- Pinned source commit: `3194631aeeb2b2e360817dc887ab5cbce7548359`
 
 Detailed maintenance documentation:
 

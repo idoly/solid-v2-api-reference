@@ -197,9 +197,11 @@
 
 .categoryLabel {
   display: flex;
+  width: 100%;
   min-width: 0;
   align-items: center;
   gap: 10px;
+  overflow: hidden;
   text-align: left;
   white-space: nowrap;
 }
@@ -208,8 +210,10 @@
 }
 .categoryName {
   min-width: 0;
+  flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .categoryCount {
   color: #858d87;
