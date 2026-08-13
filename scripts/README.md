@@ -105,11 +105,11 @@ The Podman Playwright layer additionally runs every generated demo through the p
 Current generated surface:
 
 - `solid-js`: 54 callable APIs
-- `@solidjs/web`: 37 callable APIs
-- Total: 91 APIs across 9 categories
-- Browser groups: 74
+- `@solidjs/web`: 43 callable APIs
+- Total: 97 APIs across 9 categories
+- Browser groups: 80
 - SSR groups: 17
-- Unique complete demo programs: 91
+- Unique complete demo programs: 97
 
 ## Baseline
 
@@ -117,6 +117,7 @@ Current generated surface:
 
 - Runtime packages: `solid-js@2.0.0-rc.0` and `@solidjs/web@2.0.0-rc.0`
 - Source commit: `ff4d3c4479163fbdd3327f5b22d0c3ea7bd1a2c5`
+- rc.0 root-entry additions: `clearFlashCookie`, `hasFlashCookie`, `parseCookieHeader`, `serializeCookie`, `getServerFunctionMetadata`, and `isServerFunction`
 - Generated artifacts: `data/catalog-index.json` and `data/catalog.json`
 - Runtime adapters: `src/data/catalog-index.ts` and `src/data/catalog.ts`
 

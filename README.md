@@ -163,11 +163,11 @@ Browser demos do not execute when an API page opens. Run compiles and executes t
 
 Current verified surface:
 
-- 91 callable APIs
-- 91 unique complete demo programs
-- 74 browser API groups
+- 97 callable APIs
+- 97 unique complete demo programs
+- 80 browser API groups
 - 17 SSR API groups
-- 91/91 passing in the contract verifier and exercised in containerized Chromium
+- 97/97 passing in the contract verifier
 
 ## Frontend Architecture
 
@@ -191,6 +191,7 @@ The application is a Solid single-page interface with hash-based API selection. 
 - `solid-js`: `2.0.0-rc.0`
 - `@solidjs/web`: `2.0.0-rc.0`
 - Pinned source commit: `ff4d3c4479163fbdd3327f5b22d0c3ea7bd1a2c5`
+- `@solidjs/web` rc.0 additions: `clearFlashCookie`, `hasFlashCookie`, `parseCookieHeader`, `serializeCookie`, `getServerFunctionMetadata`, and `isServerFunction`
 
 Detailed maintenance documentation:
 

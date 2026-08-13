@@ -163,11 +163,11 @@ SSR 示例为只读，只执行可信的生成源码。源码和请求正文上�
 
 当前验证范围：
 
-- 91 个可调用 API
-- 91 个独立完整示例
-- 74 个浏览器 API 示例组
+- 97 个可调用 API
+- 97 个独立完整示例
+- 80 个浏览器 API 示例组
 - 17 个 SSR API 示例组
-- 契约验证器 91/91 通过，并全部在容器 Chromium 中执行
+- 契约验证器 97/97 通过
 
 ## 前端架构
 
@@ -191,6 +191,7 @@ SSR 示例为只读，只执行可信的生成源码。源码和请求正文上�
 - `solid-js`：`2.0.0-rc.0`
 - `@solidjs/web`：`2.0.0-rc.0`
 - 固定源码提交：`ff4d3c4479163fbdd3327f5b22d0c3ea7bd1a2c5`
+- `@solidjs/web` rc.0 新增：`clearFlashCookie`、`hasFlashCookie`、`parseCookieHeader`、`serializeCookie`、`getServerFunctionMetadata` 和 `isServerFunction`
 
 详细维护文档：
 

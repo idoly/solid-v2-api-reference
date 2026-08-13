@@ -7,6 +7,7 @@
 - 将 `solid-js`、`@solidjs/web` 与 `babel-preset-solid` 从 `2.0.0-beta.32` 升级到 `2.0.0-rc.0`。
 - 间接依赖 `@solidjs/signals` 同步升级到 `2.0.0-rc.0`，DOM Expressions Babel 插件升级到 `0.50.0-next.42`。
 - 将 `vite-plugin-solid` 升级到 `3.0.0-next.27`，并通过 `@solidjs/vite-plugin@3.0.0-next.28` 接入 rc.0 peer 依赖范围。
+- `@solidjs/web` 根入口新增 `clearFlashCookie`、`hasFlashCookie`、`parseCookieHeader`、`serializeCookie`、`getServerFunctionMetadata` 与 `isServerFunction`；目录新增对应双语说明、源码链接和可执行 Demo。
 - `@solidjs/web` 移除 `Assets`、`getAssets`、`useAssets` 与 `renderToStringAsync` 导出，并将 35 个 renderer/asset 底层函数标记为 internal；公开 callable 目录同步收缩。
 - 新增 8 个响应生命周期 API 的 SSR 分类、双语说明和可执行 Demo，覆盖 middleware 组合、request event / response stub 创建与提交、SSR Response 生成和安全错误标记。
 - 上游源码链接固定到 Solid rc.0 与 DOM Expressions `0.50.0-next.42` 对应提交。
@@ -30,7 +31,7 @@
 ### Verification
 
 - TypeScript、Prettier、生产构建、gzip bundle budget 和 17 项 Node 单元测试通过。
-- 独立契约验证器 91/91 通过，覆盖 74 个 browser Demo 和 17 个 SSR Demo 的编译、执行、交互与专项语义断言。
+- 独立契约验证器 97/97 通过，覆盖 80 个 browser Demo 和 17 个 SSR Demo 的编译、执行、交互与专项语义断言。
 - 新增逐 API 的 Podman Chromium 巡检，观察每个 Demo 的 Browser 与 Console 输出、操作 browser Demo 控件并拒绝浏览器诊断；完整端到端测试 95/95 通过。
 - 真实浏览器巡检发现并修复 `createStore` Demo 将 `Array#push` 数字返回值泄漏给 store setter 的错误。
 
