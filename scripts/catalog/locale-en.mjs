@@ -182,6 +182,10 @@ export const apiContent = {
     "Awaits a reactive expression and returns its first fully-settled value as a `Promise`.",
     "Pending async reads (`createMemo` returning a promise, etc.) are waited on; once the expression returns synchronously without `NotReadyError` the promise resolves with that value.",
   ],
+  "@solidjs/web/clearFlashCookie": [
+    "Returns the `Set-Cookie` header value that immediately expires the one-shot flash result cookie.",
+    "Append it whenever a flash cookie is detected so stale server-function outcomes cannot appear on a later request.",
+  ],
   "@solidjs/web/composeMiddleware": [
     "Composes fetch-style middleware into one dispatcher that delegates to a terminal request handler.",
     "Use it in server integrations that need ordered request interception, request substitution, and response post-processing.",
@@ -205,6 +209,26 @@ export const apiContent = {
   "@solidjs/web/getExpectedRedirectStatus": [
     "Returns the response stub's redirect status when valid, or 302 when its current status is not a redirect.",
     "Use it when an integration must turn a collected `Location` header into a valid outgoing redirect response.",
+  ],
+  "@solidjs/web/getServerFunctionMetadata": [
+    "Reads declaration metadata attached to a server function reference, or returns undefined for other values.",
+    "Use it in routers and transports to inspect declared methods or custom policy without relying on function identity.",
+  ],
+  "@solidjs/web/hasFlashCookie": [
+    "Checks whether a request Cookie header contains the one-shot flash result cookie.",
+    "Call it before rendering a progressively enhanced form result so the response can queue cookie removal.",
+  ],
+  "@solidjs/web/isServerFunction": [
+    "Checks whether a value is a branded server function reference on either side of the directive boundary.",
+    "Use it when tooling or transport code must distinguish remotely callable references from ordinary functions.",
+  ],
+  "@solidjs/web/parseCookieHeader": [
+    "Parses a Cookie request header into a decoded name-to-value object.",
+    "Use it with the current request's Cookie header when an integration needs dependency-free cookie reads.",
+  ],
+  "@solidjs/web/serializeCookie": [
+    "Serializes a cookie name, value, and RFC 6265 attributes into one `Set-Cookie` header value.",
+    "Append the result to response headers when writing cookies from a request event or server integration.",
   ],
   "@solidjs/web/Dynamic": [
     "Renders an arbitrary custom or native component and forwards the other props.",

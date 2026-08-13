@@ -113,10 +113,10 @@ Current generated surface:
 
 ## Baseline
 
-- Project release: `1.4-2.0.0-beta.32`
+- Project release: `1.4-2.0.0-rc.0`
 
-- Runtime packages: `solid-js@2.0.0-beta.32` and `@solidjs/web@2.0.0-beta.32`
-- Source commit: `3194631aeeb2b2e360817dc887ab5cbce7548359`
+- Runtime packages: `solid-js@2.0.0-rc.0` and `@solidjs/web@2.0.0-rc.0`
+- Source commit: `ff4d3c4479163fbdd3327f5b22d0c3ea7bd1a2c5`
 - Generated artifacts: `data/catalog-index.json` and `data/catalog.json`
 - Runtime adapters: `src/data/catalog-index.ts` and `src/data/catalog.ts`
 

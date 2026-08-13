@@ -12,8 +12,8 @@ import { relatedApisFor } from "./related-apis.mjs";
 const root = process.cwd();
 const tempDir = path.join(root, ".generated");
 const entryFile = path.join(tempDir, "api-entries.ts");
-const sourceCommit = "3194631aeeb2b2e360817dc887ab5cbce7548359";
-const domExpressionsCommit = "1a08a9d3eecb7244c2e58466491cbc74e1e3c4d7";
+const sourceCommit = "ff4d3c4479163fbdd3327f5b22d0c3ea7bd1a2c5";
+const domExpressionsCommit = "eb463c653325e24824422cff6bfed0d35113ef33";
 
 fs.mkdirSync(tempDir, { recursive: true });
 fs.writeFileSync(
@@ -106,13 +106,19 @@ const responseNames = new Set([
   "markSafeError",
   "commitEventResponse",
   "composeMiddleware",
+  "clearFlashCookie",
   "createRequestEvent",
   "createResponseStub",
   "createSSRResponse",
   "getExpectedRedirectStatus",
   "getRequestEvent",
+  "getServerFunctionMetadata",
+  "hasFlashCookie",
   "httpHeader",
   "httpStatus",
+  "isServerFunction",
+  "parseCookieHeader",
+  "serializeCookie",
 ]);
 const deprecatedNames = new Set();
 const CATEGORY = {
@@ -191,6 +197,17 @@ function sourcePathFor(declaration, packageName, name) {
 }
 
 function sourceUrlFor(declaration, packageName, name) {
+  const domExpressionsPath = {
+    clearFlashCookie: "cookies.ts",
+    getServerFunctionMetadata: "server-functions/shared.ts",
+    hasFlashCookie: "cookies.ts",
+    isServerFunction: "server-functions/shared.ts",
+    parseCookieHeader: "cookies.ts",
+    serializeCookie: "cookies.ts",
+  }[name];
+  if (packageName === "@solidjs/web" && domExpressionsPath) {
+    return `https://github.com/ryansolid/dom-expressions/blob/${domExpressionsCommit}/packages/runtime/src/${domExpressionsPath}`;
+  }
   if (packageName === "@solidjs/web" && (name === "useHead" || name === "HeadTag")) {
     const file = name === "useHead" ? "server.js" : "client.d.ts";
     return `https://github.com/ryansolid/dom-expressions/blob/${domExpressionsCommit}/packages/runtime/src/${file}`;

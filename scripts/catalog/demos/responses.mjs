@@ -1,6 +1,15 @@
 import { browserDemo } from "./builders.mjs";
 
 export const responseDemos = {
+  "@solidjs/web/clearFlashCookie": browserDemo({
+    title: "clearFlashCookie",
+    web: ["clearFlashCookie", "hasFlashCookie"],
+    setup: `// Clearing uses an immediately expired cookie so the flash result remains one-shot.
+const expired = clearFlashCookie();`,
+    view: `<p>Set-Cookie: {expired}</p>
+<p>Clears flash cookie: {String(expired.startsWith("flash=") && expired.includes("Max-Age=0"))}</p>
+<p>Still carries a value: {String(hasFlashCookie(expired))}</p>`,
+  }),
   "@solidjs/web/commitEventResponse": `import { commitEventResponse } from "@solidjs/web";
 
 const event = {
@@ -154,6 +163,29 @@ const html = renderToString(() => {
 
 delete (globalThis as any)[RequestContext];
 console.log(html);`,
+  "@solidjs/web/getServerFunctionMetadata": browserDemo({
+    title: "getServerFunctionMetadata",
+    web: ["getServerFunctionMetadata"],
+    setup: `// Metadata uses a registered symbol so integrations can inspect references across bundles.
+const metadata = Symbol.for("solid.ServerFunctionMetadata");
+const loadProfile = Object.assign(() => Promise.resolve({ name: "Ada" }), {
+  [metadata]: { method: "GET", name: "loadProfile", requiresAuth: true },
+});
+const details = getServerFunctionMetadata(loadProfile);`,
+    view: `<p>Method: {details?.method}</p>
+<p>Name: {details?.name}</p>
+<p>Requires auth: {String(details?.requiresAuth)}</p>`,
+  }),
+  "@solidjs/web/hasFlashCookie": browserDemo({
+    title: "hasFlashCookie",
+    solid: ["createSignal"],
+    web: ["hasFlashCookie"],
+    setup: `// Detection only inspects the cookie name, so malformed payloads can still be cleared safely.
+const [header, setHeader] = createSignal("theme=dark; flash=submission-result");`,
+    view: `<label for="flash-cookie">Cookie header</label>
+<input id="flash-cookie" value={header()} onInput={(event) => setHeader(event.currentTarget.value)} />
+<output>Has flash result: {String(hasFlashCookie(header()))}</output>`,
+  }),
   "@solidjs/web/isHref": browserDemo({
     title: "isHref",
     solid: ["createSignal"],
@@ -184,6 +216,17 @@ const checks = { branded: isSafeError(branded), plain: isSafeError(new Error("In
     view: `<p>Branded error: {String(checks.branded)}</p>
 <p>Plain error: {String(checks.plain)}</p>`,
   }),
+  "@solidjs/web/isServerFunction": browserDemo({
+    title: "isServerFunction",
+    web: ["isServerFunction"],
+    setup: `// The registered metadata brand distinguishes server references from ordinary functions.
+const metadata = Symbol.for("solid.ServerFunctionMetadata");
+const serverReference = Object.assign(() => Promise.resolve("ready"), { [metadata]: { method: "POST" } });
+const plainFunction = () => "local";`,
+    view: `<p>Server reference: {String(isServerFunction(serverReference))}</p>
+<p>Plain function: {String(isServerFunction(plainFunction))}</p>
+<p>Non-function: {String(isServerFunction({}))}</p>`,
+  }),
   "@solidjs/web/markSafeError": browserDemo({
     title: "markSafeError",
     web: ["isSafeError", "markSafeError"],
@@ -193,6 +236,17 @@ const marked = markSafeError(original);`,
     view: `<p>Same error: {String(marked === original)}</p>
 <p>Safe to serialize: {String(isSafeError(marked))}</p>
 <p>Message: {marked.message}</p>`,
+  }),
+  "@solidjs/web/parseCookieHeader": browserDemo({
+    title: "parseCookieHeader",
+    solid: ["createSignal"],
+    web: ["parseCookieHeader"],
+    setup: `// Cookie names and values are URI-decoded while missing input produces an empty object.
+const [header, setHeader] = createSignal("theme=dark; display=Ada%20Lovelace");
+const cookies = () => parseCookieHeader(header());`,
+    view: `<label for="cookie-header">Cookie header</label>
+<input id="cookie-header" value={header()} onInput={(event) => setHeader(event.currentTarget.value)} />
+<output>Theme: {cookies().theme ?? "missing"} | Display: {cookies().display ?? "missing"}</output>`,
   }),
   "@solidjs/web/redirect": browserDemo({
     title: "redirect",
@@ -215,6 +269,16 @@ const response = () => reload({ status: status(), headers: { "x-refresh": "profi
     view: `<label for="reload-status">Reload status: {status()}</label>
 <input id="reload-status" type="range" min="200" max="299" value={status()} onInput={(event) => setStatus(event.currentTarget.valueAsNumber)} />
 <output>Status: {response().status} | Header: {response().headers.get("x-refresh")}</output>`,
+  }),
+  "@solidjs/web/serializeCookie": browserDemo({
+    title: "serializeCookie",
+    solid: ["createSignal"],
+    web: ["serializeCookie"],
+    setup: `// Only requested attributes are emitted; Path defaults to the cookie root.
+const [secure, setSecure] = createSignal(true);
+const header = () => serializeCookie("session", "Ada Lovelace", { httpOnly: true, secure: secure(), sameSite: "lax", maxAge: 3600 });`,
+    view: `<label><input type="checkbox" checked={secure()} onChange={(event) => setSecure(event.currentTarget.checked)} /> Secure</label>
+<output>{header()}</output>`,
   }),
   "@solidjs/web/respond": browserDemo({
     title: "respond",

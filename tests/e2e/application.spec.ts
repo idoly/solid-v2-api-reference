@@ -26,7 +26,7 @@ test("loads the generated reference and opens an API from search", async ({ page
   expect(await page.evaluate(() => document.body.scrollWidth)).toBe(1280);
   expect(scripts.some((path) => /\/assets\/api-[^/]+\.js$/i.test(path))).toBe(false);
 
-  const version = page.getByRole("link", { name: /2.0.0-beta.32/ });
+  const version = page.getByRole("link", { name: /2.0.0-rc.0/ });
   await expect(version).toHaveCSS("white-space", "nowrap");
   const category = page.getByRole("button", { name: "Reactivity", exact: true });
   const catalogLink = page.getByRole("button", { name: /createSignal core/ });

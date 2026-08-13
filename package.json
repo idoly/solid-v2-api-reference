@@ -1,6 +1,6 @@
 {
   "name": "solid-v2-api-reference",
-  "version": "1.4-2.0.0-beta.32",
+  "version": "1.4-2.0.0-rc.0",
   "private": true,
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
@@ -36,9 +36,9 @@
   },
   "dependencies": {
     "@babel/core": "^7.29.7",
-    "@solidjs/web": "2.0.0-beta.32",
-    "babel-preset-solid": "2.0.0-beta.32",
-    "solid-js": "2.0.0-beta.32",
+    "@solidjs/web": "2.0.0-rc.0",
+    "babel-preset-solid": "2.0.0-rc.0",
+    "solid-js": "2.0.0-rc.0",
     "typescript": "^5.7.2"
   },
   "devDependencies": {
@@ -50,7 +50,7 @@
     "prettier": "^3.9.6",
     "prismjs": "^1.30.0",
     "vite": "^8.1.5",
-    "vite-plugin-solid": "3.0.0-next.16"
+    "vite-plugin-solid": "3.0.0-next.27"
   },
   "overrides": {
     "@idoly/ant-design-solid": {

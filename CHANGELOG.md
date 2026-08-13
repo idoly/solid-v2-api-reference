@@ -4,15 +4,16 @@
 
 ### Dependency and Components
 
-- 将 `solid-js`、`@solidjs/web` 与 `babel-preset-solid` 从 `2.0.0-beta.30` 升级到 `2.0.0-beta.32`。
-- 间接依赖 `@solidjs/signals` 同步升级到 `2.0.0-beta.32`，DOM Expressions Babel 插件升级到 `0.50.0-next.40`。
+- 将 `solid-js`、`@solidjs/web` 与 `babel-preset-solid` 从 `2.0.0-beta.32` 升级到 `2.0.0-rc.0`。
+- 间接依赖 `@solidjs/signals` 同步升级到 `2.0.0-rc.0`，DOM Expressions Babel 插件升级到 `0.50.0-next.42`。
+- 将 `vite-plugin-solid` 升级到 `3.0.0-next.27`，并通过 `@solidjs/vite-plugin@3.0.0-next.28` 接入 rc.0 peer 依赖范围。
 - `@solidjs/web` 移除 `Assets`、`getAssets`、`useAssets` 与 `renderToStringAsync` 导出，并将 35 个 renderer/asset 底层函数标记为 internal；公开 callable 目录同步收缩。
 - 新增 8 个响应生命周期 API 的 SSR 分类、双语说明和可执行 Demo，覆盖 middleware 组合、request event / response stub 创建与提交、SSR Response 生成和安全错误标记。
-- 上游源码链接固定到 Solid beta.32 与 DOM Expressions `0.50.0-next.40` 对应提交。
+- 上游源码链接固定到 Solid rc.0 与 DOM Expressions `0.50.0-next.42` 对应提交。
 - `renderToString` 与 `renderToStream` 新增 `onHead` option，并在 Demo 中覆盖宿主文档收集 head 输出的流程。
 - `clientOnly` 使用编译器注入参数 `_moduleUrl` 提前输出资源提示；head 管理统一使用 `useHead` 注册，并由 `renderToString` / `renderToStream` 的 `onHead` 交给宿主文档。
 - `@solidjs/web/frames` 增加 live props 更新、frame rebind/rebase 和组件 handoff 类型契约；根入口的既有 `solid-js` API 签名没有变化。
-- 通过 npm override 让 `@idoly/ant-design-solid@0.2.4` 复用项目 Solid beta.32 版本，保证全新 `npm ci` 可解析一致的依赖树。
+- 通过 npm override 让 `@idoly/ant-design-solid@0.2.4` 复用项目 Solid rc.0 版本，保证全新 `npm ci` 可解析一致的依赖树。
 - 将 `@idoly/ant-design-solid` 从 `0.1.0` 升级到 `0.2.4`，迁移到 `base.css` 与组件级 CSS 导出。
 - JavaScript 全部改用组件子路径导入；组件样式集中到全局与 API 懒加载两个 CSS 入口，继续保留页面级 CSS code splitting。
 - 使用 BackTop 替换手写滚动监听和回顶逻辑，使用 Button 替换移动 Drawer 关闭按钮，并为当前侧栏文档增加 `aria-current="page"`。

@@ -182,6 +182,10 @@ export const apiContent = {
     "等待响应式表达式首次完全稳定，并以 Promise 返回结果。",
     "表达式可能读取尚未就绪的异步 memo 或 signal，需要等待其可同步返回时使用。",
   ],
+  "@solidjs/web/clearFlashCookie": [
+    "返回用于立即过期一次性 flash 结果 cookie 的 `Set-Cookie` 响应头值。",
+    "检测到 flash cookie 后将其追加到响应，避免旧的 server function 结果在后续请求中再次出现。",
+  ],
   "@solidjs/web/composeMiddleware": [
     "把 Fetch 风格的中间件组合成一个最终委托到请求 handler 的调度函数。",
     "服务端集成需要按顺序拦截请求、替换传递给下游的请求或后处理响应时使用。",
@@ -205,6 +209,26 @@ export const apiContent = {
   "@solidjs/web/getExpectedRedirectStatus": [
     "当前 response stub 状态是有效重定向时原样返回，否则返回默认状态 302。",
     "集成层需要把已收集的 `Location` 响应头转换成有效重定向响应时使用。",
+  ],
+  "@solidjs/web/getServerFunctionMetadata": [
+    "读取 server function 引用携带的声明元数据；其他值返回 undefined。",
+    "路由和传输层需要检查声明的 HTTP 方法或自定义策略，同时避免依赖函数 identity 时使用。",
+  ],
+  "@solidjs/web/hasFlashCookie": [
+    "判断请求的 Cookie 响应头中是否包含一次性 flash 结果 cookie。",
+    "渐进增强表单结果渲染前调用，以便当前响应及时安排清除 cookie。",
+  ],
+  "@solidjs/web/isServerFunction": [
+    "判断值是否为指令边界任一侧带品牌标记的 server function 引用。",
+    "工具链或传输代码需要区分可远程调用的引用和普通函数时使用。",
+  ],
+  "@solidjs/web/parseCookieHeader": [
+    "把 Cookie 请求头解析为经过解码的名称和值对象。",
+    "服务端集成需要直接从当前请求读取 cookie，且不引入额外 cookie 库时使用。",
+  ],
+  "@solidjs/web/serializeCookie": [
+    "把 cookie 名称、值和 RFC 6265 属性序列化为一条 `Set-Cookie` 响应头值。",
+    "请求事件或服务端集成需要写入 cookie 时，将结果追加到响应 headers。",
   ],
   "@solidjs/web/Dynamic": [
     "渲染运行时指定的原生标签或自定义组件，并转发其他 props。",
